@@ -1,3 +1,3 @@
-- remove iostream references
+- remove iostream and wxLogDebug references
 - sort audio list alphabetically
 - can't see "Heuss L'enfoiré, Jul - Moulaga.mp3"

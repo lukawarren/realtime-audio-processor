@@ -4,7 +4,7 @@ project(RAP)
 set (CMAKE_CXX_STANDARD 20)
 
 # Dependencies
-find_package(wxWidgets REQUIRED COMPONENTS net core base)
+find_package(wxWidgets REQUIRED COMPONENTS net core base media)
 include(${wxWidgets_USE_FILE})
 
 # Includes

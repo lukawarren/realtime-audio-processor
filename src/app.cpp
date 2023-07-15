@@ -44,7 +44,7 @@ Tree<AudioDirectory>* App::GetAudioDirectories(const std::string& path) const
         }
         else if (is_regular_file(entry) && entry.path().extension().string() == ".mp3")
         {
-            // MP3 file found; append to root data
+            // Audio file found; append to root data
             AudioFile file {
                 .name = entry.path().filename().string(),
                 .size = file_size(entry)
