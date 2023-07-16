@@ -1,6 +1,7 @@
 #pragma once
 #include <wx/wx.h>
 #include "file_browser.h"
+#include "play_bar.h"
 
 class MainWindow : public wxFrame
 {
@@ -9,4 +10,5 @@ public:
 
 private:
     FileBrowser* file_browser;
+    PlayBar* play_bar;
 };

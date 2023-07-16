@@ -22,7 +22,7 @@ FileBrowser::FileBrowser(wxWindow* parent, const Tree<AudioDirectory>* audio_dir
 
     // Layout
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(tree_list, wxSizerFlagBits::wxFIXED_MINSIZE, wxEXPAND | wxALL);
+    sizer->Add(tree_list, 1, wxEXPAND | wxALL);
     SetSizerAndFit(sizer);
 }
 

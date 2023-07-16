@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME} ${SOURCES}
         src/app.cpp
         src/main_window.cpp
         src/file_browser.cpp
+        src/play_bar.cpp
 )
 
 # Link
