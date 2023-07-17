@@ -38,7 +38,8 @@ add_executable(${PROJECT_NAME} ${SOURCES}
         src/main_window.cpp
         src/file_browser.cpp
         src/play_bar.cpp
+        src/audio_stream.cpp
 )
 
 # Link
-target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${SDL2_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES} SDL2)

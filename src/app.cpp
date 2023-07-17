@@ -1,9 +1,13 @@
 #include "app.h"
 #include "main_window.h"
 #include <filesystem>
+#include <SDL2/SDL.h>
 
 bool App::OnInit()
 {
+    // Initialise SDL audio
+    SDL_Init(SDL_INIT_AUDIO);
+
     // Scan for audio files
     audio_directories = GetAudioDirectories("/home/luka/Music");
 

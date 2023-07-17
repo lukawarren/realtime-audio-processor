@@ -1,3 +1,6 @@
 - remove iostream and wxLogDebug references
 - sort audio list alphabetically
 - can't see "Heuss L'enfoiré, Jul - Moulaga.mp3"
+- two channel audio
+- defensive programming
+- in documentation, detail why destructors are used for some things (but not widgets)
