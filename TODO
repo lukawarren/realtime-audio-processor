@@ -4,3 +4,4 @@
 - two channel audio
 - defensive programming
 - in documentation, detail why destructors are used for some things (but not widgets)
+- support more formats (polymorphism? eg xDecoder, yDecoder)

@@ -1,13 +1,19 @@
 #pragma once
 #include <wx/wx.h>
 #include <wx/treelist.h>
+#include <functional>
+#include <string>
 #include "audio.h"
 #include "tree.h"
 
 class FileBrowser : public wxPanel
 {
 public:
-    FileBrowser(wxWindow* parent, const Tree<AudioDirectory>* audio_directories);
+    FileBrowser(
+        wxWindow* parent,
+        const Tree<AudioDirectory>* audio_directories,
+        std::function<void(const std::string&)> on_file_clicked
+    );
 
 private:
     void AddDirectory(wxTreeListItem& parent, const Tree<AudioDirectory>* audio_directory);
@@ -17,4 +23,6 @@ private:
     wxTreeListCtrl* tree_list;
     int list_column_file_name;
     int list_column_file_size;
+
+    std::function<void(const std::string&)> on_file_clicked;
 };

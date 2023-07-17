@@ -7,7 +7,7 @@ AudioStream::AudioStream()
     // Format of audio data (32-bit floats, 48,000Hz, mono)
     SDL_AudioSpec desired_format = {};
     desired_format.freq = 48000;
-    desired_format.format = AUDIO_F32;
+    desired_format.format = AUDIO_S16LSB;
     desired_format.channels = 1;
     desired_format.samples = 4096;
 
@@ -61,7 +61,37 @@ void AudioStream::Pause()
 
 void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
 {
-    std::cout << length << "\n";
+    // If we have no data to provide, return a blank buffer
+    if (length == 0 || input_length == 0 ||
+        input_buffer == nullptr || input_progress + length > input_length)
+    {
+        memset(buffer, 0, length);
+        input_progress = input_length;
+    }
+    else
+    {
+        memcpy(buffer, input_buffer + input_progress, length);
+        input_progress += length;
+    }
+
+    on_progress_changed(GetProgress());
+}
+
+void AudioStream::SetInputData(uint8_t* buffer, uint32_t length)
+{
+    input_buffer = buffer;
+    input_length = length;
+    input_progress = 0;
+}
+
+void AudioStream::SetProgressChangedCallback(std::function<void(float)> on_progress_changed)
+{
+    this->on_progress_changed = on_progress_changed;
+}
+
+float AudioStream::GetProgress() const
+{
+    return (float)input_progress / (float)input_length;
 }
 
 AudioStream::~AudioStream()

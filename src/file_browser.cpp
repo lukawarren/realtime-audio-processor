@@ -3,8 +3,13 @@
 #include <string>
 #include <format>
 
-FileBrowser::FileBrowser(wxWindow* parent, const Tree<AudioDirectory>* audio_directories) :
-    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100))
+FileBrowser::FileBrowser(
+    wxWindow* parent,
+    const Tree<AudioDirectory>* audio_directories,
+    std::function<void(const std::string&)> on_file_clicked
+) :
+    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100)),
+    on_file_clicked(on_file_clicked)
 {
     // Create columns
     tree_list = new wxTreeListCtrl(this, wxID_ANY);
@@ -62,11 +67,11 @@ void FileBrowser::OnListEntryClicked()
     const wxString& selected_text = tree_list->GetItemText(selected_item);
     const wxString& parent_text = tree_list->GetItemText(item_parent);
 
-    // Check selected item was an audio file and not a directory by checking it ends in .mp3
+    // Check selected item was an audio file and not a directory by checking extension
     if (selected_text.size() < 3 ||
-        selected_text[selected_text.size()-3] != 'm' ||
-        selected_text[selected_text.size()-2] != 'p' ||
-        selected_text[selected_text.size()-1] != '3')
+        selected_text[selected_text.size()-3] != 'w' ||
+        selected_text[selected_text.size()-2] != 'a' ||
+        selected_text[selected_text.size()-1] != 'v')
     {
         // If it was a directory, simply expand it
         tree_list->Expand(selected_item);
@@ -78,5 +83,7 @@ void FileBrowser::OnListEntryClicked()
         + std::filesystem::path::preferred_separator
         + selected_text;
 
+    // Call parent callback
     wxLogDebug("Selected %s", full_path);
+    on_file_clicked(full_path.ToStdString());
 }

@@ -46,7 +46,7 @@ Tree<AudioDirectory>* App::GetAudioDirectories(const std::string& path) const
             Tree<AudioDirectory>* subtree = GetAudioDirectories(entry.path().string());
             files->AddChild(subtree);
         }
-        else if (is_regular_file(entry) && entry.path().extension().string() == ".mp3")
+        else if (is_regular_file(entry) && entry.path().extension().string() == ".wav")
         {
             // Audio file found; append to root data
             AudioFile file {
