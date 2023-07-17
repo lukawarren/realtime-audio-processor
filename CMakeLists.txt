@@ -5,10 +5,11 @@ set (CMAKE_CXX_STANDARD 20)
 
 # Dependencies
 find_package(wxWidgets REQUIRED COMPONENTS net core base media)
+find_package(SDL2 REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 # Includes
-include_directories("include/")
+include_directories("include/" ${SDL2_INCLUDE_DIR})
 
 # Unix flags
 if (UNIX)
@@ -40,4 +41,4 @@ add_executable(${PROJECT_NAME} ${SOURCES}
 )
 
 # Link
-target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES} ${SDL2_LIBRARY})
