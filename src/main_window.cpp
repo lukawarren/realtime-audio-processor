@@ -14,13 +14,6 @@ MainWindow::MainWindow(const Tree<AudioDirectory>* audio_directories) :
         OnAudioFileSelected(path);
     });
 
-    // Update UI when audio stream is played
-    audio_stream.SetProgressChangedCallback([&](float progress)
-    {
-        if (play_bar != nullptr)
-            play_bar->SetPlaybackProgress(progress);
-    });
-
     // Layout
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(file_browser, 1, wxEXPAND | wxALL);
@@ -29,6 +22,12 @@ MainWindow::MainWindow(const Tree<AudioDirectory>* audio_directories) :
 
 void MainWindow::OnAudioFileSelected(const std::string& path)
 {
+    // Free previous audio (if any)
+    if (audio_buffer != nullptr)
+        SDL_FreeWAV(audio_buffer);
+    if (audio_stream != nullptr)
+        delete audio_stream;
+
     // Remove old playbar (if any)
     if (play_bar != nullptr)
         delete play_bar;
@@ -37,10 +36,6 @@ void MainWindow::OnAudioFileSelected(const std::string& path)
     play_bar = new PlayBar(this);
     GetSizer()->Add(play_bar, 0, wxEXPAND | wxALL);
     Layout();
-
-    // Free previous audio (if any)
-    if (audio_buffer != nullptr)
-        SDL_FreeWAV(audio_buffer);
 
     // Load audio from disk
     SDL_AudioSpec properties;
@@ -52,15 +47,36 @@ void MainWindow::OnAudioFileSelected(const std::string& path)
     // Check format is supported
     // TODO: add more supported formats
     if (properties.format != AUDIO_S16LSB)
-        throw std::runtime_error("Unsupported format");
+        throw std::runtime_error("Unsupported audio format");
 
-    // Pass data to audio stream
-    audio_stream.SetInputData(buffer, length);
-    audio_stream.Play();
+    // Make new audio stream from audio properties and data
+    CreateAudioStream(properties, buffer, length);
+    audio_stream->Play();
+}
+
+void MainWindow::CreateAudioStream(SDL_AudioSpec properties, uint8_t* buffer, uint32_t length)
+{
+    audio_stream = new AudioStream(
+        properties.freq,
+        properties.format,
+        properties.channels
+    );
+
+    audio_stream->SetInputData(buffer, length);
+
+    // Update UI when audio stream is played
+    audio_stream->SetProgressChangedCallback([&](float progress)
+    {
+        if (play_bar != nullptr)
+            play_bar->SetPlaybackProgress(progress);
+    });
 }
 
 MainWindow::~MainWindow()
 {
     if (audio_buffer != nullptr)
         SDL_FreeWAV(audio_buffer);
+
+    if (audio_stream != nullptr)
+        delete audio_stream;
 }

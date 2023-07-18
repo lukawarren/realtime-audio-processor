@@ -18,7 +18,8 @@ private:
     // Currently selected audio file
     uint8_t* audio_buffer = nullptr;
     uint32_t audio_length;
-    AudioStream audio_stream = {};
+    AudioStream* audio_stream = nullptr;
 
     void OnAudioFileSelected(const std::string& path);
+    void CreateAudioStream(SDL_AudioSpec properties, uint8_t* buffer, uint32_t length);
 };

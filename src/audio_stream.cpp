@@ -1,14 +1,15 @@
 #include "audio_stream.h"
 #include <stdexcept>
-#include <iostream>
 
-AudioStream::AudioStream()
+AudioStream::AudioStream() {}
+
+AudioStream::AudioStream(const int frequency, const SDL_AudioFormat format, int channels)
 {
-    // Format of audio data (32-bit floats, 48,000Hz, mono)
+    // Format of audio data
     SDL_AudioSpec desired_format = {};
-    desired_format.freq = 48000;
+    desired_format.freq = frequency;
     desired_format.format = AUDIO_S16LSB;
-    desired_format.channels = 1;
+    desired_format.channels = channels;
     desired_format.samples = 4096;
 
     /*
@@ -96,5 +97,6 @@ float AudioStream::GetProgress() const
 
 AudioStream::~AudioStream()
 {
-    SDL_CloseAudioDevice(device);
+    if (device != 0)
+        SDL_CloseAudioDevice(device);
 }
