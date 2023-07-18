@@ -9,8 +9,7 @@ MainWindow::MainWindow(const Tree<AudioDirectory>* audio_directories) :
     SetMinSize({ 800, 600 });
 
     // Create file browser and pass callback
-    file_browser = new FileBrowser(this, audio_directories, [&](const std::string& path)
-    {
+    file_browser = new FileBrowser(this, audio_directories, [&](const std::string& path) {
         OnAudioFileSelected(path);
     });
 
@@ -33,7 +32,9 @@ void MainWindow::OnAudioFileSelected(const std::string& path)
         delete play_bar;
 
     // Add playbar
-    play_bar = new PlayBar(this);
+    play_bar = new PlayBar(this, [&](float progress) {
+        OnPlaybackProgressChanged(progress);
+    });
     GetSizer()->Add(play_bar, 0, wxEXPAND | wxALL);
     Layout();
 
@@ -70,6 +71,11 @@ void MainWindow::CreateAudioStream(SDL_AudioSpec properties, uint8_t* buffer, ui
         if (play_bar != nullptr)
             play_bar->SetPlaybackProgress(progress);
     });
+}
+
+void MainWindow::OnPlaybackProgressChanged(const float progress)
+{
+    audio_stream->SetProgress(progress);
 }
 
 MainWindow::~MainWindow()

@@ -1,6 +1,8 @@
 #include "audio_stream.h"
 #include <stdexcept>
 
+constexpr uint16_t buffer_length = 4096;
+
 AudioStream::AudioStream() {}
 
 AudioStream::AudioStream(const int frequency, const SDL_AudioFormat format, int channels)
@@ -10,7 +12,7 @@ AudioStream::AudioStream(const int frequency, const SDL_AudioFormat format, int 
     desired_format.freq = frequency;
     desired_format.format = AUDIO_S16LSB;
     desired_format.channels = channels;
-    desired_format.samples = 4096;
+    desired_format.samples = buffer_length;
 
     /*
         SDL is a C API - it is not written in C++. As such, one cannot simply
@@ -88,6 +90,18 @@ void AudioStream::SetInputData(uint8_t* buffer, uint32_t length)
 void AudioStream::SetProgressChangedCallback(std::function<void(float)> on_progress_changed)
 {
     this->on_progress_changed = on_progress_changed;
+}
+
+#include <iostream>
+
+void AudioStream::SetProgress(const float progress)
+{
+    // Make sure audio thread isn't currently processing any data!
+    SDL_ClearQueuedAudio(device);
+
+    // Change progress but round to nearest multiple of buffer length to avoid artifacts
+    this->input_progress = input_length * progress;
+    this->input_progress = int(this->input_progress / buffer_length) * buffer_length;
 }
 
 float AudioStream::GetProgress() const

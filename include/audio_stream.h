@@ -16,7 +16,7 @@ public:
 
     void SetInputData(uint8_t* buffer, uint32_t length);
     void SetProgressChangedCallback(std::function<void(float)> on_progress_changed);
-
+    void SetProgress(const float progress);
     float GetProgress() const;
 
 private:
