@@ -94,8 +94,6 @@ void AudioStream::SetProgressChangedCallback(std::function<void(float)> on_progr
     this->on_progress_changed = on_progress_changed;
 }
 
-#include <iostream>
-
 void AudioStream::SetProgress(const float progress)
 {
     // Make sure audio thread isn't currently processing any data!
