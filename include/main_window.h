@@ -23,4 +23,5 @@ private:
     void OnAudioFileSelected(const std::string& path);
     void CreateAudioStream(SDL_AudioSpec properties, uint8_t* buffer, uint32_t length);
     void OnPlaybackProgressChanged(const float progress);
+    void OnPlaybackPlayOrPause();
 };

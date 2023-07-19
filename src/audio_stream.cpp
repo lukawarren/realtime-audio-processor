@@ -55,11 +55,13 @@ AudioStream::AudioStream(const int frequency, const SDL_AudioFormat format, int 
 void AudioStream::Play()
 {
     SDL_PauseAudioDevice(device, false);
+    is_playing = true;
 }
 
 void AudioStream::Pause()
 {
     SDL_PauseAudioDevice(device, true );
+    is_playing = false;
 }
 
 void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
@@ -107,6 +109,11 @@ void AudioStream::SetProgress(const float progress)
 float AudioStream::GetProgress() const
 {
     return (float)input_progress / (float)input_length;
+}
+
+bool AudioStream::IsPlaying() const
+{
+    return is_playing;
 }
 
 AudioStream::~AudioStream()

@@ -32,9 +32,14 @@ void MainWindow::OnAudioFileSelected(const std::string& path)
         delete play_bar;
 
     // Add playbar
-    play_bar = new PlayBar(this, [&](float progress) {
-        OnPlaybackProgressChanged(progress);
-    });
+    play_bar = new PlayBar(this,
+        [&](float progress) {
+            OnPlaybackProgressChanged(progress);
+        },
+        [&]() {
+            OnPlaybackPlayOrPause();
+        }
+    );
     GetSizer()->Add(play_bar, 0, wxEXPAND | wxALL);
     Layout();
 
@@ -76,6 +81,14 @@ void MainWindow::CreateAudioStream(SDL_AudioSpec properties, uint8_t* buffer, ui
 void MainWindow::OnPlaybackProgressChanged(const float progress)
 {
     audio_stream->SetProgress(progress);
+}
+
+void MainWindow::OnPlaybackPlayOrPause()
+{
+    if (audio_stream->IsPlaying())
+        audio_stream->Pause();
+    else
+        audio_stream->Play();
 }
 
 MainWindow::~MainWindow()

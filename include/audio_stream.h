@@ -18,6 +18,7 @@ public:
     void SetProgressChangedCallback(std::function<void(float)> on_progress_changed);
     void SetProgress(const float progress);
     float GetProgress() const;
+    bool IsPlaying() const;
 
 private:
     SDL_AudioDeviceID device = 0;
@@ -25,6 +26,7 @@ private:
     uint8_t* input_buffer = nullptr;
     uint32_t input_length;
     uint32_t input_progress = 0;
+    bool is_playing = false;
 
     // User callback
     std::function<void(float)> on_progress_changed = [](float _){};
