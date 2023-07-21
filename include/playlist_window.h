@@ -2,7 +2,7 @@
 #include <wx/wx.h>
 #include "file_browser.h"
 
-class PlaylistWindow : public wxFrame
+class PlaylistWindow : public wxDialog
 {
 public:
     PlaylistWindow();

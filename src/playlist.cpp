@@ -30,7 +30,5 @@ Playlist Playlist::FromFile(const std::string& path)
     while (std::getline(input_file, line))
         lines.emplace_back(line);
 
-    for (const auto& file : lines)
-        std::cout << file << std::endl;
     return Playlist(lines);
 }

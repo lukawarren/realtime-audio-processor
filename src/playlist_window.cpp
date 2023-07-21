@@ -1,13 +1,14 @@
 #include "playlist_window.h"
 #include "playlist.h"
+#include "app.h"
 
 PlaylistWindow::PlaylistWindow() :
-    wxFrame(nullptr, wxID_ANY, "Create a playlist")
+    wxDialog(nullptr, wxID_ANY, "Create a playlist")
 {
-    SetMinSize({ 1024, 768 });
-    #ifdef WIN32
+    SetSize({1024, 768});
+#ifdef WIN32
     SetBackgroundColour(*wxWHITE);
-    #endif
+#endif
 
     // Create file browser and pass callback
     const auto is_valid_file = [](const std::string& filename)
@@ -89,7 +90,7 @@ void PlaylistWindow::OnContinue()
     wxFileDialog dialog = wxFileDialog(
         this,                               // Parent
         "Save File",                        // Title
-        "",                                 // Default directory
+        App::GetAppDataPath(),              // Default directory
         "playlist.txt",                     // Default filename
         "Text files (*.txt)|*.txt",         // Filter / wildcard
         wxFD_SAVE | wxFD_OVERWRITE_PROMPT   // Flags
@@ -102,6 +103,8 @@ void PlaylistWindow::OnContinue()
     // Save
     Playlist playlist(GetItems());
     playlist.SaveToFile(dialog.GetPath().ToStdString());
+
+    Close();
 }
 
 std::vector<std::string> PlaylistWindow::GetItems() const
