@@ -2,8 +2,8 @@
 #include "playlist.h"
 #include "app.h"
 
-PlaylistWindow::PlaylistWindow() :
-    wxDialog(nullptr, wxID_ANY, "Create a playlist")
+PlaylistWindow::PlaylistWindow(wxWindow* parent) :
+    wxFrame(parent, wxID_ANY, "Create a playlist")
 {
     SetSize({1024, 768});
 #ifdef WIN32
@@ -19,7 +19,8 @@ PlaylistWindow::PlaylistWindow() :
                filename[filename.size()-1] == '3';
     };
     const auto on_file_double_clicked = [&]() {
-        OnFileAdded();
+        auto dummy = wxCommandEvent();
+        OnFileAdded(dummy);
     };
     file_browser = new FileBrowser(
         this,
@@ -37,9 +38,9 @@ PlaylistWindow::PlaylistWindow() :
     wxButton* next_button   = new wxButton(this, wxID_ANY, "Continue");
 
     // Events
-    add_button->Bind(wxEVT_BUTTON, [&](wxCommandEvent& _) { OnFileAdded(); });
-    remove_button->Bind(wxEVT_BUTTON, [&](wxCommandEvent& _) { OnFileRemoved(); });
-    next_button->Bind(wxEVT_BUTTON, [&](wxCommandEvent& _) { OnContinue(); });
+    add_button->Bind(wxEVT_BUTTON, &PlaylistWindow::OnFileAdded, this);
+    remove_button->Bind(wxEVT_BUTTON, &PlaylistWindow::OnFileRemoved, this);
+    next_button->Bind(wxEVT_BUTTON, &PlaylistWindow::OnContinue, this);
 
     const int margin = FromDIP(10);
 
@@ -58,9 +59,16 @@ PlaylistWindow::PlaylistWindow() :
     vertical_sizer->Add(top_sizer, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, margin);
     vertical_sizer->Add(bottom_sizer, 0, wxALIGN_CENTER | wxALL, margin);
     SetSizer(vertical_sizer);
+
+    // Disable parent window then re-enable parent window when we close
+    GetParent()->Enable(false);
+    Bind(wxEVT_CLOSE_WINDOW, [&](wxCloseEvent& event) {
+        GetParent()->Enable(true);
+        event.Skip();
+    });
 }
 
-void PlaylistWindow::OnFileAdded()
+void PlaylistWindow::OnFileAdded(wxCommandEvent& event)
 {
     // Verify a file is selected (as opposed to directory, etc.)
     std::optional<std::string> filename = file_browser->GetSelectedFile();
@@ -71,14 +79,14 @@ void PlaylistWindow::OnFileAdded()
     }
 }
 
-void PlaylistWindow::OnFileRemoved()
+void PlaylistWindow::OnFileRemoved(wxCommandEvent& event)
 {
     long selection_index = file_list->GetSelection();
     if (selection_index != wxNOT_FOUND)
         file_list->Delete(selection_index);
 }
 
-void PlaylistWindow::OnContinue()
+void PlaylistWindow::OnContinue(wxCommandEvent& event)
 {
     // Check playlist will be valid
     if (file_list->GetCount() < 1)

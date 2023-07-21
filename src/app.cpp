@@ -1,5 +1,5 @@
 #include "app.h"
-#include "playlist_window.h"
+#include "start_window.h"
 #include <wx/stdpaths.h>
 #include <SDL2/SDL.h>
 #include <filesystem>
@@ -10,10 +10,9 @@ bool App::OnInit()
     SDL_Init(SDL_INIT_AUDIO);
     CreateDataDirectories();
 
-    PlaylistWindow* window = new PlaylistWindow();
-    window->ShowModal();
+    StartWindow* start_window = new StartWindow();
+    start_window->Show();
 
-    Exit();
     return true;
 }
 
