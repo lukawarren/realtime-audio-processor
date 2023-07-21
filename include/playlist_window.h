@@ -11,5 +11,10 @@ public:
 private:
     // UI elements
     FileBrowser* file_browser;
-    wxRearrangeList* file_list;
+    wxRearrangeCtrl* file_list;
+
+    void OnFileAdded();
+    void OnFileRemoved();
+    void OnContinue() const;
+    std::vector<std::string> GetItems() const;
 };

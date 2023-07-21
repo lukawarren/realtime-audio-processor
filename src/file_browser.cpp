@@ -7,7 +7,7 @@ FileBrowser::FileBrowser(
     wxWindow* parent,
     const std::string& path,
     std::function<bool(const std::string&)> is_valid_file,
-    std::function<void(const std::string&)> on_file_clicked
+    std::function<void()> on_file_clicked
 ) :
     wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100)),
     is_valid_file(is_valid_file),
@@ -24,9 +24,14 @@ FileBrowser::FileBrowser(
     AddDirectory(root, directories);
     delete directories;
 
+    // User callback event
     tree_list->Bind(wxEVT_TREELIST_ITEM_ACTIVATED, [&](wxCommandEvent& event)
     {
-        OnListEntryClicked();
+        // Verify file clicked
+        if (GetSelectedFile().has_value())
+            this->on_file_clicked();
+        else
+            tree_list->Expand(tree_list->GetSelection());
     });
 
     // Layout
@@ -98,7 +103,7 @@ void FileBrowser::AddFiles(wxTreeListItem& parent, const Directory* files)
     }
 }
 
-void FileBrowser::OnListEntryClicked()
+std::optional<std::string> FileBrowser::GetSelectedFile() const
 {
     const wxTreeListItem selected_item = tree_list->GetSelection();
     const wxTreeListItem item_parent = tree_list->GetItemParent(selected_item);
@@ -107,18 +112,12 @@ void FileBrowser::OnListEntryClicked()
 
     // Check selected item was a file
     if (!is_valid_file(selected_text.ToStdString()))
-    {
-        // If it was a directory, reveal files contained
-        tree_list->Expand(selected_item);
-        return;
-    }
+        return std::nullopt;
 
     // Get full path of file by adding the directory (i.e. the parent text)
-    const wxString& full_path = parent_text
+    const wxString full_path = parent_text
         + std::filesystem::path::preferred_separator
         + selected_text;
 
-    // Call parent callback
-    wxLogDebug("Selected %s", full_path);
-    on_file_clicked(full_path.ToStdString());
+    return full_path.ToStdString();
 }
