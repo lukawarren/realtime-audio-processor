@@ -5,10 +5,12 @@
 
 FileBrowser::FileBrowser(
     wxWindow* parent,
-    const Tree<AudioDirectory>* audio_directories,
+    const std::string& path,
+    std::function<bool(const std::string&)> is_valid_file,
     std::function<void(const std::string&)> on_file_clicked
 ) :
     wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100)),
+    is_valid_file(is_valid_file),
     on_file_clicked(on_file_clicked)
 {
     // Create columns
@@ -16,9 +18,11 @@ FileBrowser::FileBrowser(
     list_column_file_name = tree_list->AppendColumn("Path");
     list_column_file_size = tree_list->AppendColumn("Size");
 
-    // Recursively add directories
+    // Recursively enumarate then add directories
     wxTreeListItem root = tree_list->GetRootItem();
-    AddDirectory(root, audio_directories);
+    Tree<Directory>* directories = ScanDirectory(path);
+    AddDirectory(root, directories);
+    delete directories;
 
     tree_list->Bind(wxEVT_TREELIST_ITEM_ACTIVATED, [&](wxCommandEvent& event)
     {
@@ -31,23 +35,57 @@ FileBrowser::FileBrowser(
     SetSizerAndFit(sizer);
 }
 
-void FileBrowser::AddDirectory(wxTreeListItem& parent, const Tree<AudioDirectory>* audio_directory)
+Tree<Directory>* FileBrowser::ScanDirectory(const std::string& path) const
+{
+    // Create empty tree of directories, where each directory (node) has
+    // as its data the files contained within it
+    Tree<Directory>* files = new Tree<Directory>();
+
+    // Set root data as root Directory
+    Directory* root = new Directory { .path = path };
+    files->SetNode(root);
+
+    // Iterate through directories in root
+    using namespace std::filesystem;
+    for (const auto& entry : directory_iterator(path))
+    {
+        if (is_directory(entry))
+        {
+            // Recursively get files in sub-folder so as to add as branch of tree
+            Tree<Directory>* subtree = ScanDirectory(entry.path().string());
+            files->AddChild(subtree);
+        }
+        else if (is_regular_file(entry) && is_valid_file(entry.path().string()))
+        {
+            // Audio file found; append to root data
+            File file {
+                .name = entry.path().filename().string(),
+                .size = file_size(entry)
+            };
+            root->files.emplace_back(file);
+        }
+    }
+
+    return files;
+}
+
+void FileBrowser::AddDirectory(wxTreeListItem& parent, const Tree<Directory>* audio_directory)
 {
     // Append directory
-    AudioDirectory* directory_data = audio_directory->data;
+    Directory* directory_data = audio_directory->data;
     wxTreeListItem child = tree_list->AppendItem(parent, directory_data->path);
 
     // Add files, using the current child as the parent
     AddFiles(child, directory_data);
 
     // Add children (sub-directories) recursively in the same manner :)
-    for (const Tree<AudioDirectory>* sub_directory : audio_directory->children)
+    for (const Tree<Directory>* sub_directory : audio_directory->children)
         AddDirectory(child, sub_directory);
 }
 
-void FileBrowser::AddFiles(wxTreeListItem& parent, const AudioDirectory* files)
+void FileBrowser::AddFiles(wxTreeListItem& parent, const Directory* files)
 {
-    for (const AudioFile& file : files->files)
+    for (const File& file : files->files)
     {
         // Format file size to 2 decimal places
         const float size_in_mb = (float)file.size / 1000000.0f;
@@ -67,13 +105,10 @@ void FileBrowser::OnListEntryClicked()
     const wxString& selected_text = tree_list->GetItemText(selected_item);
     const wxString& parent_text = tree_list->GetItemText(item_parent);
 
-    // Check selected item was an audio file and not a directory by checking extension
-    if (selected_text.size() < 3 ||
-        selected_text[selected_text.size()-3] != 'w' ||
-        selected_text[selected_text.size()-2] != 'a' ||
-        selected_text[selected_text.size()-1] != 'v')
+    // Check selected item was a file
+    if (!is_valid_file(selected_text.ToStdString()))
     {
-        // If it was a directory, simply expand it
+        // If it was a directory, reveal files contained
         tree_list->Expand(selected_item);
         return;
     }

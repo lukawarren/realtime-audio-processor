@@ -7,3 +7,4 @@
 - support more formats (polymorphism? eg xDecoder, yDecoder)
 - windows crash when double clicking root tree item
 - pressing right arrow expands dir
+- add central directory (like ~/RAP) to store audio and playlists

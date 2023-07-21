@@ -35,9 +35,8 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCES}
         src/main.cpp
         src/app.cpp
-        src/main_window.cpp
+        src/playlist_window.cpp
         src/file_browser.cpp
-        src/play_bar.cpp
         src/audio_stream.cpp
 )
 

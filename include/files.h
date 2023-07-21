@@ -3,14 +3,14 @@
 #include <vector>
 #include <iostream>
 
-struct AudioFile
+struct File
 {
     std::string name;
     size_t size;
 };
 
-struct AudioDirectory
+struct Directory
 {
     std::string path;
-    std::vector<AudioFile> files = {};
+    std::vector<File> files = {};
 };
