@@ -4,6 +4,9 @@ PlaylistWindow::PlaylistWindow() :
     wxFrame(nullptr, wxID_ANY, "Create a playlist")
 {
     SetMinSize({ 1024, 768 });
+    #ifdef WIN32
+    SetBackgroundColour(*wxWHITE);
+    #endif
 
     // Create file browser and pass callback
     const auto is_valid_file = [](const std::string& filename)
@@ -24,14 +27,7 @@ PlaylistWindow::PlaylistWindow() :
     );
 
     // Right-hand list of selected files
-    file_list = new wxRearrangeCtrl(
-        this,
-        wxID_ANY,
-        wxDefaultPosition,
-        wxDefaultSize,
-        wxArrayInt(0),
-        wxArrayString(0)
-    );
+    file_list = new wxListBox(this, wxID_ANY);
 
     // Buttons
     wxButton* add_button    = new wxButton(this, wxID_ANY, "Add");
@@ -52,13 +48,13 @@ PlaylistWindow::PlaylistWindow() :
 
     // Bottom layout
     wxBoxSizer* bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
-    bottom_sizer->Add(add_button, 0, wxALL, margin);
-    bottom_sizer->Add(remove_button, 0, wxALL, margin);
-    bottom_sizer->Add(next_button, 0, wxALL, margin);
+    bottom_sizer->Add(add_button, 0, wxLEFT | wxRIGHT, margin);
+    bottom_sizer->Add(remove_button, 0, wxLEFT | wxRIGHT, margin);
+    bottom_sizer->Add(next_button, 0, wxLEFT | wxRIGHT, margin);
 
     wxBoxSizer* vertical_sizer = new wxBoxSizer(wxVERTICAL);
-    vertical_sizer->Add(top_sizer, 1, wxEXPAND | wxALL);
-    vertical_sizer->Add(bottom_sizer, 0, wxALIGN_CENTER | wxALL);
+    vertical_sizer->Add(top_sizer, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, margin);
+    vertical_sizer->Add(bottom_sizer, 0, wxALIGN_CENTER | wxALL, margin);
     SetSizer(vertical_sizer);
 }
 
@@ -66,20 +62,18 @@ void PlaylistWindow::OnFileAdded()
 {
     // Verify a file is selected (as opposed to directory, etc.)
     std::optional<std::string> filename = file_browser->GetSelectedFile();
-    if (filename.has_value())
+    if (filename.has_value() && !ContainsItem(*filename))
     {
-        wxString string = wxString::FromUTF8(filename.value());
-        file_list->GetList()->InsertItems(1, &string, file_list->GetList()->GetCount());
+        wxString string = wxString::FromUTF8(*filename);
+        file_list->InsertItems(1, &string, file_list->GetCount());
     }
 }
 
 void PlaylistWindow::OnFileRemoved()
 {
-    wxListBox* list = file_list->GetList();
-    long selection_index = list->GetSelection();
-
+    long selection_index = file_list->GetSelection();
     if (selection_index != wxNOT_FOUND)
-        list->Delete(selection_index);
+        file_list->Delete(selection_index);
 }
 
 void PlaylistWindow::OnContinue() const
@@ -91,7 +85,7 @@ void PlaylistWindow::OnContinue() const
 std::vector<std::string> PlaylistWindow::GetItems() const
 {
     // Convert from vec<wxString> to vec<std::string>
-    wxArrayString strings = file_list->GetList()->GetStrings();
+    wxArrayString strings = file_list->GetStrings();
     std::vector<std::string> std_strings = {};
     std_strings.reserve(strings.size());
 
@@ -99,4 +93,10 @@ std::vector<std::string> PlaylistWindow::GetItems() const
         std_strings.emplace_back(string.ToStdString());
 
     return std_strings;
+}
+
+bool PlaylistWindow::ContainsItem(const std::string& filename) const
+{
+    std::vector<std::string> items = GetItems();
+    return std::find(items.begin(), items.end(), filename) != items.end();
 }
