@@ -33,11 +33,12 @@ endif()
 
 # Build
 add_executable(${PROJECT_NAME} ${SOURCES}
-        src/main.cpp
-        src/app.cpp
-        src/playlist_window.cpp
-        src/file_browser.cpp
-        src/audio_stream.cpp
+    src/main.cpp
+    src/app.cpp
+    src/playlist_window.cpp
+    src/file_browser.cpp
+    src/audio_stream.cpp
+    src/playlist.cpp
 )
 
 # Link

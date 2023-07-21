@@ -1,4 +1,5 @@
 #include "playlist_window.h"
+#include "playlist.h"
 
 PlaylistWindow::PlaylistWindow() :
     wxFrame(nullptr, wxID_ANY, "Create a playlist")
@@ -76,10 +77,31 @@ void PlaylistWindow::OnFileRemoved()
         file_list->Delete(selection_index);
 }
 
-void PlaylistWindow::OnContinue() const
+void PlaylistWindow::OnContinue()
 {
-    for (const auto& string : GetItems())
-        wxLogDebug("%s", string);
+    // Check playlist will be valid
+    if (file_list->GetCount() < 1)
+    {
+        wxMessageBox("Playlists must consist of at least one file");
+        return;
+    }
+
+    wxFileDialog dialog = wxFileDialog(
+        this,                               // Parent
+        "Save File",                        // Title
+        "",                                 // Default directory
+        "playlist.txt",                     // Default filename
+        "Text files (*.txt)|*.txt",         // Filter / wildcard
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT   // Flags
+    );
+
+    // Ignore cancels
+    if (dialog.ShowModal() == wxID_CANCEL)
+        return;
+
+    // Save
+    Playlist playlist(GetItems());
+    playlist.SaveToFile(dialog.GetPath().ToStdString());
 }
 
 std::vector<std::string> PlaylistWindow::GetItems() const

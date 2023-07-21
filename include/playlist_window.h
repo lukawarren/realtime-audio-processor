@@ -14,7 +14,7 @@ private:
 
     void OnFileAdded();
     void OnFileRemoved();
-    void OnContinue() const;
+    void OnContinue();
 
     std::vector<std::string> GetItems() const;
     bool ContainsItem(const std::string& filename) const;
