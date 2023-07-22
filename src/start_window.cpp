@@ -1,5 +1,6 @@
 #include "start_window.h"
 #include "playlist_window.h"
+#include "play_window.h"
 #include <wx/stattext.h>
 #include "app.h"
 
@@ -52,5 +53,17 @@ void StartWindow::OnLoadButton(wxCommandEvent& event)
     if (dialog.ShowModal() == wxID_CANCEL)
         return;
 
+    // Open main playback window with selected playlist
     wxLogDebug("Opening %s", dialog.GetPath());
+    Playlist playlist = Playlist::FromFile(dialog.GetPath().ToStdString());
+    PlayWindow* window = new PlayWindow(this, playlist);
+    window->Show();
+
+    // Hide current window, but close it when the above window closes (so as to
+    // close the app as a whole)
+    Hide();
+    window->Bind(wxEVT_CLOSE_WINDOW, [&](wxCloseEvent& event) {
+        this->Close();
+        event.Skip();
+    });
 }

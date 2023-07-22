@@ -40,6 +40,7 @@ add_executable(${PROJECT_NAME} ${SOURCES}
     src/audio_stream.cpp
     src/playlist.cpp
     src/start_window.cpp
+    src/play_window.cpp
 )
 
 # Link
