@@ -3,15 +3,13 @@
 
 constexpr uint16_t buffer_length = 4096;
 
-AudioStream::AudioStream() {}
-
-AudioStream::AudioStream(const int frequency, const SDL_AudioFormat format, int channels)
+AudioStream::AudioStream(const AudioFile* file)
 {
     // Format of audio data
     SDL_AudioSpec desired_format = {};
-    desired_format.freq = frequency;
+    desired_format.freq = file->GetFrequency();
     desired_format.format = AUDIO_S16LSB;
-    desired_format.channels = channels;
+    desired_format.channels = file->GetChannels();
     desired_format.samples = buffer_length;
 
     /*
@@ -50,6 +48,9 @@ AudioStream::AudioStream(const int frequency, const SDL_AudioFormat format, int 
         actual_format.channels != desired_format.channels ||
         actual_format.samples != desired_format.samples)
         throw std::runtime_error("Unable to create audio device with desired settings");
+
+    input_buffer = file->GetData();
+    input_length = file->GetLength();
 }
 
 void AudioStream::Play()
@@ -80,13 +81,6 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
     }
 
     on_progress_changed(GetProgress());
-}
-
-void AudioStream::SetInputData(uint8_t* buffer, uint32_t length)
-{
-    input_buffer = buffer;
-    input_length = length;
-    input_progress = 0;
 }
 
 void AudioStream::SetProgressChangedCallback(std::function<void(float)> on_progress_changed)

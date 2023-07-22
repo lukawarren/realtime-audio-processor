@@ -32,3 +32,8 @@ Playlist Playlist::FromFile(const std::string& path)
 
     return Playlist(lines);
 }
+
+const std::vector<std::string>& Playlist::Items() const
+{
+    return filenames;
+}

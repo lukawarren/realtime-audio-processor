@@ -38,6 +38,7 @@ add_executable(${PROJECT_NAME} ${SOURCES}
     src/playlist_window.cpp
     src/file_browser.cpp
     src/audio_stream.cpp
+    src/audio_file.cpp
     src/playlist.cpp
     src/start_window.cpp
     src/play_window.cpp

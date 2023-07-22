@@ -14,9 +14,9 @@ PlaylistWindow::PlaylistWindow(wxWindow* parent) :
     const auto is_valid_file = [](const std::string& filename)
     {
         return filename.size() >= 3 &&
-               filename[filename.size()-3] == 'm' &&
-               filename[filename.size()-2] == 'p' &&
-               filename[filename.size()-1] == '3';
+               filename[filename.size()-3] == 'w' &&
+               filename[filename.size()-2] == 'a' &&
+               filename[filename.size()-1] == 'v';
     };
     const auto on_file_double_clicked = [&]() {
         auto dummy = wxCommandEvent();

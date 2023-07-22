@@ -1,12 +1,12 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <functional>
+#include "audio_file.h"
 
 class AudioStream
 {
 public:
-    AudioStream();
-    AudioStream(const int frequency, const SDL_AudioFormat format, int channels);
+    AudioStream(const AudioFile* file);
     AudioStream(const AudioStream&) = delete;
     ~AudioStream();
 
@@ -14,7 +14,6 @@ public:
     void Pause();
     void OnAudioCallback(uint8_t* buffer, int length);
 
-    void SetInputData(uint8_t* buffer, uint32_t length);
     void SetProgressChangedCallback(std::function<void(float)> on_progress_changed);
     void SetProgress(const float progress);
     float GetProgress() const;
@@ -23,7 +22,9 @@ public:
 private:
     SDL_AudioDeviceID device = 0;
     SDL_AudioSpec properties;
-    uint8_t* input_buffer = nullptr;
+
+    // Playback data
+    uint8_t* input_buffer;
     uint32_t input_length;
     uint32_t input_progress = 0;
     bool is_playing = false;
