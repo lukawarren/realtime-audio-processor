@@ -4,14 +4,16 @@
 #include <SDL2/SDL.h>
 #include <filesystem>
 
+#include "play_window.h"
 bool App::OnInit()
 {
     // Initialise SDL audio and filesystem
     SDL_Init(SDL_INIT_AUDIO);
     CreateDataDirectories();
 
-    StartWindow* start_window = new StartWindow();
-    start_window->Show();
+    // StartWindow* start_window = new StartWindow();
+    // start_window->Show();
+    (new PlayWindow(nullptr, Playlist::FromFile("/home/luka/Documents/RAP/playlist.txt")))->Show();
 
     return true;
 }
