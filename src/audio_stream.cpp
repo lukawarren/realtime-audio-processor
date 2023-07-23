@@ -111,5 +111,8 @@ bool AudioStream::IsPlaying() const
 AudioStream::~AudioStream()
 {
     if (device != 0)
+    {
+        SDL_ClearQueuedAudio(device);
         SDL_CloseAudioDevice(device);
+    }
 }

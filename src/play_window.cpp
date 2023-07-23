@@ -17,7 +17,7 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     {
         const float progress = (float)event.GetPosition().x / (float)progress_bar->GetSize().x;
         progress_bar->SetValue(progress * progress_bar->GetMax());
-        audio_stream->SetProgress(progress);
+        (*audio_stream)->SetProgress(progress);
     });
 
     // Buttons
@@ -50,35 +50,66 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 void PlayWindow::StartPlayback()
 {
     // Delete audio resources if they already exist (i.e. when re-calling function)
-    if (audio_file.has_value()) audio_file.reset();
-    if (audio_stream.has_value()) audio_stream.reset();
+    if (audio_file.has_value() && audio_stream.has_value())
+    {
+        // We cannot simply delete the audio stream because this method may
+        // have gotten called from a lambda called by the audio stream itself!
+        // Instead, we must simply create a new one, then delete the old one
+        // when the new one starts to play. Since an audio stream may be in
+        // the process of reading from an audio file, we must be careful about
+        // the lifetime of this too!
+        old_audio_stream = audio_stream;
+        old_audio_file = audio_file;
+    }
 
     // Create audio file and corresponding audio stream
-    audio_file.emplace(playlist.Items()[current_song]);
-    audio_stream.emplace(&*audio_file);
+    audio_file.emplace(new AudioFile(playlist.Items()[current_song]));
+    audio_stream.emplace(new AudioStream(*audio_file));
 
-    // When the audio is copied to the device's buffer, update the UI
-    audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length)
-    {
-        progress_bar->SetValue(progress * progress_bar->GetMax());
-        PlayWindow::OnAudioStreamUpdated(progress, buffer, length);
+    (*audio_stream)->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length) {
+        OnAudioStreamUpdated(progress, buffer, length);
     });
 
-    audio_stream->Play();
+    (*audio_stream)->Play();
 }
 
 void PlayWindow::OnAudioStreamUpdated(float progress, uint8_t* buffer, int length)
 {
+    // Delete previous audio resources if need be (see above)
+    if (old_audio_stream.has_value() && old_audio_file.has_value())
+    {
+        delete *old_audio_stream;
+        old_audio_stream.reset();
+        delete *old_audio_file;
+        old_audio_file.reset();
+    }
+
+    // Update UI
+    progress_bar->SetValue(progress * progress_bar->GetMax());
+    UpdateVisualiserData(progress, buffer, length);
+
+    // If song has just finished, go to the next one
+    if (progress == 1.0f)
+    {
+        wxCommandEvent event = {};
+        OnNext(event);
+    }
+}
+
+void PlayWindow::UpdateVisualiserData(float progress, uint8_t* buffer, int length)
+{
+    AudioFile* file = *audio_file;
+
     // Convert from 16-bit buffer to vector of floats
     std::vector<float> audio;
     for (int i = 0; i < length / 2; ++i)
         audio.emplace_back(
-            float(*((uint16_t*)buffer + i)) / (float)audio_file->MaxSampleValue()
+            float(*((uint16_t*)buffer + i)) / (float)file->MaxSampleValue()
         );
 
     // Perform FFT and trigger redraw of visualiser panel
     const int n_buckets = visualiser_panel->GetSize().x / visualiser_bar_width;
-    FastFourierTransform fft(audio, audio_file->GetFrequency(), n_buckets);
+    FastFourierTransform fft(audio, file->GetFrequency(), n_buckets);
     audio_frequencies = fft.grouped_frequencies;
     visualiser_panel->Refresh();
 }
@@ -138,14 +169,14 @@ void PlayWindow::OnPrevious(wxCommandEvent& event)
 
 void PlayWindow::OnPause(wxCommandEvent& event)
 {
-    if (audio_stream->IsPlaying())
+    if ((*audio_stream)->IsPlaying())
     {
-        audio_stream->Pause();
+        (*audio_stream)->Pause();
         pause_button->SetLabelText("Play");
     }
     else
     {
-        audio_stream->Play();
+        (*audio_stream)->Play();
         pause_button->SetLabelText("Pause");
     }
 }
@@ -157,4 +188,10 @@ void PlayWindow::OnNext(wxCommandEvent& event)
         current_song = 0;
 
     StartPlayback();
+}
+
+PlayWindow::~PlayWindow()
+{
+    if (audio_stream.has_value())
+        delete *audio_stream;
 }
