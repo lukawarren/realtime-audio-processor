@@ -4,8 +4,11 @@ project(RAP)
 set (CMAKE_CXX_STANDARD 20)
 
 # Dependencies
-find_package(wxWidgets CONFIG REQUIRED)
+find_package(wxWidgets REQUIRED)
 find_package(SDL2 REQUIRED)
+if (NOT WIN32)
+    include(${wxWidgets_USE_FILE})
+endif()
 
 # Includes
 include_directories("include/" ${SDL2_INCLUDE_DIR})
@@ -48,4 +51,16 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # Link
-target_link_libraries(${PROJECT_NAME} wx::core wx::base SDL2::SDL2)
+target_link_libraries(
+    ${PROJECT_NAME}
+    $<TARGET_NAME_IF_EXISTS:wx::core>
+    $<TARGET_NAME_IF_EXISTS:wx::base>
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2>
+    $<TARGET_NAME_IF_EXISTS:SDL2>
+)
+if (NOT WIN32)
+    target_link_libraries(
+        ${PROJECT_NAME}
+        ${wxWidgets_LIBRARIES}
+    )
+endif()

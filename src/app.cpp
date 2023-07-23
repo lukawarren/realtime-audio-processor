@@ -26,11 +26,11 @@ void App::OnUnhandledException()
 std::string App::GetAppDataPath()
 {
     const wxString documents_path = wxStandardPaths::Get().GetDocumentsDir();
-    const std::string app_data_path =
-        documents_path.ToStdString() +
-        std::to_string(std::filesystem::path::preferred_separator) +
-        "RAP";
-    return app_data_path;
+    const wxString app_data_path =
+        documents_path +
+        std::filesystem::path::preferred_separator +
+        wxString("RAP");
+    return app_data_path.ToStdString();
 }
 
 void App::CreateDataDirectories()
