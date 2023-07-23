@@ -21,5 +21,5 @@ private:
     const Playlist& playlist;
     std::optional<AudioFile> audio_file = {};
     std::optional<AudioStream> audio_stream = {};
-    std::vector<FastFourierTransform::FrequencyRange> audio_frequencies;
+    std::vector<FastFourierTransform::FrequencyRange> audio_frequencies = {};
 };

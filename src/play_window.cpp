@@ -38,7 +38,7 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     vertical_sizer->Add(progress_bar, 0, wxEXPAND | wxLEFT | wxRIGHT, margin);
     vertical_sizer->Add(button_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
     SetSizer(vertical_sizer);
-    SetMinSize({ 800, 600 });
+    SetMinSize({ 800, 300 });
 
     audio_file.emplace(playlist.Items()[0]);
     audio_stream.emplace(&*audio_file);
@@ -58,7 +58,8 @@ void PlayWindow::OnAudioStreamUpdated(float progress, uint8_t* buffer, int lengt
         );
 
     // Perform FFT and trigger redraw of visualiser panel
-    FastFourierTransform fft(audio, audio_file->GetFrequency(), visualiser_panel->GetSize().x / visualiser_bar_width);
+    const int n_buckets = visualiser_panel->GetSize().x / visualiser_bar_width;
+    FastFourierTransform fft(audio, audio_file->GetFrequency(), n_buckets);
     audio_frequencies = fft.grouped_frequencies;
     visualiser_panel->Refresh();
 }
@@ -68,9 +69,22 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
     const wxCoord width = visualiser_panel->GetSize().x;
     const wxCoord height = visualiser_panel->GetSize().y;
 
-    // Background
     wxPaintDC dc(visualiser_panel);
+
+    // Blank pen to disable outlien
+    wxPen pen(wxColour(0, 0, 0, 0), 0);
+    dc.SetPen(pen);
+
+    // Background
+    dc.SetBrush(*wxBLACK_BRUSH);
+    dc.DrawRectangle(0, 0, width, height);
+
+    // Avoid drawing before FFT data has been set by audio thread
+    if ((int)audio_frequencies.size() < width / visualiser_bar_width)
+        return;
+
     dc.SetBrush(*wxWHITE_BRUSH);
+    dc.SetBackground(*wxWHITE_BRUSH);
 
     // To work out scaling, find maximum value
     float max_magnitude = 0.0f;
