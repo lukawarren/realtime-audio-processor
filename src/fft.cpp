@@ -1,4 +1,6 @@
+#define _USE_MATH_DEFINES
 #include "fft.h"
+#include <cmath>
 #include <complex>
 
 constexpr int minimum_audible_frequency = 20;
@@ -48,7 +50,7 @@ void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input)
     // Compute the FFT
     for (int k = 0; k < N / 2; ++k)
     {
-        std::complex<float> t = std::polar(1.0f, -2.0f * M_PIf * (float)k / (float)N) * odd[k];
+        std::complex<float> t = std::polar(1.0f, -2.0f * (float)M_PI * (float)k / (float)N) * odd[k];
         input[k] = even[k] + t;
         input[k + N / 2] = even[k] - t;
     }

@@ -11,9 +11,9 @@ bool App::OnInit()
     SDL_Init(SDL_INIT_AUDIO);
     CreateDataDirectories();
 
-    // StartWindow* start_window = new StartWindow();
-    // start_window->Show();
-    (new PlayWindow(nullptr, Playlist::FromFile("/home/luka/Documents/RAP/playlist.txt")))->Show();
+    StartWindow* start_window = new StartWindow();
+    start_window->Show();
+    //(new PlayWindow(nullptr, Playlist::FromFile("/home/luka/Documents/RAP/playlist.txt")))->Show();
 
     return true;
 }
@@ -28,7 +28,7 @@ std::string App::GetAppDataPath()
     const wxString documents_path = wxStandardPaths::Get().GetDocumentsDir();
     const std::string app_data_path =
         documents_path.ToStdString() +
-        std::filesystem::path::preferred_separator +
+        std::to_string(std::filesystem::path::preferred_separator) +
         "RAP";
     return app_data_path;
 }

@@ -13,6 +13,10 @@ FileBrowser::FileBrowser(
     is_valid_file(is_valid_file),
     on_file_clicked(on_file_clicked)
 {
+#ifdef WIN32
+    SetBackgroundColour(*wxWHITE);
+#endif
+
     // Create columns
     tree_list = new wxTreeListCtrl(this, wxID_ANY);
     list_column_file_name = tree_list->AppendColumn("Path");

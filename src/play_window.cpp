@@ -5,6 +5,10 @@ constexpr int visualiser_bar_width = 1;
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
 {
+#ifdef WIN32
+    SetBackgroundColour(*wxWHITE);
+#endif
+
     visualiser_panel = new wxPanel(this, wxID_ANY);
     visualiser_panel->Bind(wxEVT_PAINT, &PlayWindow::PaintVisualiserPanel, this);
 
@@ -125,9 +129,14 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
     wxPen pen(wxColour(0, 0, 0, 0), 0);
     dc.SetPen(pen);
 
-    // Background
+    // Background - can be drawn on Linux without issues, but Windows has
+    // double buffering issues. Luckily, on Windows we can just avoid drawing
+    // the background alltogether (it will hence end up white and look
+    // native anyway).
+#ifndef WIN32
     dc.SetBrush(*wxBLACK_BRUSH);
     dc.DrawRectangle(0, 0, width, height);
+#endif
 
     // Avoid drawing before FFT data has been set by audio thread
     if ((int)audio_frequencies.size() < width / visualiser_bar_width)

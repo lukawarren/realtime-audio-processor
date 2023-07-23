@@ -6,6 +6,10 @@
 
 StartWindow::StartWindow() : wxFrame(nullptr, wxID_ANY, "Choose a playlist")
 {
+#ifdef WIN32
+    SetBackgroundColour(*wxWHITE);
+#endif
+
     // Welcome text
     auto* text = new wxStaticText(
         this,

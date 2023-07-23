@@ -4,9 +4,8 @@ project(RAP)
 set (CMAKE_CXX_STANDARD 20)
 
 # Dependencies
-find_package(wxWidgets REQUIRED COMPONENTS net core base media)
+find_package(wxWidgets CONFIG REQUIRED)
 find_package(SDL2 REQUIRED)
-include(${wxWidgets_USE_FILE})
 
 # Includes
 include_directories("include/" ${SDL2_INCLUDE_DIR})
@@ -26,13 +25,7 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} -std=c++20")
 endif (UNIX)
 
-# Windows flags
-if (WIN32)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
-endif()
-
-# Build
-add_executable(${PROJECT_NAME} ${SOURCES}
+set(SOURCE_FILES
     src/main.cpp
     src/app.cpp
     src/playlist_window.cpp
@@ -45,5 +38,14 @@ add_executable(${PROJECT_NAME} ${SOURCES}
     src/fft.cpp
 )
 
+# Windows flags
+if (WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
+    set(SOURCE_FILES ${SOURCE_FILES} "dpi.manifest")
+endif()
+
+# Build
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
 # Link
-target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES} SDL2)
+target_link_libraries(${PROJECT_NAME} wx::core wx::base SDL2::SDL2)
