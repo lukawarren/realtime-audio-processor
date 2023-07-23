@@ -28,7 +28,7 @@ std::string App::GetAppDataPath()
     const wxString documents_path = wxStandardPaths::Get().GetDocumentsDir();
     const wxString app_data_path =
         documents_path +
-        std::filesystem::path::preferred_separator +
+        (std::filesystem::path::value_type)std::filesystem::path::preferred_separator +
         wxString("RAP");
     return app_data_path.ToStdString();
 }

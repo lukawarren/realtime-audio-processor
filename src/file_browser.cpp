@@ -22,7 +22,7 @@ FileBrowser::FileBrowser(
     list_column_file_name = tree_list->AppendColumn("Path");
     list_column_file_size = tree_list->AppendColumn("Size");
 
-    // Recursively enumarate then add directories
+    // Recursively enumerate then add directories
     wxTreeListItem root = tree_list->GetRootItem();
     Tree<Directory>* directories = ScanDirectory(path);
     AddDirectory(root, directories);
@@ -120,7 +120,7 @@ std::optional<std::string> FileBrowser::GetSelectedFile() const
 
     // Get full path of file by adding the directory (i.e. the parent text)
     const wxString full_path = parent_text
-        + std::filesystem::path::preferred_separator
+        + (std::filesystem::path::value_type)std::filesystem::path::preferred_separator
         + selected_text;
 
     return full_path.ToStdString();

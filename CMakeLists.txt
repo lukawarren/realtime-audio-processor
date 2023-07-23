@@ -4,10 +4,12 @@ project(RAP)
 set (CMAKE_CXX_STANDARD 20)
 
 # Dependencies
-find_package(wxWidgets REQUIRED)
 find_package(SDL2 REQUIRED)
 if (NOT WIN32)
+    find_package(wxWidgets REQUIRED)
     include(${wxWidgets_USE_FILE})
+else()
+    find_package(wxWidgets CONFIG REQUIRED)
 endif()
 
 # Includes
