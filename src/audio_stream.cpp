@@ -1,7 +1,7 @@
 #include "audio_stream.h"
 #include <stdexcept>
 
-constexpr uint16_t buffer_length = 4096;
+constexpr uint16_t buffer_length = 2048;
 
 AudioStream::AudioStream(const AudioFile* file)
 {
@@ -80,10 +80,10 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
         input_progress += length;
     }
 
-    on_progress_changed(GetProgress());
+    on_progress_changed(GetProgress(), buffer, length);
 }
 
-void AudioStream::SetProgressChangedCallback(std::function<void(float)> on_progress_changed)
+void AudioStream::SetProgressChangedCallback(std::function<void(float, uint8_t*, int)> on_progress_changed)
 {
     this->on_progress_changed = on_progress_changed;
 }

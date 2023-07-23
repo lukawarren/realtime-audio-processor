@@ -12,9 +12,8 @@ public:
 
     void Play();
     void Pause();
-    void OnAudioCallback(uint8_t* buffer, int length);
 
-    void SetProgressChangedCallback(std::function<void(float)> on_progress_changed);
+    void SetProgressChangedCallback(std::function<void(float, uint8_t*, int)> on_progress_changed);
     void SetProgress(const float progress);
     float GetProgress() const;
     bool IsPlaying() const;
@@ -22,6 +21,7 @@ public:
 private:
     SDL_AudioDeviceID device = 0;
     SDL_AudioSpec properties;
+    void OnAudioCallback(uint8_t* buffer, int length);
 
     // Playback data
     uint8_t* input_buffer;
@@ -30,5 +30,6 @@ private:
     bool is_playing = false;
 
     // User callback
-    std::function<void(float)> on_progress_changed = [](float _){};
+    std::function<void(float, uint8_t*, int)> on_progress_changed =
+        [](float _, uint8_t* __, int ___){};
 };

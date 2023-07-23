@@ -1,6 +1,6 @@
 #include "play_window.h"
-#include "audio_file.h"
-#include "audio_stream.h"
+
+constexpr int visualiser_bar_width = 10;
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
@@ -40,9 +40,27 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     SetSizer(vertical_sizer);
     SetMinSize({ 800, 600 });
 
-    // audio_file = AudioFile(playlist.Items()[0]);
     audio_file.emplace(playlist.Items()[0]);
-    (new AudioStream(&*audio_file))->Play();
+    audio_stream.emplace(&*audio_file);
+    audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length) {
+        PlayWindow::OnAudioStreamUpdated(progress, buffer, length);
+    });
+    audio_stream->Play();
+}
+
+void PlayWindow::OnAudioStreamUpdated(float progress, uint8_t* buffer, int length)
+{
+    // Convert from 16-bit buffer to vector of floats
+    std::vector<float> audio;
+    for (int i = 0; i < length / 2; ++i)
+        audio.emplace_back(
+            float(*((uint16_t*)buffer + i)) / (float)audio_file->MaxSampleValue()
+        );
+
+    // Perform FFT and trigger redraw of visualiser panel
+    FastFourierTransform fft(audio, audio_file->GetFrequency(), visualiser_panel->GetSize().x/10);
+    audio_frequencies = fft.grouped_frequencies;
+    visualiser_panel->Refresh();
 }
 
 void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
@@ -53,5 +71,26 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
     // Background
     wxPaintDC dc(visualiser_panel);
     dc.SetBrush(*wxBLACK_BRUSH);
-    dc.DrawRectangle(0, 0, width, height);
+    //dc.DrawRectangle(0, 0, width, height);
+    dc.SetBrush(*wxWHITE_BRUSH);
+
+    // To work out scaling, find maximum value
+    float max_magnitude = 0.0f;
+    for (const auto& freq : audio_frequencies)
+        if (freq.magnitude > max_magnitude)
+            max_magnitude = freq.magnitude;
+
+    float scale = (float)height / max_magnitude;
+
+    for (wxCoord i = 0; i < width / visualiser_bar_width; ++i)
+    {
+        const float sample = audio_frequencies[i].magnitude;
+        const int bar_height = sample * scale;
+        dc.DrawRectangle(
+            i * visualiser_bar_width,   // X
+            height - bar_height - 1,    // Y
+            visualiser_bar_width,       // Width
+            bar_height                  // Height
+        );
+    }
 }

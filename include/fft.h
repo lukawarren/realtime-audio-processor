@@ -5,7 +5,11 @@
 class FastFourierTransform
 {
 public:
-    FastFourierTransform(const std::vector<float>& samples, const float frequency);
+    FastFourierTransform(
+        const std::vector<float>& samples,
+        const float frequency,
+        const int n_buckets
+    );
 
     struct FrequencyRange
     {
@@ -22,6 +26,7 @@ private:
     // Data processing
     std::vector<FrequencyRange> GroupFrequencies(
         const std::vector<std::complex<float>>& fft,
-        const float frequency
+        const float frequency,
+        const int n_buckets
     );
 };

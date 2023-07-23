@@ -3,11 +3,11 @@
 
 constexpr int minimum_human_frequency = 20;
 constexpr int maximum_human_frequency = 20000;
-constexpr int n_buckets = 100;
 
 FastFourierTransform::FastFourierTransform(
     const std::vector<float>& samples,
-    const float frequency
+    const float frequency,
+    const int n_buckets
 )
 {
     // Convert samples to complex numbers
@@ -23,7 +23,7 @@ FastFourierTransform::FastFourierTransform(
     DoFFT(complex_samples);
 
     // Process data
-    grouped_frequencies = GroupFrequencies(complex_samples, frequency);
+    grouped_frequencies = GroupFrequencies(complex_samples, frequency, n_buckets);
 }
 
 void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input)
@@ -56,7 +56,8 @@ void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input)
 
 std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFrequencies(
     const std::vector<std::complex<float>>& fft,
-    const float frequency
+    const float frequency,
+    const int n_buckets
 )
 {
     // Work out frequency resolution
