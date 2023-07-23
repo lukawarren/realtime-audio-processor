@@ -78,8 +78,9 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
         if (freq.magnitude > max_magnitude)
             max_magnitude = freq.magnitude;
 
-    float scale = (float)height / max_magnitude;
+    const float scale = (float)height / max_magnitude;
 
+    // Draw bars
     for (wxCoord i = 0; i < width / visualiser_bar_width; ++i)
     {
         const float sample = audio_frequencies[i].magnitude;

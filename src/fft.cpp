@@ -1,8 +1,8 @@
 #include "fft.h"
 #include <complex>
 
-constexpr int minimum_audible_frequency = 50;
-constexpr int maximum_audible_frequency = 10000;
+constexpr int minimum_audible_frequency = 20;
+constexpr int maximum_audible_frequency = 15000;
 
 FastFourierTransform::FastFourierTransform(
     const std::vector<float>& samples,
@@ -69,9 +69,6 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
     const float maximum_frequency_bark = HertzToBarkScale(maximum_audible_frequency);
     const float bark_distance = (maximum_frequency_bark - minimum_frequency_bark) / n_buckets;
 
-    // Size of "buckets" (groups) - result is halved as we only take half the FFT (see below)
-    const int bucket_size = n_samples / n_buckets / 2;
-
     // As long as all the input numbers lie strictly on the real axis (i.e. have
     // no imaginary component, as does befit audio), the FFT will be symmetrical.
     // Hence we need only look at the first half of the data! :)
@@ -93,13 +90,24 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
         }
     }
 
+    // As with the X-axis above, the Y-axis should be logarithmic for audio too!
+    // To scale this correctly, find the maximum magnitude.
+    float max_magnitude = 0.0f;
+    for (size_t i = 0; i < buckets.size(); ++i)
+        if (buckets[i] > max_magnitude)
+            max_magnitude = buckets[i];
+
+    // Scale magnitudes logarithmically
+    for (size_t i = 0; i < buckets.size(); ++i)
+        buckets[i] = std::log10(1.0f + buckets[i] / max_magnitude);
+
     // Append ranges to data
     std::vector<FrequencyRange> ranges;
     ranges.reserve(buckets.size());
     for (size_t i = 0; i < buckets.size(); ++i)
     {
-        float lower_freq = minimum_frequency_bark + (i + 0) * bark_distance;
-        float upper_freq = maximum_frequency_bark + (i + 1) * bark_distance;
+        float lower_freq = minimum_frequency_bark + (i + 0.0f) * bark_distance;
+        float upper_freq = maximum_frequency_bark + (i + 1.0f) * bark_distance;
         lower_freq = 0.5f + 600.0f * std::sinh(lower_freq / 6.0f);
         upper_freq = 0.5f + 600.0f * std::sinh(upper_freq / 6.0f);
 
