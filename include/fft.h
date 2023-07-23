@@ -29,4 +29,5 @@ private:
         const float frequency,
         const int n_buckets
     );
+    float HertzToBarkScale(const float hertz);
 };

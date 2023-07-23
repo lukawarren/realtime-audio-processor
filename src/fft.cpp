@@ -1,8 +1,8 @@
 #include "fft.h"
 #include <complex>
 
-constexpr int minimum_human_frequency = 20;
-constexpr int maximum_human_frequency = 20000;
+constexpr int minimum_audible_frequency = 50;
+constexpr int maximum_audible_frequency = 10000;
 
 FastFourierTransform::FastFourierTransform(
     const std::vector<float>& samples,
@@ -64,6 +64,11 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
     const size_t n_samples = fft.size();
     const float frequency_resolution = frequency / (float)n_samples;
 
+    // Bark scale
+    const float minimum_frequency_bark = HertzToBarkScale(minimum_audible_frequency);
+    const float maximum_frequency_bark = HertzToBarkScale(maximum_audible_frequency);
+    const float bark_distance = (maximum_frequency_bark - minimum_frequency_bark) / n_buckets;
+
     // Size of "buckets" (groups) - result is halved as we only take half the FFT (see below)
     const int bucket_size = n_samples / n_buckets / 2;
 
@@ -74,14 +79,14 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
     for (size_t i = 0; i < n_samples / 2; ++i)
     {
         const float frequency = i * frequency_resolution;
-        if (frequency >= minimum_human_frequency &&
-            frequency <= maximum_human_frequency)
+        if (frequency >= minimum_audible_frequency &&
+            frequency <= maximum_audible_frequency)
         {
+            // Apply Bark scale
+            const float bark_frequency = HertzToBarkScale(frequency);
+
             // Append to relevant "bucket"
-            const int index =
-                (frequency - minimum_human_frequency) /
-                (maximum_human_frequency - minimum_human_frequency)
-                * n_buckets;
+            const int index = (bark_frequency - minimum_frequency_bark) / bark_distance;
 
             // Sample FFT and use complex magnitude as y-axis
             buckets[index] += std::abs(fft[i]);
@@ -93,14 +98,25 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
     ranges.reserve(buckets.size());
     for (size_t i = 0; i < buckets.size(); ++i)
     {
-        int lower_freq = minimum_human_frequency + (i + 0) * bucket_size * frequency_resolution;
-        int upper_freq = minimum_human_frequency + (i + 1) * bucket_size * frequency_resolution;
+        float lower_freq = minimum_frequency_bark + (i + 0) * bark_distance;
+        float upper_freq = maximum_frequency_bark + (i + 1) * bark_distance;
+        lower_freq = 0.5f + 600.0f * std::sinh(lower_freq / 6.0f);
+        upper_freq = 0.5f + 600.0f * std::sinh(upper_freq / 6.0f);
+
         ranges.emplace_back(FrequencyRange {
-            .min_frequency = lower_freq,
-            .max_frequency = upper_freq,
+            .min_frequency = (int)lower_freq,
+            .max_frequency = (int)upper_freq,
             .magnitude = buckets[i]
         });
     }
 
     return ranges;
+}
+
+float FastFourierTransform::HertzToBarkScale(const float hertz)
+{
+    /*
+        Derived from https://en.wikipedia.org/wiki/Bark_scale
+    */
+    return 13.0f * std::atan(0.00076f * hertz) + 3.5f * std::atan((hertz / 7500.0f) * (hertz / 7500.0f));
 }

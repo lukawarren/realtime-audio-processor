@@ -1,6 +1,6 @@
 #include "play_window.h"
 
-constexpr int visualiser_bar_width = 10;
+constexpr int visualiser_bar_width = 1;
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
@@ -58,7 +58,7 @@ void PlayWindow::OnAudioStreamUpdated(float progress, uint8_t* buffer, int lengt
         );
 
     // Perform FFT and trigger redraw of visualiser panel
-    FastFourierTransform fft(audio, audio_file->GetFrequency(), visualiser_panel->GetSize().x/10);
+    FastFourierTransform fft(audio, audio_file->GetFrequency(), visualiser_panel->GetSize().x / visualiser_bar_width);
     audio_frequencies = fft.grouped_frequencies;
     visualiser_panel->Refresh();
 }
@@ -70,8 +70,6 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
 
     // Background
     wxPaintDC dc(visualiser_panel);
-    dc.SetBrush(*wxBLACK_BRUSH);
-    //dc.DrawRectangle(0, 0, width, height);
     dc.SetBrush(*wxWHITE_BRUSH);
 
     // To work out scaling, find maximum value
