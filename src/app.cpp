@@ -1,10 +1,10 @@
 #include "app.h"
 #include "start_window.h"
+#include "play_window.h"
 #include <wx/stdpaths.h>
 #include <SDL2/SDL.h>
 #include <filesystem>
 
-#include "play_window.h"
 bool App::OnInit()
 {
     // Initialise SDL audio and filesystem

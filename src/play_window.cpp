@@ -16,14 +16,17 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     progress_bar->Bind(wxEVT_LEFT_DOWN, [&](wxMouseEvent& event)
     {
         const float progress = (float)event.GetPosition().x / (float)progress_bar->GetSize().x;
-        wxLogDebug("Set progress to %f", progress);
         progress_bar->SetValue(progress * progress_bar->GetMax());
+        audio_stream->SetProgress(progress);
     });
 
     // Buttons
-    auto* previous_button = new wxButton(this, wxID_ANY, "Previous");
-    auto* pause_button = new wxButton(this, wxID_ANY, "Pause");
-    auto* next_button = new wxButton(this, wxID_ANY, "Next");
+    previous_button = new wxButton(this, wxID_ANY, "Previous");
+    pause_button = new wxButton(this, wxID_ANY, "Pause");
+    next_button = new wxButton(this, wxID_ANY, "Next");
+    previous_button->Bind(wxEVT_BUTTON, &PlayWindow::OnPrevious, this);
+    pause_button->Bind(wxEVT_BUTTON, &PlayWindow::OnPause, this);
+    next_button->Bind(wxEVT_BUTTON, &PlayWindow::OnNext, this);
 
     // Button layout
     const int margin = FromDIP(10);
@@ -39,12 +42,28 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     vertical_sizer->Add(button_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
     SetSizer(vertical_sizer);
     SetMinSize({ 800, 300 });
+    SetMaxSize({ 800, 300 });
 
-    audio_file.emplace(playlist.Items()[0]);
+    StartPlayback();
+}
+
+void PlayWindow::StartPlayback()
+{
+    // Delete audio resources if they already exist (i.e. when re-calling function)
+    if (audio_file.has_value()) audio_file.reset();
+    if (audio_stream.has_value()) audio_stream.reset();
+
+    // Create audio file and corresponding audio stream
+    audio_file.emplace(playlist.Items()[current_song]);
     audio_stream.emplace(&*audio_file);
-    audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length) {
+
+    // When the audio is copied to the device's buffer, update the UI
+    audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length)
+    {
+        progress_bar->SetValue(progress * progress_bar->GetMax());
         PlayWindow::OnAudioStreamUpdated(progress, buffer, length);
     });
+
     audio_stream->Play();
 }
 
@@ -106,4 +125,36 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
             bar_height                  // Height
         );
     }
+}
+
+void PlayWindow::OnPrevious(wxCommandEvent& event)
+{
+    if (current_song == 0)
+        current_song = playlist.Items().size();
+    current_song--;
+
+    StartPlayback();
+}
+
+void PlayWindow::OnPause(wxCommandEvent& event)
+{
+    if (audio_stream->IsPlaying())
+    {
+        audio_stream->Pause();
+        pause_button->SetLabelText("Play");
+    }
+    else
+    {
+        audio_stream->Play();
+        pause_button->SetLabelText("Pause");
+    }
+}
+
+void PlayWindow::OnNext(wxCommandEvent& event)
+{
+    current_song++;
+    if (current_song >= playlist.Items().size())
+        current_song = 0;
+
+    StartPlayback();
 }
