@@ -11,8 +11,15 @@ public:
 
     int GetFrequency() const;
     int GetChannels() const;
+
+    // Raw data
     uint8_t* GetData() const;
     uint32_t GetLength() const;
+
+    // Sound samples (signed 16-bit)
+    uint16_t* GetSamples() const;
+    uint32_t GetSampleCount() const;
+    uint16_t MaxSampleValue() const;
 
 private:
     SDL_AudioSpec properties;

@@ -3,10 +3,10 @@
 #include "audio_stream.h"
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
-    wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor")
+    wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
 {
     visualiser_panel = new wxPanel(this, wxID_ANY);
-    visualiser_panel->SetBackgroundColour(*wxBLACK);
+    visualiser_panel->Bind(wxEVT_PAINT, &PlayWindow::PaintVisualiserPanel, this);
 
     // Slider - use mouse event  (as opposed to "proper" scroll event) to avoid
     // race conditions (as it's quite possible that between clicking the slider
@@ -39,4 +39,19 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     vertical_sizer->Add(button_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
     SetSizer(vertical_sizer);
     SetMinSize({ 800, 600 });
+
+    // audio_file = AudioFile(playlist.Items()[0]);
+    audio_file.emplace(playlist.Items()[0]);
+    (new AudioStream(&*audio_file))->Play();
+}
+
+void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
+{
+    const wxCoord width = visualiser_panel->GetSize().x;
+    const wxCoord height = visualiser_panel->GetSize().y;
+
+    // Background
+    wxPaintDC dc(visualiser_panel);
+    dc.SetBrush(*wxBLACK_BRUSH);
+    dc.DrawRectangle(0, 0, width, height);
 }

@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME} ${SOURCES}
     src/playlist.cpp
     src/start_window.cpp
     src/play_window.cpp
+    src/fft.cpp
 )
 
 # Link

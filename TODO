@@ -9,3 +9,4 @@
 - pressing right arrow expands dir
 - add central directory (like ~/RAP) to store audio and playlists
 - sanitise playlist files
+- assert fft input size is power of 2

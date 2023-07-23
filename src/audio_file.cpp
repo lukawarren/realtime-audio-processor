@@ -29,6 +29,22 @@ uint32_t AudioFile::GetLength() const
     return length;
 }
 
+uint16_t* AudioFile::GetSamples() const
+{
+    return (uint16_t*)buffer;
+}
+
+uint32_t AudioFile::GetSampleCount() const
+{
+    return length / 2;
+}
+
+uint16_t AudioFile::MaxSampleValue() const
+{
+    // Max value for 16-bit signed integer :)
+    return 32768;
+}
+
 AudioFile::~AudioFile()
 {
     SDL_FreeWAV(buffer);
