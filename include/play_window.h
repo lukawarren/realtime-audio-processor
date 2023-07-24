@@ -4,13 +4,13 @@
 #include "playlist.h"
 #include "audio_file.h"
 #include "audio_stream.h"
+#include "custom_events.h"
 #include "fft.h"
 
 class PlayWindow : public wxFrame
 {
 public:
     PlayWindow(wxWindow* parent, const Playlist& playlist);
-    ~PlayWindow();
 
 private:
     void StartPlayback();
@@ -31,10 +31,8 @@ private:
 
     Playlist playlist;
     size_t current_song = 0;
-    std::optional<AudioFile*> audio_file = {};
-    std::optional<AudioStream*> audio_stream = {};
-    std::optional<AudioFile*> old_audio_file = {};
-    std::optional<AudioStream*> old_audio_stream = {};
+    std::optional<AudioFile> audio_file = {};
+    std::optional<AudioStream> audio_stream = {};
 
     // Results of FFTs over multiple "frames"
     std::array<std::vector<FastFourierTransform::FrequencyRange>, 10> fft_results = {};

@@ -30,18 +30,7 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} -std=c++20")
 endif (UNIX)
 
-set(SOURCE_FILES
-    src/main.cpp
-    src/app.cpp
-    src/playlist_window.cpp
-    src/file_browser.cpp
-    src/audio_stream.cpp
-    src/audio_file.cpp
-    src/playlist.cpp
-    src/start_window.cpp
-    src/play_window.cpp
-    src/fft.cpp
-)
+file(GLOB SOURCE_FILES "include/*.h" "src/*.cpp")
 
 # Windows flags
 if (WIN32)
