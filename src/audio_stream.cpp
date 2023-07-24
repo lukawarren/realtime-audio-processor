@@ -1,7 +1,7 @@
 #include "audio_stream.h"
 #include <stdexcept>
 
-constexpr uint16_t buffer_length = 2048;
+constexpr uint16_t buffer_length = 512;
 
 AudioStream::AudioStream(const AudioFile* file)
 {

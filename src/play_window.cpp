@@ -111,10 +111,16 @@ void PlayWindow::UpdateVisualiserData(float progress, uint8_t* buffer, int lengt
             float(*((uint16_t*)buffer + i)) / (float)file->MaxSampleValue()
         );
 
-    // Perform FFT and trigger redraw of visualiser panel
+    // Perform FFT
     const int n_buckets = visualiser_panel->GetSize().x / visualiser_bar_width;
     FastFourierTransform fft(audio, file->GetFrequency(), n_buckets);
-    audio_frequencies = fft.grouped_frequencies;
+
+    // Save old results for averaging and add new one
+    for (size_t i = 0; i < fft_results.size() - 1; ++i)
+        fft_results[i] = fft_results[i+1];
+    fft_results[fft_results.size()-1] = fft.grouped_frequencies;
+
+    // Redraw
     visualiser_panel->Refresh();
 }
 
@@ -139,25 +145,41 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
 #endif
 
     // Avoid drawing before FFT data has been set by audio thread
-    if ((int)audio_frequencies.size() < width / visualiser_bar_width)
+    std::vector<FastFourierTransform::FrequencyRange>& most_recent_results = fft_results[fft_results.size()-1];
+    if ((int)most_recent_results.size() < width / visualiser_bar_width)
         return;
 
     dc.SetBrush(*wxWHITE_BRUSH);
     dc.SetBackground(*wxWHITE_BRUSH);
 
+    // Average FFT results over multiple "frames"
+    std::vector<float> magnitudes;
+    magnitudes.reserve(most_recent_results.size());
+    for (size_t i = 0; i < most_recent_results.size(); ++i)
+    {
+        float sum = 0.0f;
+        for (size_t frame =  0; frame < fft_results.size(); ++frame)
+        {
+            if (i < fft_results[frame].size())
+                sum += fft_results[frame][i].magnitude;
+        }
+
+        magnitudes.emplace_back(sum / (float)fft_results.size());
+    }
+
     // To work out scaling, find maximum value
     float max_magnitude = 0.0f;
-    for (const auto& freq : audio_frequencies)
-        if (freq.magnitude > max_magnitude)
-            max_magnitude = freq.magnitude;
+    for (const auto& m : magnitudes)
+        if (m > max_magnitude)
+            max_magnitude = m;
 
     const float scale = (float)height / max_magnitude;
 
     // Draw bars
     for (wxCoord i = 0; i < width / visualiser_bar_width; ++i)
     {
-        const float sample = audio_frequencies[i].magnitude;
-        const int bar_height = sample * scale;
+        const int bar_height = magnitudes[i] * scale;
+
         dc.DrawRectangle(
             i * visualiser_bar_width,   // X
             height - bar_height - 1,    // Y
