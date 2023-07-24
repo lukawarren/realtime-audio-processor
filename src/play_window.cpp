@@ -64,8 +64,8 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 void PlayWindow::StartPlayback()
 {
     // Delete audio resources if they already exist (i.e. when re-calling function)
-    if (audio_file.has_value()) audio_file.reset();
     if (audio_stream.has_value()) audio_stream.reset();
+    if (audio_file.has_value()) audio_file.reset();
 
     // Create audio file and corresponding audio stream
     audio_file.emplace(playlist.Items()[current_song]);
