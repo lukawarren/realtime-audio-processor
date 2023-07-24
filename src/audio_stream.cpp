@@ -7,7 +7,7 @@ AudioStream::AudioStream(const AudioFile* file)
 {
     // Format of audio data
     SDL_AudioSpec desired_format = {};
-    desired_format.freq = file->GetFrequency();
+    desired_format.freq = file->GetFrequency() * 0.5;
     desired_format.format = AUDIO_S16LSB;
     desired_format.channels = file->GetChannels();
     desired_format.samples = buffer_length;

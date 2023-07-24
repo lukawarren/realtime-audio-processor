@@ -122,12 +122,9 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
 
     wxAutoBufferedPaintDC context(visualiser_panel);
 
-    // Blank pen to disable outline
-    wxPen pen(wxColour(255, 255, 255, 255), 0);
-    context.SetPen(pen);
-
     // Background
     context.SetBrush(*wxBLACK_BRUSH);
+    context.SetPen({ wxColour(0, 0, 0, 0), 0 });
     context.DrawRectangle(0, 0, width, height);
 
     // Avoid drawing before FFT data has been set by audio thread
@@ -136,6 +133,7 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
         return;
 
     context.SetBrush(*wxWHITE_BRUSH);
+    context.SetPen({ wxColour(255, 255, 255, 255), 0 });
     context.SetBackground(*wxWHITE_BRUSH);
 
     // Average FFT results over multiple "frames"
