@@ -1,4 +1,5 @@
 #include "play_window.h"
+#include <wx/dcbuffer.h>
 
 constexpr int visualiser_bar_width = 1;
 
@@ -9,7 +10,10 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     SetBackgroundColour(*wxWHITE);
 #endif
 
+    // Create visualiser panel - set background style to be compatible with
+    // requirements for double buffering then bind custom paint event
     visualiser_panel = new wxPanel(this, wxID_ANY);
+    visualiser_panel->SetBackgroundStyle(wxBG_STYLE_PAINT);
     visualiser_panel->Bind(wxEVT_PAINT, &PlayWindow::PaintVisualiserPanel, this);
 
     // Slider - use mouse event  (as opposed to "proper" scroll event) to avoid
@@ -116,28 +120,23 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
     const wxCoord width = visualiser_panel->GetSize().x;
     const wxCoord height = visualiser_panel->GetSize().y;
 
-    wxPaintDC dc(visualiser_panel);
+    wxAutoBufferedPaintDC context(visualiser_panel);
 
-    // Blank pen to disable outlien
-    wxPen pen(wxColour(0, 0, 0, 0), 0);
-    dc.SetPen(pen);
+    // Blank pen to disable outline
+    wxPen pen(wxColour(255, 255, 255, 255), 0);
+    context.SetPen(pen);
 
-    // Background - can be drawn on Linux without issues, but Windows has
-    // double buffering issues. Luckily, on Windows we can just avoid drawing
-    // the background alltogether (it will hence end up white and look
-    // native anyway).
-#ifndef WIN32
-    dc.SetBrush(*wxBLACK_BRUSH);
-    dc.DrawRectangle(0, 0, width, height);
-#endif
+    // Background
+    context.SetBrush(*wxBLACK_BRUSH);
+    context.DrawRectangle(0, 0, width, height);
 
     // Avoid drawing before FFT data has been set by audio thread
     std::vector<FastFourierTransform::FrequencyRange>& most_recent_results = fft_results[fft_results.size()-1];
     if ((int)most_recent_results.size() < width / visualiser_bar_width)
         return;
 
-    dc.SetBrush(*wxWHITE_BRUSH);
-    dc.SetBackground(*wxWHITE_BRUSH);
+    context.SetBrush(*wxWHITE_BRUSH);
+    context.SetBackground(*wxWHITE_BRUSH);
 
     // Average FFT results over multiple "frames"
     std::vector<float> magnitudes;
@@ -167,7 +166,7 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
     {
         const int bar_height = magnitudes[i] * scale;
 
-        dc.DrawRectangle(
+        context.DrawRectangle(
             i * visualiser_bar_width,   // X
             height - bar_height - 1,    // Y
             visualiser_bar_width,       // Width

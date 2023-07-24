@@ -1,6 +1,8 @@
 #pragma once
 #include <wx/wx.h>
 #include <optional>
+#include <vector>
+#include <array>
 #include "playlist.h"
 #include "audio_file.h"
 #include "audio_stream.h"
