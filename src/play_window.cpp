@@ -49,8 +49,9 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     vertical_sizer->Add(progress_bar, 0, wxEXPAND | wxLEFT | wxRIGHT, margin);
     vertical_sizer->Add(button_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
     SetSizer(vertical_sizer);
-    SetMinSize({ 800, 300 });
-    SetMaxSize({ 800, 300 });
+    SetMinSize({ 800, 200 });
+    SetMaxSize({ 800, 500 });
+    SetSize({800, 500});
 
     // Bind event from audio thread to be received on main thread
     Bind(wxEVT_AUDIO_STREAM_UPDATED, [&](AudioStreamUpdatedEvent& event) {
@@ -115,6 +116,27 @@ void PlayWindow::UpdateVisualiserData(float progress, uint8_t* buffer, int lengt
     visualiser_panel->Refresh();
 }
 
+wxColour HSVtoRGB(float h, float s, float v) {
+    wxColour rgb;
+
+    int i = static_cast<int>(h * 6);
+    float f = h * 6 - i;
+    float p = v * (1 - s);
+    float q = v * (1 - f * s);
+    float t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+        case 0: rgb = {static_cast<int>(v * 255), static_cast<int>(t * 255), static_cast<int>(p * 255)}; break;
+        case 1: rgb = {static_cast<int>(q * 255), static_cast<int>(v * 255), static_cast<int>(p * 255)}; break;
+        case 2: rgb = {static_cast<int>(p * 255), static_cast<int>(v * 255), static_cast<int>(t * 255)}; break;
+        case 3: rgb = {static_cast<int>(p * 255), static_cast<int>(q * 255), static_cast<int>(v * 255)}; break;
+        case 4: rgb = {static_cast<int>(t * 255), static_cast<int>(p * 255), static_cast<int>(v * 255)}; break;
+        case 5: rgb = {static_cast<int>(v * 255), static_cast<int>(p * 255), static_cast<int>(q * 255)}; break;
+    }
+
+    return rgb;
+}
+
 void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
 {
     const wxCoord width = visualiser_panel->GetSize().x;
@@ -157,11 +179,18 @@ void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
         if (m > max_magnitude)
             max_magnitude = m;
 
-    const float scale = (float)height / max_magnitude;
+    const float scale = (float)height / max_magnitude * 1;
 
     // Draw bars
     for (wxCoord i = 0; i < width / visualiser_bar_width; ++i)
     {
+        float hue = (float)i / (float)(width / visualiser_bar_width);
+        float sat = 1.0f;
+        float val = 1.0f;
+
+        context.SetBrush(wxBrush(HSVtoRGB(hue, sat, val)));
+        context.SetPen({ HSVtoRGB(hue, sat, val), 0 });
+
         const int bar_height = magnitudes[i] * scale;
 
         context.DrawRectangle(

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <complex>
 
-constexpr int minimum_audible_frequency = 20;
+constexpr int minimum_audible_frequency = 50;
 constexpr int maximum_audible_frequency = 15000;
 
 FastFourierTransform::FastFourierTransform(

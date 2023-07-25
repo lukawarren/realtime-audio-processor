@@ -37,5 +37,5 @@ private:
     std::optional<AudioStream> audio_stream = {};
 
     // Results of FFTs over multiple "frames"
-    std::array<std::vector<FastFourierTransform::FrequencyRange>, 10> fft_results = {};
+    std::array<std::vector<FastFourierTransform::FrequencyRange>, 8> fft_results = {};
 };
