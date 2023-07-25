@@ -12,6 +12,11 @@ FastFourierTransform::FastFourierTransform(
     const int n_buckets
 )
 {
+    // Verify size is a power of 2 (otherwise the Cooley–Tukey algorithm will
+    // not work)
+    if ((samples.size() & (samples.size() - 1)) != 0)
+        throw std::runtime_error("FFT data has invalid size");
+
     // Convert samples to complex numbers
     std::vector<std::complex<float>> complex_samples;
     complex_samples.reserve(samples.size());
@@ -88,7 +93,7 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
             const int index = (bark_frequency - minimum_frequency_bark) / bark_distance;
 
             // Sample FFT and use complex magnitude as y-axis
-            if (index < buckets.size())
+            if ((size_t)index < buckets.size())
                 buckets[index] += std::abs(fft[i]);
         }
     }

@@ -1,7 +1,5 @@
 #include "play_window.h"
-#include <wx/dcbuffer.h>
 
-constexpr int visualiser_bar_width = 1;
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
@@ -10,11 +8,8 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     SetBackgroundColour(*wxWHITE);
 #endif
 
-    // Create visualiser panel - set background style to be compatible with
-    // requirements for double buffering then bind custom paint event
-    visualiser_panel = new wxPanel(this, wxID_ANY);
-    visualiser_panel->SetBackgroundStyle(wxBG_STYLE_PAINT);
-    visualiser_panel->Bind(wxEVT_PAINT, &PlayWindow::PaintVisualiserPanel, this);
+    // Visualiser panel
+    visualiser_panel = new AudioVisualiser(this);
 
     // Slider - use mouse event  (as opposed to "proper" scroll event) to avoid
     // race conditions (as it's quite possible that between clicking the slider
@@ -84,121 +79,13 @@ void PlayWindow::OnAudioStreamUpdated(float progress, uint8_t* buffer, int lengt
 {
     // Update UI
     progress_bar->SetValue(progress * progress_bar->GetMax());
-    UpdateVisualiserData(progress, buffer, length);
+    visualiser_panel->FeedAudio(buffer, length, audio_file.value());
 
     // If song has just finished, go to the next one
     if (progress == 1.0f)
     {
         wxCommandEvent event = {};
         OnNext(event);
-    }
-}
-
-void PlayWindow::UpdateVisualiserData(float progress, uint8_t* buffer, int length)
-{
-    // Convert from 16-bit buffer to vector of floats
-    std::vector<float> audio;
-    for (int i = 0; i < length / 2; ++i)
-        audio.emplace_back(
-            float(*((uint16_t*)buffer + i)) / (float)audio_file->MaxSampleValue()
-        );
-
-    // Perform FFT
-    const int n_buckets = visualiser_panel->GetSize().x / visualiser_bar_width;
-    FastFourierTransform fft(audio, audio_file->GetFrequency(), n_buckets);
-
-    // Save old results for averaging and add new one
-    for (size_t i = 0; i < fft_results.size() - 1; ++i)
-        fft_results[i] = fft_results[i+1];
-    fft_results[fft_results.size()-1] = fft.grouped_frequencies;
-
-    // Redraw
-    visualiser_panel->Refresh();
-}
-
-wxColour HSVtoRGB(float h, float s, float v) {
-    wxColour rgb;
-
-    int i = static_cast<int>(h * 6);
-    float f = h * 6 - i;
-    float p = v * (1 - s);
-    float q = v * (1 - f * s);
-    float t = v * (1 - (1 - f) * s);
-
-    switch (i % 6) {
-        case 0: rgb = {static_cast<int>(v * 255), static_cast<int>(t * 255), static_cast<int>(p * 255)}; break;
-        case 1: rgb = {static_cast<int>(q * 255), static_cast<int>(v * 255), static_cast<int>(p * 255)}; break;
-        case 2: rgb = {static_cast<int>(p * 255), static_cast<int>(v * 255), static_cast<int>(t * 255)}; break;
-        case 3: rgb = {static_cast<int>(p * 255), static_cast<int>(q * 255), static_cast<int>(v * 255)}; break;
-        case 4: rgb = {static_cast<int>(t * 255), static_cast<int>(p * 255), static_cast<int>(v * 255)}; break;
-        case 5: rgb = {static_cast<int>(v * 255), static_cast<int>(p * 255), static_cast<int>(q * 255)}; break;
-    }
-
-    return rgb;
-}
-
-void PlayWindow::PaintVisualiserPanel(const wxPaintEvent& event)
-{
-    const wxCoord width = visualiser_panel->GetSize().x;
-    const wxCoord height = visualiser_panel->GetSize().y;
-
-    wxAutoBufferedPaintDC context(visualiser_panel);
-
-    // Background
-    context.SetBrush(*wxBLACK_BRUSH);
-    context.SetPen({ wxColour(0, 0, 0, 0), 0 });
-    context.DrawRectangle(0, 0, width, height);
-
-    // Avoid drawing before FFT data has been set by audio thread
-    std::vector<FastFourierTransform::FrequencyRange>& most_recent_results = fft_results[fft_results.size()-1];
-    if ((int)most_recent_results.size() < width / visualiser_bar_width)
-        return;
-
-    context.SetBrush(*wxWHITE_BRUSH);
-    context.SetPen({ wxColour(255, 255, 255, 255), 0 });
-    context.SetBackground(*wxWHITE_BRUSH);
-
-    // Average FFT results over multiple "frames"
-    std::vector<float> magnitudes;
-    magnitudes.reserve(most_recent_results.size());
-    for (size_t i = 0; i < most_recent_results.size(); ++i)
-    {
-        float sum = 0.0f;
-        for (size_t frame =  0; frame < fft_results.size(); ++frame)
-        {
-            if (i < fft_results[frame].size())
-                sum += fft_results[frame][i].magnitude;
-        }
-
-        magnitudes.emplace_back(sum / (float)fft_results.size());
-    }
-
-    // To work out scaling, find maximum value
-    float max_magnitude = 0.0f;
-    for (const auto& m : magnitudes)
-        if (m > max_magnitude)
-            max_magnitude = m;
-
-    const float scale = (float)height / max_magnitude * 1;
-
-    // Draw bars
-    for (wxCoord i = 0; i < width / visualiser_bar_width; ++i)
-    {
-        float hue = (float)i / (float)(width / visualiser_bar_width);
-        float sat = 1.0f;
-        float val = 1.0f;
-
-        context.SetBrush(wxBrush(HSVtoRGB(hue, sat, val)));
-        context.SetPen({ HSVtoRGB(hue, sat, val), 0 });
-
-        const int bar_height = magnitudes[i] * scale;
-
-        context.DrawRectangle(
-            i * visualiser_bar_width,   // X
-            height - bar_height - 1,    // Y
-            visualiser_bar_width,       // Width
-            bar_height                  // Height
-        );
     }
 }
 
