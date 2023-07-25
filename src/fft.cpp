@@ -88,7 +88,8 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
             const int index = (bark_frequency - minimum_frequency_bark) / bark_distance;
 
             // Sample FFT and use complex magnitude as y-axis
-            buckets[index] += std::abs(fft[i]);
+            if (index < buckets.size())
+                buckets[index] += std::abs(fft[i]);
         }
     }
 
