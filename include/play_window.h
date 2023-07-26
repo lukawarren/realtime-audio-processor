@@ -27,8 +27,12 @@ private:
     wxButton* pause_button;
     wxButton* next_button;
 
+    // Playlist
     Playlist playlist;
     size_t current_song = 0;
+
+    // Playback
     std::optional<AudioFile> audio_file = {};
     std::optional<AudioStream> audio_stream = {};
+    AtomicLinkedList<AudioEffect> effects = {};
 };

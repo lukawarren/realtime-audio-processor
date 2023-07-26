@@ -2,11 +2,13 @@
 #include <SDL2/SDL.h>
 #include <functional>
 #include "audio_file.h"
+#include "atomic_linked_list.h"
+#include "effects/audio_effect.h"
 
 class AudioStream
 {
 public:
-    AudioStream(const AudioFile* file);
+    AudioStream(const AudioFile* file, const AtomicLinkedList<AudioEffect>* effects);
     AudioStream(const AudioStream&) = delete;
     ~AudioStream();
 
@@ -28,6 +30,9 @@ private:
     uint32_t input_length;
     uint32_t input_progress = 0;
     bool is_playing = false;
+
+    // User effects
+    const AtomicLinkedList<AudioEffect>* effects;
 
     // User callback
     std::function<void(float, uint8_t*, int)> on_progress_changed =

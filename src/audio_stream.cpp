@@ -3,7 +3,7 @@
 
 constexpr uint16_t buffer_length = 512;
 
-AudioStream::AudioStream(const AudioFile* file)
+AudioStream::AudioStream(const AudioFile* file, const AtomicLinkedList<AudioEffect>* effects)
 {
     // Format of audio data
     SDL_AudioSpec desired_format = {};
@@ -51,6 +51,7 @@ AudioStream::AudioStream(const AudioFile* file)
 
     input_buffer = file->GetData();
     input_length = file->GetLength();
+    this->effects = effects;
 }
 
 void AudioStream::Play()
@@ -76,8 +77,16 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
     }
     else
     {
-        memcpy(buffer, input_buffer + input_progress, length);
+        uint8_t* input = input_buffer + input_progress;
         input_progress += length;
+
+        // Apply effects
+        effects->ForEach([&](const AudioEffect* effect) {
+            effect->ApplyEffect((int16_t*)input, length / sizeof(int16_t));
+        });
+
+        // Send to device
+        memcpy(buffer, input, length);
     }
 
     on_progress_changed(GetProgress(), buffer, length);

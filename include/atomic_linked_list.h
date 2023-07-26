@@ -1,12 +1,18 @@
 #pragma once
 #include <cassert>
 #include <functional>
+#include <mutex>
+#include <memory>
+
+/*
+    Thread-safe linked list to avoid race conditions with audio thread
+*/
 
 template<typename T>
 class ListNode;
 
 template<typename T>
-using LinkedList = ListNode<T>;
+using AtomicLinkedList = ListNode<T>;
 
 template<typename T>
 class ListNode
@@ -15,28 +21,40 @@ protected:
     T* data = nullptr;
     ListNode* next = nullptr;
     ListNode* previous = nullptr;
+    std::shared_ptr<std::mutex> root_mutex;
 
 public:
-    ListNode() {}
+    ListNode()
+    {
+        // Create root mutex if need be
+        if (root_mutex.use_count() == 0)
+            root_mutex = std::make_shared<std::mutex>();
+    }
 
-    ListNode(T* data, ListNode* previous = nullptr)
+    ListNode(T* data, ListNode* previous)
     {
         this->data = data;
         this->previous = previous;
+        this->root_mutex = previous->root_mutex;
     }
 
     ListNode* GetLastNode()
     {
+        root_mutex->lock();
+
         // March through children
         ListNode* node = this;
         while (node->next != nullptr)
             node = node->next;
 
+        root_mutex->unlock();
         return node;
     }
 
     void Add(T* data)
     {
+        root_mutex->lock();
+
         if (this->data == nullptr)
         {
             // This node is empty - use ourselves
@@ -48,10 +66,14 @@ public:
             ListNode* last = GetLastNode();
             last->next = new ListNode<T>(data, last);
         }
+
+        root_mutex->unlock();
     }
 
     void Remove()
     {
+        root_mutex->lock();
+
         if (previous != nullptr && next == nullptr)
         {
             // One element before us, but otherwise the last in the list
@@ -70,19 +92,24 @@ public:
             next = nullptr;
         }
 
+        root_mutex->unlock();
         delete this;
     }
 
     T* GetData() { return data; }
 
-    void ForEach(const std::function<void(T* entry)> callback)
+    void ForEach(const std::function<void(const T* entry)> callback) const
     {
-        ListNode* node = this;
-        while (node != nullptr)
+        root_mutex->lock();
+
+        const ListNode* node = this;
+        while (node != nullptr && node->data != nullptr)
         {
             callback(node->data);
             node = node->next;
         }
+
+        root_mutex->unlock();
     }
 
     ~ListNode()
@@ -92,6 +119,7 @@ public:
             delete next;
 
         // Delete ourselves
-        delete data;
+        if (data != nullptr)
+            delete data;
     }
 };

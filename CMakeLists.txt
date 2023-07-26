@@ -30,7 +30,7 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} -std=c++20")
 endif (UNIX)
 
-file(GLOB SOURCE_FILES "include/*.h" "src/*.cpp")
+file(GLOB SOURCE_FILES "include/*.h" "include/effects/*.h" "src/*.cpp" "src/effects/*.cpp")
 
 # Windows flags
 if (WIN32)

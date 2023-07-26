@@ -1,6 +1,5 @@
 #include "play_window.h"
 
-
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
 {
@@ -65,7 +64,7 @@ void PlayWindow::StartPlayback()
 
     // Create audio file and corresponding audio stream
     audio_file.emplace(playlist.Items()[current_song]);
-    audio_stream.emplace(&*audio_file);
+    audio_stream.emplace(&*audio_file, &effects);
     audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length)
     {
         // Enqueue event on main thread
