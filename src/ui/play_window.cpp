@@ -54,6 +54,8 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 
     // Create audio file and stream
     StartPlayback();
+
+    (new EffectsWindow(this, &effects))->Show();
 }
 
 void PlayWindow::StartPlayback()

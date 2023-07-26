@@ -6,6 +6,7 @@
 #include "io/audio_stream.h"
 #include "ui/custom_events.h"
 #include "ui/audio_visualiser.h"
+#include "ui/effects_window.h"
 
 class PlayWindow : public wxFrame
 {

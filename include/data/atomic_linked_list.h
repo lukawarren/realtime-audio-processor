@@ -21,7 +21,7 @@ protected:
     T* data = nullptr;
     ListNode* next = nullptr;
     ListNode* previous = nullptr;
-    std::shared_ptr<std::mutex> root_mutex;
+    std::shared_ptr<std::mutex> root_mutex = {};
 
 public:
     ListNode()
@@ -38,16 +38,22 @@ public:
         this->root_mutex = previous->root_mutex;
     }
 
-    ListNode* GetLastNode()
+    ListNode(const ListNode&) = delete;
+
+    // Only need mutex if not already called from thread-safe environment
+    // (i.e. if mutex not already locked)
+    ListNode* GetLastNode(bool use_mutex = true)
     {
-        root_mutex->lock();
+        if (use_mutex)
+            root_mutex->lock();
 
         // March through children
         ListNode* node = this;
         while (node->next != nullptr)
             node = node->next;
 
-        root_mutex->unlock();
+        if (use_mutex)
+            root_mutex->unlock();
         return node;
     }
 
@@ -63,7 +69,7 @@ public:
         else
         {
             // Make new node
-            ListNode* last = GetLastNode();
+            ListNode* last = GetLastNode(false);
             last->next = new ListNode<T>(data, last);
         }
 
