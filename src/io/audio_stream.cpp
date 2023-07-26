@@ -1,4 +1,4 @@
-#include "audio_stream.h"
+#include "io/audio_stream.h"
 #include <stdexcept>
 
 constexpr uint16_t buffer_length = 512;

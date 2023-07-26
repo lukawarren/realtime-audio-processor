@@ -1,11 +1,11 @@
 #pragma once
 #include <wx/wx.h>
 #include <optional>
-#include "playlist.h"
-#include "audio_file.h"
-#include "audio_stream.h"
-#include "custom_events.h"
-#include "audio_visualiser.h"
+#include "io/playlist.h"
+#include "io/audio_file.h"
+#include "io/audio_stream.h"
+#include "ui/custom_events.h"
+#include "ui/audio_visualiser.h"
 
 class PlayWindow : public wxFrame
 {

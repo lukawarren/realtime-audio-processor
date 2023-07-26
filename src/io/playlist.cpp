@@ -1,4 +1,4 @@
-#include "playlist.h"
+#include "io/playlist.h"
 #include <fstream>
 #include <istream>
 #include <stdexcept>

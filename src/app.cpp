@@ -1,6 +1,6 @@
 #include "app.h"
-#include "start_window.h"
-#include "play_window.h"
+#include "ui/start_window.h"
+#include "ui/play_window.h"
 #include <wx/stdpaths.h>
 #include <SDL2/SDL.h>
 #include <filesystem>

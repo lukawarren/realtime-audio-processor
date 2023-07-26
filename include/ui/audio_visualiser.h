@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <vector>
 #include <array>
-#include "fft.h"
-#include "audio_file.h"
+#include "effects/fft.h"
+#include "io/audio_file.h"
 
 class AudioVisualiser : public wxPanel
 {

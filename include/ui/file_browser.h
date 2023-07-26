@@ -4,8 +4,8 @@
 #include <functional>
 #include <optional>
 #include <string>
-#include "files.h"
-#include "tree.h"
+#include "data/files.h"
+#include "data/tree.h"
 
 class FileBrowser : public wxPanel
 {

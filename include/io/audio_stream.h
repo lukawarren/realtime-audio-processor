@@ -1,8 +1,8 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <functional>
-#include "audio_file.h"
-#include "atomic_linked_list.h"
+#include "io/audio_file.h"
+#include "data/atomic_linked_list.h"
 #include "effects/audio_effect.h"
 
 class AudioStream

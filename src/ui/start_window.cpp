@@ -1,6 +1,6 @@
-#include "start_window.h"
-#include "playlist_window.h"
-#include "play_window.h"
+#include "ui/start_window.h"
+#include "ui/playlist_window.h"
+#include "ui/play_window.h"
 #include <wx/stattext.h>
 #include "app.h"
 

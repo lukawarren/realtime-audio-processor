@@ -1,5 +1,5 @@
-#include "playlist_window.h"
-#include "playlist.h"
+#include "ui/playlist_window.h"
+#include "io/playlist.h"
 #include "app.h"
 
 PlaylistWindow::PlaylistWindow(wxWindow* parent) :

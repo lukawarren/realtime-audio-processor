@@ -1,4 +1,4 @@
-#include "audio_visualiser.h"
+#include "ui/audio_visualiser.h"
 #include <wx/dcbuffer.h>
 
 constexpr int bar_width = 1;
