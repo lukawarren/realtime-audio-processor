@@ -4,6 +4,7 @@
 #include <wx/stdpaths.h>
 #include <SDL2/SDL.h>
 #include <filesystem>
+#include <iostream>
 
 bool App::OnInit()
 {
@@ -11,9 +12,29 @@ bool App::OnInit()
     SDL_Init(SDL_INIT_AUDIO);
     CreateDataDirectories();
 
-    // StartWindow* start_window = new StartWindow();
-    // start_window->Show();
-    (new PlayWindow(nullptr, Playlist::FromFile("/home/luka/Documents/RAP/playlist.txt")))->Show();
+    // Get command-line arguments
+    const wxCmdLineArgsArray& arguments = argv;
+    const int n_arguments = argc - 1;
+
+    if (n_arguments == 0)
+    {
+        // No arguments; launch playlist selection UI
+        StartWindow* start_window = new StartWindow();
+        start_window->Show();
+    }
+    else if (n_arguments == 1)
+    {
+        // Attempt to skip straight to loading playlist file
+        Playlist playlist = Playlist::FromFile(arguments[1].ToStdString());
+        PlayWindow* window = new PlayWindow(nullptr, playlist);
+        window->Show();
+    }
+    else
+    {
+        // Unknown arguments
+        std::cout << "Usage: ./RAP [/path/to/playlist]" << std::endl;
+        Exit();
+    }
 
     return true;
 }
