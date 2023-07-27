@@ -63,8 +63,7 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 void PlayWindow::CreateMenuBar()
 {
     auto* menu = new wxMenuBar();
-    #define MENU_EVENT [&](wxCommandEvent& e)
-    #define BLANK_EVENT MENU_EVENT {}
+    #define EVENT [&](wxCommandEvent& e)
 
     // Helper function
     const auto get_number = [](const std::string& name, long value, long min, long max)
@@ -83,31 +82,41 @@ void PlayWindow::CreateMenuBar()
     // Misc.
     CreateMenu(menu, "File",
     {
-        MenuEntry("Quit",                   MENU_EVENT { Close(); })
+        MenuEntry("&Quit\tCtrl-Q", EVENT { Close(); })
     });
 
     // Effects
     CreateMenu(menu, "Effects",
     {
-        MenuEntry("Add effect",             BLANK_EVENT),
-        MenuEntry("Modify effects",         BLANK_EVENT),
-        MenuEntry("Clear all effects",      BLANK_EVENT)
+        MenuEntry("&Add effect\tCtrl-A", EVENT {}),
+        MenuEntry("&Modify effects\tCtrl-M", EVENT {}),
+        MenuEntry("&Clear all effects\tCtrl-C", EVENT{})
     });
 
-    // Playlist
-    CreateMenu(menu, "Playlist",
+    // Playback
+    CreateMenu(menu, "Playback",
     {
-        MenuEntry("Current song info",      BLANK_EVENT),
-        MenuEntry("Previous song",          BLANK_EVENT),
-        MenuEntry("Next song",              BLANK_EVENT),
-        MenuEntry("Pause",                  BLANK_EVENT),
-        MenuEntry("Change playlist",        BLANK_EVENT)
+        MenuEntry("&Previous song\tCtrl-P", EVENT
+        {
+            wxCommandEvent event;
+            OnPrevious(event);
+        }),
+        MenuEntry("&Next song\tCtrl-N", EVENT
+        {
+            wxCommandEvent event;
+            OnNext(event);
+        }),
+        MenuEntry("&Pause\tCtrl-Space", EVENT
+        {
+            wxCommandEvent event;
+            OnPause(event);
+        })
     });
 
     // Visualisation
     CreateMenu(menu, "Visualisation",
     {
-        MenuEntry("Change frequency range", MENU_EVENT
+        MenuEntry("&Change frequency range\tCtrl-R", EVENT
         {
             long min = get_number("minimum frequency", 50, 20, 20000);
             long max = get_number("maximum frequency", 15000, 20, 20000);
@@ -115,11 +124,11 @@ void PlayWindow::CreateMenuBar()
             // Results are validated elsewhere
             visualiser_panel->SetFrequencyRange(min, max);
         }),
-        MenuEntry("Change bar width", MENU_EVENT
+        MenuEntry("&Change bar width\tCtrl-W", EVENT
         {
             visualiser_panel->SetBarWidth(get_number("bar width", 1, 1, 100));
         }),
-        MenuEntry("Reset", MENU_EVENT
+        MenuEntry("&Reset\tAlt-R", EVENT
         {
             visualiser_panel->ResetSettings();
         })
