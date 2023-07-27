@@ -3,13 +3,12 @@
 #include <cmath>
 #include <complex>
 
-constexpr int minimum_audible_frequency = 50;
-constexpr int maximum_audible_frequency = 15000;
-
 FastFourierTransform::FastFourierTransform(
     const std::vector<float>& samples,
     const float frequency,
-    const int n_buckets
+    const int n_buckets,
+    const int minimum_audible_frequency,
+    const int maximum_audible_frequency
 )
 {
     // Verify size is a power of 2 (otherwise the Cooley–Tukey algorithm will
@@ -27,6 +26,8 @@ FastFourierTransform::FastFourierTransform(
         });
 
     // Perform FFT
+    this->minimum_audible_frequency = minimum_audible_frequency;
+    this->maximum_audible_frequency = maximum_audible_frequency;
     DoFFT(complex_samples);
 
     // Process data

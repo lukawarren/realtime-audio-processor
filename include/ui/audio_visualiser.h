@@ -18,6 +18,10 @@ public:
         const AudioFile& file
     );
 
+    void SetBarWidth(const int width);
+    void SetFrequencyRange(const int min, const int max);
+    void ResetSettings();
+
 private:
     void OnPaint(const wxPaintEvent& event);
 
@@ -27,6 +31,9 @@ private:
         const float v
     );
 
-    // Results of FFTs over multiple "frames"
+    // FFT - results are stored over multiple "frames"
     std::array<std::vector<FastFourierTransform::FrequencyRange>, 8> fft_results = {};
+    int min_frequency;
+    int max_frequency;
+    int bar_width;
 };

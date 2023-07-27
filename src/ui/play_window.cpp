@@ -1,4 +1,5 @@
 #include "ui/play_window.h"
+#include <wx/numdlg.h>
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
@@ -65,6 +66,20 @@ void PlayWindow::CreateMenuBar()
     #define MENU_EVENT [&](wxCommandEvent& e)
     #define BLANK_EVENT MENU_EVENT {}
 
+    // Helper function
+    const auto get_number = [](const std::string& name, long value, long min, long max)
+    {
+        long returned = wxGetNumberFromUser(
+            "Please enter the new " + name,
+            "",
+            "Alert",
+            value,
+            min,
+            max
+        );
+        return (returned == -1) ? value : returned;
+    };
+
     // Misc.
     CreateMenu(menu, "File",
     {
@@ -92,9 +107,22 @@ void PlayWindow::CreateMenuBar()
     // Visualisation
     CreateMenu(menu, "Visualisation",
     {
-        MenuEntry("Change frequency range", BLANK_EVENT),
-        MenuEntry("Change bar width",       BLANK_EVENT),
-        MenuEntry("Reset",                  BLANK_EVENT)
+        MenuEntry("Change frequency range", MENU_EVENT
+        {
+            long min = get_number("minimum frequency", 50, 20, 20000);
+            long max = get_number("maximum frequency", 15000, 20, 20000);
+
+            // Results are validated elsewhere
+            visualiser_panel->SetFrequencyRange(min, max);
+        }),
+        MenuEntry("Change bar width", MENU_EVENT
+        {
+            visualiser_panel->SetBarWidth(get_number("bar width", 1, 1, 100));
+        }),
+        MenuEntry("Reset", MENU_EVENT
+        {
+            visualiser_panel->ResetSettings();
+        })
     });
 
     SetMenuBar(menu);

@@ -8,7 +8,9 @@ public:
     FastFourierTransform(
         const std::vector<float>& samples,
         const float frequency,
-        const int n_buckets
+        const int n_buckets,
+        const int minimum_audible_frequency = 20,
+        const int maximum_audible_frequency = 20000
     );
 
     struct FrequencyRange
@@ -17,7 +19,10 @@ public:
         int max_frequency;
         float magnitude;
     };
+
     std::vector<FrequencyRange> grouped_frequencies;
+    int minimum_audible_frequency;
+    int maximum_audible_frequency;
 
 private:
     // Raw FFT

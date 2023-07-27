@@ -1,11 +1,11 @@
 #include "ui/audio_visualiser.h"
 #include <wx/dcbuffer.h>
 
-constexpr int bar_width = 1;
-
 AudioVisualiser::AudioVisualiser(wxWindow* parent) :
     wxPanel(parent, wxID_ANY)
 {
+    ResetSettings();
+
     // Set background style to be compatible with requirements for double
     // buffering then bind custom paint event
     SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -27,7 +27,13 @@ void AudioVisualiser::FeedAudio(
 
     // Perform FFT
     const int n_buckets = GetSize().x / bar_width;
-    FastFourierTransform fft(audio, file.GetFrequency(), n_buckets);
+    FastFourierTransform fft(
+        audio,
+        file.GetFrequency(),
+        n_buckets,
+        min_frequency,
+        max_frequency
+    );
 
     // Save old results for averaging and add new one
     for (size_t i = 0; i < fft_results.size() - 1; ++i)
@@ -36,6 +42,27 @@ void AudioVisualiser::FeedAudio(
 
     // Redraw (will trigger paint event)
     Refresh();
+}
+
+void AudioVisualiser::SetBarWidth(const int width)
+{
+    bar_width = width;
+}
+
+void AudioVisualiser::SetFrequencyRange(const int min, const int max)
+{
+    if (min < max)
+    {
+        min_frequency = min;
+        max_frequency = max;
+    }
+}
+
+void AudioVisualiser::ResetSettings()
+{
+    bar_width = 1;
+    min_frequency = 50;
+    max_frequency = 15000;
 }
 
 void AudioVisualiser::OnPaint(const wxPaintEvent& event)
