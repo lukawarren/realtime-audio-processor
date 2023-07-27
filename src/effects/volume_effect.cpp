@@ -6,12 +6,7 @@ void VolumeEffect::ApplyEffect(int16_t* buffer, int length) const
         buffer[i] /= 2;
 }
 
-std::string VolumeEffect::GetName() const
+std::vector<std::string> VolumeEffect::GetPropertyNames() const
 {
-    return "Quieten";
-}
-
-std::string VolumeEffect::GetDescription() const
-{
-    return "Reduces the audio's volume";
+    return { "Volume", "Modulus" };
 }
