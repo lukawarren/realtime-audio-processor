@@ -6,7 +6,6 @@
 #include "io/audio_stream.h"
 #include "ui/custom_events.h"
 #include "ui/audio_visualiser.h"
-#include "ui/effects_window.h"
 
 class PlayWindow : public wxFrame
 {
@@ -14,6 +13,18 @@ public:
     PlayWindow(wxWindow* parent, const Playlist& playlist);
 
 private:
+
+    // Menu bar
+    void CreateMenuBar();
+    typedef std::function<void(wxCommandEvent&)> MenuCallback;
+    typedef std::pair<std::string, MenuCallback> MenuEntry;
+    wxMenu* CreateMenu(
+        wxMenuBar* menu_bar,
+        const std::string& title,
+        const std::vector<MenuEntry> items
+    );
+    int menu_item_id = 0;
+
     void StartPlayback();
 
     // Events

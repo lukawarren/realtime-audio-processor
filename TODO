@@ -12,3 +12,4 @@
 - assert fft input size is power of 2
 - better DS for FFT history
 - clang-tidy
+- keyboard shortcuts for menu

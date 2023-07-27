@@ -47,6 +47,9 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     SetMaxSize({ 800, 500 });
     SetSize({800, 500});
 
+    // Menu / tool bar
+    CreateMenuBar();
+
     // Bind event from audio thread to be received on main thread
     Bind(wxEVT_AUDIO_STREAM_UPDATED, [&](AudioStreamUpdatedEvent& event) {
         OnAudioStreamUpdated(event.progress, event.buffer, event.length);
@@ -54,9 +57,69 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 
     // Create audio file and stream
     StartPlayback();
-
-    (new EffectsWindow(this, &effects))->Show();
 }
+
+void PlayWindow::CreateMenuBar()
+{
+    auto* menu = new wxMenuBar();
+    #define MENU_EVENT [&](wxCommandEvent& e)
+    #define BLANK_EVENT MENU_EVENT {}
+
+    // Misc.
+    CreateMenu(menu, "File",
+    {
+        MenuEntry("Quit",                   MENU_EVENT { Close(); })
+    });
+
+    // Effects
+    CreateMenu(menu, "Effects",
+    {
+        MenuEntry("Add effect",             BLANK_EVENT),
+        MenuEntry("Modify effects",         BLANK_EVENT),
+        MenuEntry("Clear all effects",      BLANK_EVENT)
+    });
+
+    // Playlist
+    CreateMenu(menu, "Playlist",
+    {
+        MenuEntry("Current song info",      BLANK_EVENT),
+        MenuEntry("Previous song",          BLANK_EVENT),
+        MenuEntry("Next song",              BLANK_EVENT),
+        MenuEntry("Pause",                  BLANK_EVENT),
+        MenuEntry("Change playlist",        BLANK_EVENT)
+    });
+
+    // Visualisation
+    CreateMenu(menu, "Visualisation",
+    {
+        MenuEntry("Change frequency range", BLANK_EVENT),
+        MenuEntry("Change bar width",       BLANK_EVENT),
+        MenuEntry("Reset",                  BLANK_EVENT)
+    });
+
+    SetMenuBar(menu);
+}
+
+wxMenu* PlayWindow::CreateMenu(
+    wxMenuBar* menu_bar,
+    const std::string& title,
+    const std::vector<MenuEntry> items
+)
+{
+    auto* menu = new wxMenu();
+
+    for (const auto& entry : items)
+    {
+        // Append entry to menu - each is a std::pair<string, callback>
+        menu->Append(menu_item_id, entry.first);
+        menu->Bind(wxEVT_MENU, entry.second, menu_item_id);
+        menu_item_id += 1;
+    }
+
+    menu_bar->Append(menu, title);
+    return menu;
+}
+
 
 void PlayWindow::StartPlayback()
 {
