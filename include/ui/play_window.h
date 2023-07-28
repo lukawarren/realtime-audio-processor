@@ -14,10 +14,22 @@ public:
 
 private:
 
+    // Menu bar types
+    typedef std::function<void(wxCommandEvent&)> MenuCallback;
+    struct MenuEntry
+    {
+        std::string text;
+        MenuCallback callback;
+        std::vector<MenuEntry> children = {};
+    };
+    #define MENU_EVENT [&](wxCommandEvent& e)
+
     // Menu bar
     void CreateMenuBar();
-    typedef std::function<void(wxCommandEvent&)> MenuCallback;
-    typedef std::pair<std::string, MenuCallback> MenuEntry;
+    std::vector<MenuEntry> CreateMiscMenu();
+    std::vector<MenuEntry> CreateEffectsMenu();
+    std::vector<MenuEntry> CreatePlaybackMenu();
+    std::vector<MenuEntry> CreateVisualisationMenu();
     wxMenu* CreateMenu(
         wxMenuBar* menu_bar,
         const std::string& title,

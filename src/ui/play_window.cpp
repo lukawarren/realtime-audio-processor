@@ -1,4 +1,5 @@
 #include "ui/play_window.h"
+#include "effects/effects_list.h"
 #include <wx/numdlg.h>
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
@@ -63,9 +64,70 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 void PlayWindow::CreateMenuBar()
 {
     auto* menu = new wxMenuBar();
-    #define EVENT [&](wxCommandEvent& e)
+    CreateMenu(menu, "File",            CreateMiscMenu());
+    CreateMenu(menu, "Effects",         CreateEffectsMenu());
+    CreateMenu(menu, "Playback",        CreatePlaybackMenu());
+    CreateMenu(menu, "Visualisation",   CreateVisualisationMenu());
+    SetMenuBar(menu);
+}
 
-    // Helper function
+std::vector<PlayWindow::MenuEntry> PlayWindow::CreateMiscMenu()
+{
+    return {
+        MenuEntry("&Quit\tCtrl-Q", MENU_EVENT {
+            Close();
+        })
+    };
+}
+
+std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
+{
+    // Create sub-menus (one item for each effect)
+    std::vector<MenuEntry> effects_menu_entries;
+    for (const auto& effect : EFFECTS_LIST)
+    {
+        effects_menu_entries.emplace_back(
+            effect.first,
+            MENU_EVENT {
+                // Callback; add event to list by calling function that creates instance
+                effects.Add(effect.second());
+            }
+        );
+    }
+
+    return {
+        MenuEntry("Add effect", MENU_EVENT {}, effects_menu_entries),
+        MenuEntry("&Modify effects\tCtrl-M", MENU_EVENT {}),
+        MenuEntry("&Clear all effects\tCtrl-C", MENU_EVENT
+        {
+            effects = AtomicLinkedList<AudioEffect>();
+        })
+    };
+}
+
+std::vector<PlayWindow::MenuEntry> PlayWindow::CreatePlaybackMenu()
+{
+    return {
+        MenuEntry("&Previous song\tCtrl-P", MENU_EVENT
+        {
+            wxCommandEvent event;
+            OnPrevious(event);
+        }),
+        MenuEntry("&Next song\tCtrl-N", MENU_EVENT
+        {
+            wxCommandEvent event;
+            OnNext(event);
+        }),
+        MenuEntry("&Toggle playback\tCtrl-Space", MENU_EVENT
+        {
+            wxCommandEvent event;
+            OnPause(event);
+        })
+    };
+}
+
+std::vector<PlayWindow::MenuEntry> PlayWindow::CreateVisualisationMenu()
+{
     const auto get_number = [](const std::string& name, long value, long min, long max)
     {
         long returned = wxGetNumberFromUser(
@@ -79,62 +141,25 @@ void PlayWindow::CreateMenuBar()
         return (returned == -1) ? value : returned;
     };
 
-    // Misc.
-    CreateMenu(menu, "File",
-    {
-        MenuEntry("&Quit\tCtrl-Q", EVENT { Close(); })
-    });
-
-    // Effects
-    CreateMenu(menu, "Effects",
-    {
-        MenuEntry("&Add effect\tCtrl-A", EVENT {}),
-        MenuEntry("&Modify effects\tCtrl-M", EVENT {}),
-        MenuEntry("&Clear all effects\tCtrl-C", EVENT{})
-    });
-
-    // Playback
-    CreateMenu(menu, "Playback",
-    {
-        MenuEntry("&Previous song\tCtrl-P", EVENT
+    return {
+        MenuEntry("&Change frequency range\tCtrl-R", MENU_EVENT
         {
-            wxCommandEvent event;
-            OnPrevious(event);
-        }),
-        MenuEntry("&Next song\tCtrl-N", EVENT
-        {
-            wxCommandEvent event;
-            OnNext(event);
-        }),
-        MenuEntry("&Pause\tCtrl-Space", EVENT
-        {
-            wxCommandEvent event;
-            OnPause(event);
-        })
-    });
-
-    // Visualisation
-    CreateMenu(menu, "Visualisation",
-    {
-        MenuEntry("&Change frequency range\tCtrl-R", EVENT
-        {
+            // Humans can only hear from 20 Hz to 20,000 Hz :)
             long min = get_number("minimum frequency", 50, 20, 20000);
             long max = get_number("maximum frequency", 15000, 20, 20000);
 
             // Results are validated elsewhere
             visualiser_panel->SetFrequencyRange(min, max);
         }),
-        MenuEntry("&Change bar width\tCtrl-W", EVENT
+        MenuEntry("&Change bar width\tCtrl-W", MENU_EVENT
         {
             visualiser_panel->SetBarWidth(get_number("bar width", 1, 1, 100));
         }),
-        MenuEntry("&Reset\tAlt-R", EVENT
+        MenuEntry("&Reset\tAlt-R", MENU_EVENT
         {
             visualiser_panel->ResetSettings();
         })
-    });
-
-    SetMenuBar(menu);
+    };
 }
 
 wxMenu* PlayWindow::CreateMenu(
@@ -147,9 +172,30 @@ wxMenu* PlayWindow::CreateMenu(
 
     for (const auto& entry : items)
     {
-        // Append entry to menu - each is a std::pair<string, callback>
-        menu->Append(menu_item_id, entry.first);
-        menu->Bind(wxEVT_MENU, entry.second, menu_item_id);
+        // Create sub-menu if entry has children. There is no need to support
+        // nested "sub-sub-menus" at this time.
+        wxMenu* sub_menu = nullptr;
+        if (entry.children.size() > 0)
+        {
+            sub_menu = new wxMenu();
+            for (const auto& child : entry.children)
+            {
+                sub_menu->Append(menu_item_id, child.text);
+
+                // Bind event using unique ID
+                sub_menu->Bind(wxEVT_MENU, child.callback, menu_item_id);
+                menu_item_id += 1;
+            }
+        }
+
+        // Append entry to menu
+        if (sub_menu != nullptr)
+            menu->Append(menu_item_id, entry.text, sub_menu);
+        else
+            menu->Append(menu_item_id, entry.text);
+
+        // Bind event using unique ID
+        menu->Bind(wxEVT_MENU, entry.callback, menu_item_id);
         menu_item_id += 1;
     }
 
