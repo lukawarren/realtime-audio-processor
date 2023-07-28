@@ -1,4 +1,5 @@
 #include "ui/play_window.h"
+#include "ui/effects_window.h"
 #include "effects/effects_list.h"
 #include <wx/numdlg.h>
 
@@ -95,9 +96,17 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
         );
     }
 
-    return {
+    return
+    {
         MenuEntry("Add effect", MENU_EVENT {}, effects_menu_entries),
-        MenuEntry("&Modify effects\tCtrl-M", MENU_EVENT {}),
+        MenuEntry("&Modify effects\tCtrl-M", MENU_EVENT
+        {
+            // Check there are indeed effects to modify!
+            if (effects.Count() == 0)
+                wxMessageBox("You do not have any active effects to modify");
+            else
+                new EffectsWindow(this, &effects);
+        }),
         MenuEntry("&Clear all effects\tCtrl-C", MENU_EVENT
         {
             effects = AtomicLinkedList<AudioEffect>();
@@ -107,7 +116,8 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
 
 std::vector<PlayWindow::MenuEntry> PlayWindow::CreatePlaybackMenu()
 {
-    return {
+    return
+    {
         MenuEntry("&Previous song\tCtrl-P", MENU_EVENT
         {
             wxCommandEvent event;
@@ -141,7 +151,8 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateVisualisationMenu()
         return (returned == -1) ? value : returned;
     };
 
-    return {
+    return
+    {
         MenuEntry("&Change frequency range\tCtrl-R", MENU_EVENT
         {
             // Humans can only hear from 20 Hz to 20,000 Hz :)

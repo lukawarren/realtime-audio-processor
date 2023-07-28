@@ -118,6 +118,15 @@ public:
         root_mutex->unlock();
     }
 
+    size_t Count() const
+    {
+        size_t count = 0;
+        ForEach([&](const T* entry) {
+            count++;
+        });
+        return count;
+    }
+
     ~ListNode()
     {
         // Recursively delete children

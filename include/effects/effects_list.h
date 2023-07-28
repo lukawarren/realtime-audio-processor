@@ -11,5 +11,5 @@ typedef std::pair<std::string, std::function<AudioEffect*()>> EffectListEntry;
 
 static std::vector<EffectListEntry> EFFECTS_LIST =
 {
-    { "Amplifier", []() { return new VolumeEffect(); } }
+    { VolumeEffect().GetName(), []() { return new VolumeEffect(); } }
 };

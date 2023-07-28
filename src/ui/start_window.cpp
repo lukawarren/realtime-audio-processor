@@ -38,8 +38,7 @@ StartWindow::StartWindow() : wxFrame(nullptr, wxID_ANY, "Choose a playlist")
 
 void StartWindow::OnCreateButton(wxCommandEvent& event)
 {
-    PlaylistWindow* window = new PlaylistWindow(this);
-    window->Show();
+    new PlaylistWindow(this);
 }
 
 void StartWindow::OnLoadButton(wxCommandEvent& event)

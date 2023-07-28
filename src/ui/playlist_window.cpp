@@ -2,8 +2,7 @@
 #include "io/playlist.h"
 #include "app.h"
 
-PlaylistWindow::PlaylistWindow(wxWindow* parent) :
-    wxFrame(parent, wxID_ANY, "Create a playlist")
+PlaylistWindow::PlaylistWindow(wxWindow* parent) : PopupWindow(parent, "Create a playlist")
 {
     SetSize({1024, 768});
 #ifdef WIN32
@@ -59,13 +58,6 @@ PlaylistWindow::PlaylistWindow(wxWindow* parent) :
     vertical_sizer->Add(top_sizer, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, margin);
     vertical_sizer->Add(bottom_sizer, 0, wxALIGN_CENTER | wxALL, margin);
     SetSizer(vertical_sizer);
-
-    // Disable parent window then re-enable parent window when we close
-    GetParent()->Enable(false);
-    Bind(wxEVT_CLOSE_WINDOW, [&](wxCloseEvent& event) {
-        GetParent()->Enable(true);
-        event.Skip();
-    });
 }
 
 void PlaylistWindow::OnFileAdded(wxCommandEvent& event)

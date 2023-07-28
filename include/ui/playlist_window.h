@@ -1,8 +1,9 @@
 #pragma once
 #include <wx/wx.h>
 #include "ui/file_browser.h"
+#include "ui/popup_window.h"
 
-class PlaylistWindow : public wxFrame
+class PlaylistWindow : public PopupWindow
 {
 public:
     PlaylistWindow(wxWindow* parent);
