@@ -30,6 +30,8 @@ EffectsWindow::EffectsWindow(wxWindow* parent, const AtomicLinkedList<AudioEffec
     horizontal_sizer->Add(up_button, 0, wxLEFT | wxRIGHT, margin);
     horizontal_sizer->Add(down_button);
     vertical_sizer->Add(list, 0, wxEXPAND | wxALL, margin);
-    vertical_sizer->Add(horizontal_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM, margin);
+    vertical_sizer->AddStretchSpacer();
+    vertical_sizer->Add(horizontal_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
+
     SetSizerAndFit(vertical_sizer);
 }

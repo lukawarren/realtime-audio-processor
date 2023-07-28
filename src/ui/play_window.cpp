@@ -84,11 +84,13 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateMiscMenu()
 std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
 {
     // Create sub-menus (one item for each effect)
+    int n_effects = 1;
     std::vector<MenuEntry> effects_menu_entries;
     for (const auto& effect : EFFECTS_LIST)
     {
+        // Set shortcut as Ctrl-1, Ctrl-2, etc...
         effects_menu_entries.emplace_back(
-            effect.first,
+            "&" + effect.first + "\tCtrl-" + std::to_string(n_effects),
             MENU_EVENT {
                 // Callback; add event to list by calling function that creates instance
                 effects.Add(effect.second());
