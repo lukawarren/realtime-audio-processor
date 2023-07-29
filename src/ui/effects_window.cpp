@@ -1,21 +1,16 @@
 #include "ui/effects_window.h"
 
-EffectsWindow::EffectsWindow(wxWindow* parent, const AtomicLinkedList<AudioEffect>* effects) :
-    PopupWindow(parent, "Modify Effects")
+EffectsWindow::EffectsWindow(wxWindow* parent, AtomicLinkedList<AudioEffect>* effects) :
+    PopupWindow(parent, "Modify Effects"),
+    effects(effects)
 {
 #ifdef WIN32
     SetBackgroundColour(*wxWHITE);
 #endif
 
     // Create list
-    auto* list = new wxListBox(this, wxID_ANY);
-    effects->ForEach([&](const AudioEffect* entry)
-    {
-        list->Insert({
-            wxString::FromUTF8(entry->GetName()) },
-            list->GetCount()
-        );
-    });
+    list_box = new wxListBox(this, wxID_ANY);
+    FillList();
 
     // Buttons
     auto* remove_button = new wxButton(this, wxID_ANY, "Remove");
@@ -29,9 +24,67 @@ EffectsWindow::EffectsWindow(wxWindow* parent, const AtomicLinkedList<AudioEffec
     horizontal_sizer->Add(remove_button);
     horizontal_sizer->Add(up_button, 0, wxLEFT | wxRIGHT, margin);
     horizontal_sizer->Add(down_button);
-    vertical_sizer->Add(list, 0, wxEXPAND | wxALL, margin);
-    vertical_sizer->AddStretchSpacer();
+    vertical_sizer->Add(list_box, 1, wxEXPAND | wxALL, margin);
     vertical_sizer->Add(horizontal_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
 
+    // Events
+    remove_button->Bind(wxEVT_BUTTON, &EffectsWindow::OnRemove, this);
+    up_button->Bind(wxEVT_BUTTON, [&](wxCommandEvent& e) {
+        OnMove(Direction::Up);
+    });
+    down_button->Bind(wxEVT_BUTTON, [&](wxCommandEvent& e) {
+        OnMove(Direction::Down);
+    });
+
     SetSizerAndFit(vertical_sizer);
+}
+
+void EffectsWindow::FillList()
+{
+    list_box->Clear();
+    effects->ForEach([&](const AudioEffect* entry)
+    {
+        list_box->Insert({
+            wxString::FromUTF8(entry->GetName()) },
+            list_box->GetCount()
+        );
+    });
+}
+
+void EffectsWindow::OnRemove(wxCommandEvent& e)
+{
+    auto effect = GetSelectedEffect();
+    if (effect.has_value())
+        (effect.value())->Remove();
+
+    FillList();
+}
+
+void EffectsWindow::OnMove(const Direction direction)
+{
+    auto effect = GetSelectedEffect();
+    const int index = list_box->GetSelection();
+    if (!effect.has_value()) return;
+
+    if (direction == Direction::Up)
+    {
+        // Swap with previous element but don't let the index go too low
+        (effect.value())->SwapWithPrevious();
+        FillList();
+        list_box->Select(std::max(index - 1, 0));
+    }
+    else
+    {
+        // Swap with next element but don't let the index go too high
+        (effect.value())->SwapWithNext();
+        FillList();
+        list_box->Select(std::min(index + 1, (int)list_box->GetCount() - 1));
+    }
+}
+
+std::optional<ListNode<AudioEffect>*> EffectsWindow::GetSelectedEffect()
+{
+    const int index = list_box->GetSelection();
+    if (index < 0) return {};
+    return { effects->GetNthItem(index) };
 }

@@ -60,6 +60,13 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 
     // Create audio file and stream
     StartPlayback();
+
+    effects.Add(new VolumeEffect());
+    effects.Add(new VolumeEffect());
+    effects.Add(new VolumeEffect());
+    effects.Add(new VolumeEffect());
+    effects.Add(new VolumeEffect());
+    new EffectsWindow(this, &effects);
 }
 
 void PlayWindow::CreateMenuBar()
