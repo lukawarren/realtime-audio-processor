@@ -41,7 +41,7 @@ public:
     ListNode(const ListNode&) = delete;
 
     // Only need mutex if not already called from thread-safe environment
-    // (i.e. if mutex not already locked)
+     // (i.e. if mutex not already locked)
     ListNode* GetLastNode(bool use_mutex = true)
     {
         if (use_mutex)
@@ -108,7 +108,7 @@ public:
 
     T* GetData() { return data; }
 
-    void ForEach(const std::function<void(const T* entry)> callback) const
+    void ForEach(const std::function<void(T* entry)> callback) const
     {
         root_mutex->lock();
 

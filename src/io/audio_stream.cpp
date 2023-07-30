@@ -81,7 +81,7 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
         input_progress += length;
 
         // Apply effects
-        effects->ForEach([&](const AudioEffect* effect) {
+        effects->ForEach([&](AudioEffect* effect) {
             effect->ApplyEffect((int16_t*)input, length / sizeof(int16_t));
         });
 

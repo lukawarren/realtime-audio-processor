@@ -61,12 +61,7 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     // Create audio file and stream
     StartPlayback();
 
-    effects.Add(new VolumeEffect());
-    effects.Add(new VolumeEffect());
-    effects.Add(new VolumeEffect());
-    effects.Add(new VolumeEffect());
-    effects.Add(new VolumeEffect());
-    new EffectsWindow(this, &effects);
+    effects.Add(new EchoEffect());
 }
 
 void PlayWindow::CreateMenuBar()
@@ -103,6 +98,7 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
                 effects.Add(effect.second());
             }
         );
+        n_effects++;
     }
 
     return
