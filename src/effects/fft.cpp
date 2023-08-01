@@ -11,6 +11,27 @@ FastFourierTransform::FastFourierTransform(
     const int maximum_audible_frequency
 )
 {
+    // "Normal" FFT
+    std::vector<std::complex<float>> complex = ConvertSamplesToComplexForm(samples);
+    DoFFT(complex, Mode::Normal);
+
+    // Process data for visualisation
+    this->minimum_audible_frequency = minimum_audible_frequency;
+    this->maximum_audible_frequency = maximum_audible_frequency;
+    grouped_frequencies = GroupFrequencies(complex, frequency, n_buckets);
+}
+
+FastFourierTransform::FastFourierTransform(const std::vector<std::complex<float>>& samples)
+{
+    // Inverse FFT
+    output = samples;
+    DoFFT(output, Mode::Inverse);
+}
+
+std::vector<std::complex<float>> FastFourierTransform::ConvertSamplesToComplexForm(
+    const std::vector<float>& samples
+)
+{
     // Verify size is a power of 2 (otherwise the Cooley–Tukey algorithm will
     // not work)
     if ((samples.size() & (samples.size() - 1)) != 0)
@@ -25,20 +46,21 @@ FastFourierTransform::FastFourierTransform(
             0.0f
         });
 
-    // Perform FFT
-    this->minimum_audible_frequency = minimum_audible_frequency;
-    this->maximum_audible_frequency = maximum_audible_frequency;
-    DoFFT(complex_samples);
-
-    // Process data
-    grouped_frequencies = GroupFrequencies(complex_samples, frequency, n_buckets);
+    return complex_samples;
 }
 
-void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input)
+void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input, const Mode mode)
 {
     const int N = input.size();
     if (N <= 1)
         return;
+
+    if (mode == Mode::Inverse)
+    {
+        // Inverse FFTs require we take the complex conjugate of the input data
+        for (int i = 0; i < N; ++i)
+            input[i] = std::conj(input[i]);
+    }
 
     std::vector<std::complex<float>> even(N / 2);
     std::vector<std::complex<float>> odd(N / 2);
@@ -50,13 +72,17 @@ void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input)
     }
 
     // Recursive call for even and odd parts
-    DoFFT(even);
-    DoFFT(odd);
+    DoFFT(even, mode);
+    DoFFT(odd, mode);
 
     // Compute the FFT
     for (int k = 0; k < N / 2; ++k)
     {
-        std::complex<float> t = std::polar(1.0f, -2.0f * (float)M_PI * (float)k / (float)N) * odd[k];
+        // Inverse and normal FFTs differ in their sign (which can thought of
+        // as the direction of the rotation in the complex plane)
+        const float sign = (mode == Mode::Normal) ? -1.0f : 1.0f;
+
+        std::complex<float> t = std::polar(1.0f, sign * 2.0f * (float)M_PI * (float)k / (float)N) * odd[k];
         input[k] = even[k] + t;
         input[k + N / 2] = even[k] - t;
     }

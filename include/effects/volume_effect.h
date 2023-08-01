@@ -4,7 +4,7 @@
 class VolumeEffect : public AudioEffect
 {
 public:
-    void ApplyEffect(int16_t* buffer, int length) override;
+    void ApplyEffect(std::vector<float>& samples) override;
     std::string GetName() const override;
     std::vector<std::string> GetPropertyNames() const override;
 };

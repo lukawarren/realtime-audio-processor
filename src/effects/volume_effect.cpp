@@ -1,9 +1,9 @@
 #include "effects/volume_effect.h"
 
-void VolumeEffect::ApplyEffect(int16_t* buffer, int length)
+void VolumeEffect::ApplyEffect(std::vector<float>& samples)
 {
-    for (int i = 0; i < length; ++i)
-        buffer[i] /= 2;
+    for (float& sample : samples)
+        sample /= 2.0f;
 }
 
 std::string VolumeEffect::GetName() const

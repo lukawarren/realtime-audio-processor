@@ -22,7 +22,7 @@ void AudioVisualiser::FeedAudio(
     std::vector<float> audio;
     for (int i = 0; i < length / 2; ++i)
         audio.emplace_back(
-            float(*((uint16_t*)buffer + i)) / (float)file.MaxSampleValue()
+            float(*((int16_t*)buffer + i)) / (float)file.MaxSampleValue()
         );
 
     // Perform FFT

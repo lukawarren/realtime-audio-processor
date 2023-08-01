@@ -29,6 +29,7 @@ private:
     uint8_t* input_buffer;
     uint32_t input_length;
     uint32_t input_progress = 0;
+    uint16_t max_sample_value;
     bool is_playing = false;
 
     // User effects

@@ -9,7 +9,7 @@ class AudioEffect
 public:
     virtual ~AudioEffect() {}
 
-    virtual void ApplyEffect(int16_t* buffer, int length) = 0;
+    virtual void ApplyEffect(std::vector<float>& samples) = 0;
 
     virtual std::string GetName() const = 0;
 

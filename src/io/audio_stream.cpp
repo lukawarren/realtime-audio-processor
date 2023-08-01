@@ -51,6 +51,7 @@ AudioStream::AudioStream(const AudioFile* file, const AtomicLinkedList<AudioEffe
 
     input_buffer = file->GetData();
     input_length = file->GetLength();
+    max_sample_value = file->MaxSampleValue();
     this->effects = effects;
 }
 
@@ -80,13 +81,21 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
         uint8_t* input = input_buffer + input_progress;
         input_progress += length;
 
+        // Convert to floats for easier processing
+        std::vector<float> audio;
+        for (int i = 0; i < length / 2; ++i)
+            audio.emplace_back(
+                float(*((int16_t*)input + i)) / (float)max_sample_value
+            );
+
         // Apply effects
         effects->ForEach([&](AudioEffect* effect) {
-            effect->ApplyEffect((int16_t*)input, length / sizeof(int16_t));
+            effect->ApplyEffect(audio);
         });
 
-        // Send to device
-        memcpy(buffer, input, length);
+        // Copy back to buffer
+        for (int i = 0; i < length / 2; ++i)
+            ((uint16_t*)buffer)[i] = audio[i] * max_sample_value;
     }
 
     on_progress_changed(GetProgress(), buffer, length);
