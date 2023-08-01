@@ -26,14 +26,11 @@ void AudioVisualiser::FeedAudio(
         );
 
     // Perform FFT
-    const int n_buckets = GetSize().x / bar_width;
-    FastFourierTransform fft(
-        audio,
-        file.GetFrequency(),
-        n_buckets,
-        min_frequency,
-        max_frequency
-    );
+    FastFourierTransform::GroupingSettings settings = {
+        .n_buckets = GetSize().x / bar_width,
+        .frequency = file.GetFrequency(),
+    };
+    FastFourierTransform fft(audio, { settings });
 
     // Save old results for averaging and add new one
     for (size_t i = 0; i < fft_results.size() - 1; ++i)

@@ -5,20 +5,17 @@
 
 FastFourierTransform::FastFourierTransform(
     const std::vector<float>& samples,
-    const float frequency,
-    const int n_buckets,
-    const int minimum_audible_frequency,
-    const int maximum_audible_frequency
+    std::optional<GroupingSettings> group_settings
 )
 {
     // "Normal" FFT
     std::vector<std::complex<float>> complex = ConvertSamplesToComplexForm(samples);
     DoFFT(complex, Mode::Normal);
+    output = complex;
 
-    // Process data for visualisation
-    this->minimum_audible_frequency = minimum_audible_frequency;
-    this->maximum_audible_frequency = maximum_audible_frequency;
-    grouped_frequencies = GroupFrequencies(complex, frequency, n_buckets);
+    // Process data for visualisation (if need be!)
+    if (group_settings.has_value())
+        grouped_frequencies = GroupFrequencies(complex, *group_settings);
 }
 
 FastFourierTransform::FastFourierTransform(const std::vector<std::complex<float>>& samples)
@@ -55,12 +52,14 @@ void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input, const 
     if (N <= 1)
         return;
 
+    std::vector<std::complex<float>> temp(N);
     if (mode == Mode::Inverse)
     {
         // Inverse FFTs require we take the complex conjugate of the input data
         for (int i = 0; i < N; ++i)
-            input[i] = std::conj(input[i]);
+            temp[i] = std::conj(input[i]);
     }
+    else temp = input;
 
     std::vector<std::complex<float>> even(N / 2);
     std::vector<std::complex<float>> odd(N / 2);
@@ -90,28 +89,29 @@ void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input, const 
 
 std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFrequencies(
     const std::vector<std::complex<float>>& fft,
-    const float frequency,
-    const int n_buckets
+    const GroupingSettings& group_settings
 )
 {
     // Work out frequency resolution
     const size_t n_samples = fft.size();
-    const float frequency_resolution = frequency / (float)n_samples;
+    const float frequency_resolution = (float)group_settings.frequency / (float)n_samples;
 
     // Bark scale
-    const float minimum_frequency_bark = HertzToBarkScale(minimum_audible_frequency);
-    const float maximum_frequency_bark = HertzToBarkScale(maximum_audible_frequency);
-    const float bark_distance = (maximum_frequency_bark - minimum_frequency_bark) / n_buckets;
+    const float minimum_frequency_bark = HertzToBarkScale(group_settings.minimum_audible_frequency);
+    const float maximum_frequency_bark = HertzToBarkScale(group_settings.maximum_audible_frequency);
+    const float bark_distance =
+        (maximum_frequency_bark - minimum_frequency_bark) /
+        group_settings.n_buckets;
 
     // As long as all the input numbers lie strictly on the real axis (i.e. have
     // no imaginary component, as does befit audio), the FFT will be symmetrical.
     // Hence we need only look at the first half of the data! :)
-    std::vector<float> buckets(n_buckets, 0.0f);
+    std::vector<float> buckets(group_settings.n_buckets, 0.0f);
     for (size_t i = 0; i < n_samples / 2; ++i)
     {
         const float frequency = i * frequency_resolution;
-        if (frequency >= minimum_audible_frequency &&
-            frequency <= maximum_audible_frequency)
+        if (frequency >= group_settings.minimum_audible_frequency &&
+            frequency <= group_settings.maximum_audible_frequency)
         {
             // Apply Bark scale
             const float bark_frequency = HertzToBarkScale(frequency);
