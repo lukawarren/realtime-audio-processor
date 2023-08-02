@@ -24,12 +24,15 @@ private:
     SDL_AudioDeviceID device = 0;
     SDL_AudioSpec properties;
     void OnAudioCallback(uint8_t* buffer, int length);
+    bool BufferIsInRange(uint8_t* buffer, int length);
+    std::vector<float> ConvertBufferToFloats(uint8_t* buffer, int length);
 
     // Playback data
     uint8_t* input_buffer;
     uint32_t input_length;
     uint32_t input_progress = 0;
     uint16_t max_sample_value;
+    int input_frequency;
     bool is_playing = false;
 
     // User effects

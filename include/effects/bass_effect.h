@@ -1,12 +1,10 @@
 #pragma once
 #include "effects/audio_effect.h"
-#include <array>
+#include <complex>
 
-class EchoEffect : public AudioEffect
+class BassEffect : public AudioEffect
 {
 public:
-    EchoEffect();
-
     void ApplyEffect(
         std::vector<float>& previous_samples,
         std::vector<float>& current_samples,
@@ -17,5 +15,8 @@ public:
     std::vector<std::string> GetPropertyNames() const override;
 
 private:
-    std::vector<float> delay_buffer = {};
+    void PerformBassBoost(
+        std::vector<std::complex<float>>& fft_output,
+        const int frequency
+    );
 };

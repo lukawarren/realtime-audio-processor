@@ -1,7 +1,7 @@
 #include "io/audio_stream.h"
 #include <stdexcept>
 
-constexpr uint16_t buffer_length = 512;
+constexpr uint16_t buffer_length = 1024;
 
 AudioStream::AudioStream(const AudioFile* file, const AtomicLinkedList<AudioEffect>* effects)
 {
@@ -52,6 +52,7 @@ AudioStream::AudioStream(const AudioFile* file, const AtomicLinkedList<AudioEffe
     input_buffer = file->GetData();
     input_length = file->GetLength();
     max_sample_value = file->MaxSampleValue();
+    input_frequency = file->GetFrequency();
     this->effects = effects;
 }
 
@@ -69,36 +70,61 @@ void AudioStream::Pause()
 
 void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
 {
+    uint8_t* previous_input = input_buffer + input_progress - length;
+    uint8_t* current_input = input_buffer + input_progress;
+    uint8_t* next_input = input_buffer + input_progress + length;
+    input_progress += length;
+
     // If we have no data to provide, return a blank buffer
-    if (length == 0 || input_length == 0 ||
-        input_buffer == nullptr || input_progress + length > input_length)
+    if (!BufferIsInRange(current_input, length))
     {
         memset(buffer, 0, length);
         input_progress = input_length;
     }
     else
     {
-        uint8_t* input = input_buffer + input_progress;
-        input_progress += length;
+        bool previous_is_valid = BufferIsInRange(previous_input, length);
+        bool next_is_valid = BufferIsInRange(next_input, length);
 
         // Convert to floats for easier processing
-        std::vector<float> audio;
-        for (int i = 0; i < length / 2; ++i)
-            audio.emplace_back(
-                float(*((int16_t*)input + i)) / (float)max_sample_value
-            );
+        std::vector<float> empty = {};
+        std::vector<float> previous = previous_is_valid ? ConvertBufferToFloats(previous_input, length) : empty;
+        std::vector<float> current = ConvertBufferToFloats(current_input, length);
+        std::vector<float> next = next_is_valid ? ConvertBufferToFloats(next_input, length) : empty;
 
         // Apply effects
         effects->ForEach([&](AudioEffect* effect) {
-            effect->ApplyEffect(audio);
+            effect->ApplyEffect(previous, current, next, input_frequency);
         });
 
         // Copy back to buffer
         for (int i = 0; i < length / 2; ++i)
-            ((uint16_t*)buffer)[i] = audio[i] * max_sample_value;
+            ((uint16_t*)buffer)[i] = current[i] * max_sample_value;
     }
 
     on_progress_changed(GetProgress(), buffer, length);
+}
+
+bool AudioStream::BufferIsInRange(uint8_t* buffer, int length)
+{
+    return !(
+        length == 0 ||
+        input_length == 0 ||
+        input_buffer == nullptr ||
+        buffer < input_buffer ||
+        buffer + length > input_buffer + input_length
+    );
+}
+
+std::vector<float> AudioStream::ConvertBufferToFloats(uint8_t* buffer, int length)
+{
+    std::vector<float> audio;
+    audio.reserve(length / 2);
+    for (int i = 0; i < length / 2; ++i)
+        audio.emplace_back(
+            float(*((int16_t*)buffer + i)) / (float)max_sample_value
+        );
+    return audio;
 }
 
 void AudioStream::SetProgressChangedCallback(std::function<void(float, uint8_t*, int)> on_progress_changed)

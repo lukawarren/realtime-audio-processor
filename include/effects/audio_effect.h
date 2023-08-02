@@ -9,7 +9,12 @@ class AudioEffect
 public:
     virtual ~AudioEffect() {}
 
-    virtual void ApplyEffect(std::vector<float>& samples) = 0;
+    virtual void ApplyEffect(
+        std::vector<float>& previous_samples,
+        std::vector<float>& current_samples,
+        std::vector<float>& next_samples,
+        const int frequency
+    ) = 0;
 
     virtual std::string GetName() const = 0;
 
