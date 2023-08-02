@@ -283,3 +283,11 @@ void PlayWindow::OnNext(wxCommandEvent& event)
 
     StartPlayback();
 }
+
+PlayWindow::~PlayWindow()
+{
+    // We must destroy the audio stream so the audio thread isn't still
+    // playing whilst everything else is destroyed
+    audio_stream.reset();
+    audio_file.reset();
+}
