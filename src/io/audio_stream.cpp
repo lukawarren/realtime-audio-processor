@@ -93,8 +93,14 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
         std::vector<float> next = next_is_valid ? ConvertBufferToFloats(next_input, length) : empty;
 
         // Apply effects
+        AudioEffect::Packet packet = {
+            .previous_samples = previous,
+            .current_samples = current,
+            .next_samples = next,
+            .frequency = input_frequency
+        };
         effects->ForEach([&](AudioEffect* effect) {
-            effect->ApplyEffect(previous, current, next, input_frequency);
+            effect->ApplyEffect(packet);
         });
 
         // Copy back to buffer

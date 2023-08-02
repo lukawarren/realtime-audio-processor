@@ -1,13 +1,8 @@
 #include "effects/volume_effect.h"
 
-void VolumeEffect::ApplyEffect(
-    std::vector<float>& previous_samples,
-    std::vector<float>& current_samples,
-    std::vector<float>& next_samples,
-    const int frequency
-)
+void VolumeEffect::ApplyEffect(Packet& packet)
 {
-    for (float& sample : current_samples)
+    for (float& sample : packet.current_samples)
         sample /= 2.0f;
 }
 

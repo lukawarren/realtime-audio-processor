@@ -52,10 +52,14 @@ private:
     enum class Mode { Normal, Inverse };
     void DoFFT(std::vector<std::complex<float>>& input, const Mode mode);
 
+    // Padding
+    std::vector<float> PadVector(const std::vector<float>& samples) const;
+    void UnpadVector(std::vector<std::complex<float>>& complex) const;
+
     // Data processing
     std::vector<FrequencyRange> GroupFrequencies(
         const std::vector<std::complex<float>>& fft,
         const GroupingSettings& group_settings
     );
-    float HertzToBarkScale(const float hertz);
+    float HertzToBarkScale(const float hertz) const;
 };

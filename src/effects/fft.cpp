@@ -8,8 +8,10 @@ FastFourierTransform::FastFourierTransform(
     std::optional<GroupingSettings> group_settings
 )
 {
+    const std::vector<float> padded_samples = PadVector(samples);
+
     // "Normal" FFT
-    std::vector<std::complex<float>> complex = ConvertSamplesToComplexForm(samples);
+    std::vector<std::complex<float>> complex = ConvertSamplesToComplexForm(padded_samples);
     DoFFT(complex, Mode::Normal);
     output = complex;
 
@@ -18,11 +20,12 @@ FastFourierTransform::FastFourierTransform(
         grouped_frequencies = GroupFrequencies(complex, *group_settings);
 }
 
-FastFourierTransform::FastFourierTransform(const std::vector<std::complex<float>>& samples)
+InverseFourierTransform::FastFourierTransform(const std::vector<std::complex<float>>& samples)
 {
     // Inverse FFT
     output = samples;
     DoFFT(output, Mode::Inverse);
+    UnpadVector(output);
 }
 
 std::vector<std::complex<float>> FastFourierTransform::ConvertSamplesToComplexForm(
@@ -156,10 +159,26 @@ std::vector<FastFourierTransform::FrequencyRange> FastFourierTransform::GroupFre
     return ranges;
 }
 
-float FastFourierTransform::HertzToBarkScale(const float hertz)
+float FastFourierTransform::HertzToBarkScale(const float hertz) const
 {
     /*
         Derived from https://en.wikipedia.org/wiki/Bark_scale
     */
     return 13.0f * std::atan(0.00076f * hertz) + 3.5f * std::atan((hertz / 7500.0f) * (hertz / 7500.0f));
+}
+
+std::vector<float> FastFourierTransform::PadVector(const std::vector<float>& samples) const
+{
+    std::vector<float> v(samples);
+    std::vector<float> zeroes(v.size() / 2, 0.0f);
+    v.insert(v.begin(), zeroes.begin(), zeroes.end());
+    v.insert(v.end(), zeroes.begin(), zeroes.end());
+    return v;
+}
+
+void FastFourierTransform::UnpadVector(std::vector<std::complex<float>>& complex) const
+{
+    const size_t original_size = complex.size() / 2;
+    complex.erase(complex.begin(), complex.begin() + original_size / 2);
+    complex.erase(complex.begin() + original_size, complex.end());
 }

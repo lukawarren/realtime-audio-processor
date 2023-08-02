@@ -7,14 +7,18 @@
 class AudioEffect
 {
 public:
-    virtual ~AudioEffect() {}
 
-    virtual void ApplyEffect(
-        std::vector<float>& previous_samples,
-        std::vector<float>& current_samples,
-        std::vector<float>& next_samples,
-        const int frequency
-    ) = 0;
+    struct Packet
+    {
+        std::vector<float>& previous_samples;
+        std::vector<float>& current_samples;
+        std::vector<float>& next_samples;
+        const int frequency;
+    };
+
+    virtual void ApplyEffect(Packet& packet) = 0;
+
+    virtual ~AudioEffect() {}
 
     virtual std::string GetName() const = 0;
 
