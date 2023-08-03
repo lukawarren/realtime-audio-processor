@@ -11,5 +11,5 @@ public:
     const std::vector<std::string>& Items() const;
 
 private:
-    const std::vector<std::string> filenames;
+    std::vector<std::string> filenames;
 };

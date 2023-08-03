@@ -1,12 +1,13 @@
 #include "io/playlist.h"
+#include "data/merge_sort.h"
 #include <fstream>
 #include <istream>
 #include <stdexcept>
 
-Playlist::Playlist(const std::vector<std::string>& filenames) :
-    filenames(filenames)
+Playlist::Playlist(const std::vector<std::string>& filenames)
 {
-    // TODO: sort
+    // Sort
+    this->filenames = MergeSort(filenames);
 }
 
 void Playlist::SaveToFile(const std::string& path) const

@@ -60,8 +60,6 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 
     // Create audio file and stream
     StartPlayback();
-
-    effects.Add(new BassEffect());
 }
 
 void PlayWindow::CreateMenuBar()
