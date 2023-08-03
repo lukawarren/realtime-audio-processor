@@ -29,6 +29,8 @@ void AudioVisualiser::FeedAudio(
     FastFourierTransform::GroupingSettings settings = {
         .n_buckets = GetSize().x / bar_width,
         .frequency = file.GetFrequency(),
+        .minimum_audible_frequency = min_frequency,
+        .maximum_audible_frequency = max_frequency
     };
     FastFourierTransform fft(audio, { settings });
 
