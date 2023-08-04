@@ -129,7 +129,7 @@ void BassEffect::PerformBassBoost(
 
 std::string BassEffect::GetName() const
 {
-    return "Bass boost";
+    return "Bass reduction";
 }
 
 std::vector<std::string> BassEffect::GetPropertyNames() const
