@@ -18,14 +18,20 @@ public:
     void SetProgressChangedCallback(std::function<void(float, uint8_t*, int)> on_progress_changed);
     void SetProgress(const float progress);
     float GetProgress() const;
+    void SetSpeed(const float speed);
     bool IsPlaying() const;
 
 private:
+
+    // SDL
     SDL_AudioDeviceID device = 0;
     SDL_AudioSpec properties;
     void OnAudioCallback(uint8_t* buffer, int length);
+
+    // Buffer processing
     bool BufferIsInRange(uint8_t* buffer, int length);
     std::vector<float> ConvertBufferToFloats(uint8_t* buffer, int length);
+    std::vector<float> ResampleBuffer(std::vector<float>& buffer);
 
     // Playback data
     uint8_t* input_buffer;
@@ -33,6 +39,7 @@ private:
     uint32_t input_progress = 0;
     uint16_t max_sample_value;
     int input_frequency;
+    float input_speed = 1.0f;
     bool is_playing = false;
 
     // User effects

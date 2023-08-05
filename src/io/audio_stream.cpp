@@ -70,10 +70,13 @@ void AudioStream::Pause()
 
 void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
 {
-    uint8_t* previous_input = input_buffer + input_progress - length;
+    // Grab pointers to previous, current and next buffers, taking into account
+    // the current playback speed!
+    int realtime_length = length * input_speed;
+    uint8_t* previous_input = input_buffer + input_progress - realtime_length;
     uint8_t* current_input = input_buffer + input_progress;
-    uint8_t* next_input = input_buffer + input_progress + length;
-    input_progress += length;
+    uint8_t* next_input = input_buffer + input_progress + realtime_length;
+    input_progress += realtime_length;
 
     // If we have no data to provide, return a blank buffer
     if (!BufferIsInRange(current_input, length))
@@ -83,14 +86,19 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
     }
     else
     {
-        bool previous_is_valid = BufferIsInRange(previous_input, length);
-        bool next_is_valid = BufferIsInRange(next_input, length);
+        bool previous_is_valid = BufferIsInRange(previous_input, realtime_length);
+        bool next_is_valid = BufferIsInRange(next_input, realtime_length);
 
         // Convert to floats for easier processing
         std::vector<float> empty = {};
-        std::vector<float> previous = previous_is_valid ? ConvertBufferToFloats(previous_input, length) : empty;
-        std::vector<float> current = ConvertBufferToFloats(current_input, length);
-        std::vector<float> next = next_is_valid ? ConvertBufferToFloats(next_input, length) : empty;
+        std::vector<float> previous = previous_is_valid ? ConvertBufferToFloats(previous_input, realtime_length) : empty;
+        std::vector<float> current = ConvertBufferToFloats(current_input, realtime_length);
+        std::vector<float> next = next_is_valid ? ConvertBufferToFloats(next_input, realtime_length) : empty;
+
+        // "Squash" wave from 2x speed, 3x speed, etc. into 1x speed
+        previous = ResampleBuffer(previous);
+        current = ResampleBuffer(current);
+        next = ResampleBuffer(next);
 
         // Apply effects
         AudioEffect::Packet packet = {
@@ -133,6 +141,24 @@ std::vector<float> AudioStream::ConvertBufferToFloats(uint8_t* buffer, int lengt
     return audio;
 }
 
+std::vector<float> AudioStream::ResampleBuffer(std::vector<float>& buffer)
+{
+    // Allocate output buffer
+    std::vector<float> output;
+    size_t targetSize = (size_t)std::round(buffer.size() / input_speed);
+    output.reserve(targetSize);
+
+    // Copy input buffer to output in "input_speed"-sized steps
+    float currentIndex = 0.0f;
+    while (currentIndex < buffer.size())
+    {
+        output.push_back(buffer[std::round(currentIndex)]);
+        currentIndex += input_speed;
+    }
+
+    return output;
+}
+
 void AudioStream::SetProgressChangedCallback(std::function<void(float, uint8_t*, int)> on_progress_changed)
 {
     this->on_progress_changed = on_progress_changed;
@@ -151,6 +177,11 @@ void AudioStream::SetProgress(const float progress)
 float AudioStream::GetProgress() const
 {
     return (float)input_progress / (float)input_length;
+}
+
+void AudioStream::SetSpeed(const float speed)
+{
+    input_speed = speed;
 }
 
 bool AudioStream::IsPlaying() const

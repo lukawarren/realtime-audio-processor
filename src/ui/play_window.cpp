@@ -33,12 +33,27 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     pause_button->Bind(wxEVT_BUTTON, &PlayWindow::OnPause, this);
     next_button->Bind(wxEVT_BUTTON, &PlayWindow::OnNext, this);
 
+    // Speed dropdown
+    speed_dropdown = new wxChoice(this, wxID_ANY);
+    speed_dropdown->Append("0.25x");
+    speed_dropdown->Append("0.5x");
+    speed_dropdown->Append("0.75x");
+    speed_dropdown->Append("1x");
+    speed_dropdown->Append("1.25x");
+    speed_dropdown->Append("1.5x");
+    speed_dropdown->Append("1.75x");
+    speed_dropdown->Append("2.0x");
+    speed_dropdown->SetSelection(3);
+    speed_dropdown->Bind(wxEVT_CHOICE, &PlayWindow::OnSpeedChanged, this);
+
     // Button layout
     const int margin = FromDIP(10);
     auto* button_sizer = new wxBoxSizer(wxHORIZONTAL);
     button_sizer->Add(previous_button, 0, wxLEFT | wxRIGHT, margin);
     button_sizer->Add(pause_button, 0, wxLEFT | wxRIGHT, margin);
     button_sizer->Add(next_button, 0, wxLEFT | wxRIGHT, margin);
+    button_sizer->AddStretchSpacer(100);
+    button_sizer->Add(speed_dropdown, 1, wxLEFT | wxRIGHT, margin);
 
     // Overall layout
     auto* vertical_sizer = new wxBoxSizer(wxVERTICAL);
@@ -227,6 +242,7 @@ void PlayWindow::StartPlayback()
     // Create audio file and corresponding audio stream
     audio_file.emplace(playlist.Items()[current_song]);
     audio_stream.emplace(&*audio_file, &effects);
+    audio_stream->SetSpeed(GetSpeedValue());
     audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length)
     {
         // Enqueue event on main thread
@@ -280,6 +296,22 @@ void PlayWindow::OnNext(wxCommandEvent& event)
         current_song = 0;
 
     StartPlayback();
+}
+
+void PlayWindow::OnSpeedChanged(wxCommandEvent& event)
+{
+    if (audio_stream.has_value())
+    {
+        audio_stream->Pause();
+        audio_stream->SetSpeed(GetSpeedValue());
+        audio_stream->Play();
+    }
+}
+
+float PlayWindow::GetSpeedValue() const
+{
+    const float speed = 0.25f + speed_dropdown->GetSelection() * 0.25f;
+    return speed;
 }
 
 PlayWindow::~PlayWindow()

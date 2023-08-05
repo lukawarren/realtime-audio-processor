@@ -45,12 +45,15 @@ private:
     void OnPrevious(wxCommandEvent& event);
     void OnPause(wxCommandEvent& event);
     void OnNext(wxCommandEvent& event);
+    void OnSpeedChanged(wxCommandEvent& event);
+    float GetSpeedValue() const;
 
     AudioVisualiser* visualiser_panel;
     wxSlider* progress_bar;
     wxButton* previous_button;
     wxButton* pause_button;
     wxButton* next_button;
+    wxChoice* speed_dropdown;
 
     // Playlist
     Playlist playlist;
