@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/wx.h>
+#include <vector>
 #include "effects/audio_effect.h"
 #include "ui/popup_window.h"
 
@@ -9,5 +10,14 @@ public:
     PropertiesWindow(wxWindow* parent, AudioEffect* effect);
 
 private:
+    void AddProperty(const std::string& name, AudioEffect::Property* property);
+
     AudioEffect* effect;
+    wxGridSizer* sizer;
+
+    // Events require lifetime access to their widgets and associated
+    // audio effect properties without going out of scope!
+    typedef std::pair<wxStaticText*, AudioEffect::Property*> EventInformation;
+    std::vector<EventInformation> event_information;
+    void OnSliderMoved(wxCommandEvent& e);
 };
