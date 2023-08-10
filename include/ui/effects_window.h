@@ -3,6 +3,7 @@
 #include <optional>
 #include "effects/audio_effect.h"
 #include "data/atomic_linked_list.h"
+#include "ui/properties_window.h"
 #include "ui/popup_window.h"
 
 class EffectsWindow : public PopupWindow
@@ -15,6 +16,7 @@ private:
 
     void FillList();
     void OnRemove(wxCommandEvent& e);
+    void OnEdit(wxCommandEvent& e);
     void OnMove(const Direction direction);
 
     std::optional<ListNode<AudioEffect>*> GetSelectedEffect();

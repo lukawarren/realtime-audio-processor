@@ -14,6 +14,7 @@ EffectsWindow::EffectsWindow(wxWindow* parent, AtomicLinkedList<AudioEffect>* ef
 
     // Buttons
     auto* remove_button = new wxButton(this, wxID_ANY, "Remove");
+    auto* edit_button = new wxButton(this, wxID_ANY, "Edit");
     auto* up_button = new wxButton(this, wxID_ANY, "Move up");
     auto* down_button = new wxButton(this, wxID_ANY, "Move down");
 
@@ -22,6 +23,7 @@ EffectsWindow::EffectsWindow(wxWindow* parent, AtomicLinkedList<AudioEffect>* ef
     auto* vertical_sizer = new wxBoxSizer(wxVERTICAL);
     auto* horizontal_sizer = new wxBoxSizer(wxRA_HORIZONTAL);
     horizontal_sizer->Add(remove_button);
+    horizontal_sizer->Add(edit_button, 0, wxLEFT, margin);
     horizontal_sizer->Add(up_button, 0, wxLEFT | wxRIGHT, margin);
     horizontal_sizer->Add(down_button);
     vertical_sizer->Add(list_box, 1, wxEXPAND | wxALL, margin);
@@ -29,6 +31,7 @@ EffectsWindow::EffectsWindow(wxWindow* parent, AtomicLinkedList<AudioEffect>* ef
 
     // Events
     remove_button->Bind(wxEVT_BUTTON, &EffectsWindow::OnRemove, this);
+    edit_button->Bind(wxEVT_BUTTON, &EffectsWindow::OnEdit, this);
     up_button->Bind(wxEVT_BUTTON, [&](wxCommandEvent& e) {
         OnMove(Direction::Up);
     });
@@ -58,6 +61,20 @@ void EffectsWindow::OnRemove(wxCommandEvent& e)
         (effect.value())->Remove();
 
     FillList();
+}
+
+void EffectsWindow::OnEdit(wxCommandEvent& e)
+{
+    auto selected = GetSelectedEffect();
+    if (selected.has_value())
+    {
+        // Check effect actually has modifiable proeprties
+        AudioEffect* effect = selected.value()->GetData();
+        if (effect->properties.size() == 0)
+            wxMessageBox("This effect cannot be modified");
+        else
+            new PropertiesWindow(this, effect);
+    }
 }
 
 void EffectsWindow::OnMove(const Direction direction)
