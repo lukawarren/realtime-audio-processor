@@ -1,7 +1,12 @@
 #include "effects/bass_effect.h"
 #include "effects/fft.h"
-#define _USE_MATH_DEFINES
-#include <cmath>
+
+BassEffect::BassEffect()
+{
+    properties["lower frequency"] = Property(20.0f, 0.0f, 20000.0f);
+    properties["upper frequency"] = Property(500.0f, 0.0f, 20000.0f);
+    properties["multiplier"] = Property(0.0f, 0.0f, 2.0f);
+}
 
 void BassEffect::ApplyEffect(Packet& packet)
 {
@@ -105,11 +110,13 @@ void BassEffect::PerformBassBoost(
     const int frequency
 ) const
 {
-    const float lower_frequency = 20.0f;
-    const float upper_frequency = 500.0f;
-    const float frequency_resolution = (float)frequency / (float)fft_output.size();
+    // Properties
+    const float lower_frequency = GetProperty("lower frequency");
+    const float upper_frequency = GetProperty("upper frequency");
+    const float multiplier = GetProperty("multiplier");
 
     // Work out "bins"
+    const float frequency_resolution = (float)frequency / (float)fft_output.size();
     const int lower_bin = lower_frequency / frequency_resolution;
     const int upper_bin = upper_frequency / frequency_resolution;
 
@@ -120,7 +127,7 @@ void BassEffect::PerformBassBoost(
         float phase = std::arg(fft_output[i]);
 
         // Remove bass
-        magnitude = 0.0f;
+        magnitude *= multiplier;
 
         // Convert back to Cartesian form
         fft_output[i] = std::polar(magnitude, phase);
@@ -130,9 +137,4 @@ void BassEffect::PerformBassBoost(
 std::string BassEffect::GetName() const
 {
     return "Bass reduction";
-}
-
-std::vector<std::string> BassEffect::GetPropertyNames() const
-{
-    return { "Minimum frequency", "Maximum frequency", "Iterations" };
 }

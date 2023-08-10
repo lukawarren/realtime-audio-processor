@@ -12,8 +12,3 @@ std::string NoiseEffect::GetName() const
 {
     return "White noise";
 }
-
-std::vector<std::string> NoiseEffect::GetPropertyNames() const
-{
-    return { "Intensity" };
-}

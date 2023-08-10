@@ -10,8 +10,3 @@ std::string VolumeEffect::GetName() const
 {
     return "Quieten";
 }
-
-std::vector<std::string> VolumeEffect::GetPropertyNames() const
-{
-    return { "Volume" };
-}

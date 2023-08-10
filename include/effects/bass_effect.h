@@ -6,9 +6,9 @@
 class BassEffect : public AudioEffect
 {
 public:
+    BassEffect();
     void ApplyEffect(Packet& packet) override;
     std::string GetName() const override;
-    std::vector<std::string> GetPropertyNames() const override;
 
 private:
     std::array<std::vector<float>, 3> CreateWindows(Packet& packet) const;

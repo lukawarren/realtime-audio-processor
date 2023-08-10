@@ -37,8 +37,3 @@ std::string EchoEffect::GetName() const
 {
     return "Echo";
 }
-
-std::vector<std::string> EchoEffect::GetPropertyNames() const
-{
-    return { "Lag", "Gap" };
-}
