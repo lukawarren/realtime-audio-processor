@@ -19,7 +19,7 @@ private:
     void OnEdit(wxCommandEvent& e);
     void OnMove(const Direction direction);
 
-    std::optional<ListNode<AudioEffect>*> GetSelectedEffect();
+    std::optional<size_t> GetSelectedEffect();
     AtomicLinkedList<AudioEffect>* effects;
     wxListBox* list_box;
 };

@@ -137,7 +137,7 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
         }),
         MenuEntry("&Clear all effects and reset speed\tCtrl-C", MENU_EVENT
         {
-            effects = AtomicLinkedList<AudioEffect>();
+            effects.Reset();
             ResetSpeed();
         })
     };
@@ -158,7 +158,7 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreatePresetsMenu()
             MENU_EVENT
             {
                 // Clear current effects then add new ones
-                effects = AtomicLinkedList<AudioEffect>();
+                effects.Reset();
                 preset.functor(&effects);
 
                 // Change speed

@@ -58,7 +58,7 @@ void EffectsWindow::OnRemove(wxCommandEvent& e)
 {
     auto effect = GetSelectedEffect();
     if (effect.has_value())
-        (effect.value())->Remove();
+        effects->Remove(*effect);
 
     FillList();
 }
@@ -69,7 +69,7 @@ void EffectsWindow::OnEdit(wxCommandEvent& e)
     if (selected.has_value())
     {
         // Check effect actually has modifiable proeprties
-        AudioEffect* effect = selected.value()->GetData();
+        AudioEffect* effect = effects->GetNthNode(*selected)->data;
         if (effect->properties.size() == 0)
             wxMessageBox("This effect cannot be modified");
         else
@@ -79,29 +79,29 @@ void EffectsWindow::OnEdit(wxCommandEvent& e)
 
 void EffectsWindow::OnMove(const Direction direction)
 {
-    auto effect = GetSelectedEffect();
+    const std::optional<size_t> effect = GetSelectedEffect();
     const int index = list_box->GetSelection();
     if (!effect.has_value()) return;
 
     if (direction == Direction::Up)
     {
         // Swap with previous element but don't let the index go too low
-        (effect.value())->SwapWithPrevious();
+        effects->SwapWithPrevious(*effect);
         FillList();
         list_box->Select(std::max(index - 1, 0));
     }
     else
     {
         // Swap with next element but don't let the index go too high
-        (effect.value())->SwapWithNext();
+        effects->SwapWithNext(*effect);
         FillList();
         list_box->Select(std::min(index + 1, (int)list_box->GetCount() - 1));
     }
 }
 
-std::optional<ListNode<AudioEffect>*> EffectsWindow::GetSelectedEffect()
+std::optional<size_t> EffectsWindow::GetSelectedEffect()
 {
     const int index = list_box->GetSelection();
-    if (index < 0) return {};
-    return { effects->GetNthItem(index) };
+    if (index < 0) return std::nullopt;
+    return index;
 }
