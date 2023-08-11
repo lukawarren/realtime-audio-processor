@@ -2,7 +2,7 @@
 
 NoiseEffect::NoiseEffect()
 {
-    properties["intensity"] = Property(0.01f, 0.0f, 0.5f);
+    properties["intensity"] = Property(0.01f, 0.0f, 0.1f);
 }
 
 void NoiseEffect::ApplyEffect(Packet& packet)

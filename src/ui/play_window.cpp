@@ -125,9 +125,41 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
             else
                 new EffectsWindow(this, &effects);
         }),
-        MenuEntry("&Clear all effects\tCtrl-C", MENU_EVENT
+        MenuEntry("&Decrease speed\tCtrl-,", MENU_EVENT
         {
+            wxCommandEvent dummy;
+            speed_dropdown->SetSelection(
+                std::max(
+                    speed_dropdown->GetSelection() - 1,
+                    0
+                )
+            );
+            OnSpeedChanged(dummy);
+        }),
+        MenuEntry("&Increase speed\tCtrl-.", MENU_EVENT
+        {
+            wxCommandEvent dummy;
+            speed_dropdown->SetSelection(
+                std::min(
+                    speed_dropdown->GetSelection() + 1,
+                    (int)speed_dropdown->GetCount() - 1
+                )
+            );
+            OnSpeedChanged(dummy);
+        }),
+        MenuEntry("&Clear all effects and reset speed\tCtrl-C", MENU_EVENT
+        {
+            // Wipe effects
             effects = AtomicLinkedList<AudioEffect>();
+
+            // Select middle selection (1x speed)
+            speed_dropdown->SetSelection(
+                ((int)speed_dropdown->GetCount() - 1) / 2
+            );
+
+            // Call event
+            wxCommandEvent dummy;
+            OnSpeedChanged(dummy);
         })
     };
 }

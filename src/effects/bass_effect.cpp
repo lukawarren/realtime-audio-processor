@@ -136,5 +136,5 @@ void BassEffect::PerformBassBoost(
 
 std::string BassEffect::GetName() const
 {
-    return "Bass reduction";
+    return "Bass amplifier";
 }

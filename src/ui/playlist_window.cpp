@@ -57,7 +57,9 @@ PlaylistWindow::PlaylistWindow(wxWindow* parent) : PopupWindow(parent, "Create a
     wxBoxSizer* vertical_sizer = new wxBoxSizer(wxVERTICAL);
     vertical_sizer->Add(top_sizer, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, margin);
     vertical_sizer->Add(bottom_sizer, 0, wxALIGN_CENTER | wxALL, margin);
+
     SetSizer(vertical_sizer);
+    Layout();
 }
 
 void PlaylistWindow::OnFileAdded(wxCommandEvent& event)
