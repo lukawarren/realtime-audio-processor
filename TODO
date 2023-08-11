@@ -13,3 +13,4 @@
 - better DS for FFT history
 - clang-tidy
 - keyboard shortcuts for menu
+- segfault when removing 0th effect

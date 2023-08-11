@@ -44,7 +44,7 @@ public:
         float GetSmallestUnit() const
         {
             if (is_integer) return 1.0f;
-            else return (maximum - minimum) / 100.0f;
+            else return (maximum - minimum) / 1000.0f;
         }
     };
 

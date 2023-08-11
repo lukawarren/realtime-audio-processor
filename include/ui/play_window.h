@@ -29,6 +29,7 @@ private:
     void CreateMenuBar();
     std::vector<MenuEntry> CreateMiscMenu();
     std::vector<MenuEntry> CreateEffectsMenu();
+    std::vector<MenuEntry> CreatePresetsMenu();
     std::vector<MenuEntry> CreatePlaybackMenu();
     std::vector<MenuEntry> CreateVisualisationMenu();
     wxMenu* CreateMenu(
@@ -46,7 +47,12 @@ private:
     void OnPause(wxCommandEvent& event);
     void OnNext(wxCommandEvent& event);
     void OnSpeedChanged(wxCommandEvent& event);
+
+    // Speed
     float GetSpeedValue() const;
+    void ResetSpeed();
+    void DecreaseSpeed();
+    void IncreaseSpeed();
 
     AudioVisualiser* visualiser_panel;
     wxSlider* progress_bar;

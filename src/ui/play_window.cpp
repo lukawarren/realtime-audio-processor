@@ -1,6 +1,7 @@
 #include "ui/play_window.h"
 #include "ui/effects_window.h"
 #include "effects/effects_list.h"
+#include "presets.h"
 #include <wx/numdlg.h>
 
 PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
@@ -82,6 +83,7 @@ void PlayWindow::CreateMenuBar()
     auto* menu = new wxMenuBar();
     CreateMenu(menu, "File",            CreateMiscMenu());
     CreateMenu(menu, "Effects",         CreateEffectsMenu());
+    CreateMenu(menu, "Presets",         CreatePresetsMenu());
     CreateMenu(menu, "Playback",        CreatePlaybackMenu());
     CreateMenu(menu, "Visualisation",   CreateVisualisationMenu());
     SetMenuBar(menu);
@@ -127,41 +129,58 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateEffectsMenu()
         }),
         MenuEntry("&Decrease speed\tCtrl-,", MENU_EVENT
         {
-            wxCommandEvent dummy;
-            speed_dropdown->SetSelection(
-                std::max(
-                    speed_dropdown->GetSelection() - 1,
-                    0
-                )
-            );
-            OnSpeedChanged(dummy);
+            DecreaseSpeed();
         }),
         MenuEntry("&Increase speed\tCtrl-.", MENU_EVENT
         {
-            wxCommandEvent dummy;
-            speed_dropdown->SetSelection(
-                std::min(
-                    speed_dropdown->GetSelection() + 1,
-                    (int)speed_dropdown->GetCount() - 1
-                )
-            );
-            OnSpeedChanged(dummy);
+            IncreaseSpeed();
         }),
         MenuEntry("&Clear all effects and reset speed\tCtrl-C", MENU_EVENT
         {
-            // Wipe effects
             effects = AtomicLinkedList<AudioEffect>();
-
-            // Select middle selection (1x speed)
-            speed_dropdown->SetSelection(
-                ((int)speed_dropdown->GetCount() - 1) / 2
-            );
-
-            // Call event
-            wxCommandEvent dummy;
-            OnSpeedChanged(dummy);
+            ResetSpeed();
         })
     };
+}
+
+std::vector<PlayWindow::MenuEntry> PlayWindow::CreatePresetsMenu()
+{
+    std::vector<MenuEntry> entries;
+    size_t i = 0;
+
+    for (const auto& preset : EFFECT_PRESETS)
+    {
+        // Create name with corresponding shortcut of Alt-N
+        const std::string name = "&" + preset.name + "\tAlt-" + std::to_string(i + 1);
+        entries.emplace_back(MenuEntry
+        {
+            name,
+            MENU_EVENT
+            {
+                // Clear current effects then add new ones
+                effects = AtomicLinkedList<AudioEffect>();
+                preset.functor(&effects);
+
+                // Change speed
+                ResetSpeed();
+                if (preset.speed_steps != 0)
+                {
+                    const int steps = std::abs(preset.speed_steps);
+                    const bool decreasing = preset.speed_steps < 0;
+
+                    for (int i = 0; i < steps; ++i)
+                    {
+                        if (decreasing) DecreaseSpeed();
+                        else IncreaseSpeed();
+                    }
+                }
+
+            }
+        });
+        i += 1;
+    }
+
+    return entries;
 }
 
 std::vector<PlayWindow::MenuEntry> PlayWindow::CreatePlaybackMenu()
@@ -344,6 +363,41 @@ float PlayWindow::GetSpeedValue() const
 {
     const float speed = 0.25f + speed_dropdown->GetSelection() * 0.25f;
     return speed;
+}
+
+void PlayWindow::ResetSpeed()
+{
+    // Select middle selection (1x speed)
+    speed_dropdown->SetSelection(
+        ((int)speed_dropdown->GetCount() - 1) / 2
+    );
+
+    wxCommandEvent dummy;
+    OnSpeedChanged(dummy);
+}
+
+void PlayWindow::DecreaseSpeed()
+{
+    wxCommandEvent dummy;
+    speed_dropdown->SetSelection(
+        std::max(
+            speed_dropdown->GetSelection() - 1,
+            0
+        )
+    );
+    OnSpeedChanged(dummy);
+}
+
+void PlayWindow::IncreaseSpeed()
+{
+    wxCommandEvent dummy;
+    speed_dropdown->SetSelection(
+        std::min(
+            speed_dropdown->GetSelection() + 1,
+            (int)speed_dropdown->GetCount() - 1
+        )
+    );
+    OnSpeedChanged(dummy);
 }
 
 PlayWindow::~PlayWindow()
