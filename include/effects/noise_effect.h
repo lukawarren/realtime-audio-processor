@@ -5,6 +5,7 @@
 class NoiseEffect : public AudioEffect
 {
 public:
+    NoiseEffect();
     void ApplyEffect(Packet& packet) override;
     std::string GetName() const override;
 
