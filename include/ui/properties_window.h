@@ -11,13 +11,14 @@ public:
 
 private:
     void AddProperty(const std::string& name, AudioEffect::Property* property);
+    std::string GetPropertyLabel(const std::string& name, AudioEffect::Property* property);
 
     AudioEffect* effect;
     wxGridSizer* sizer;
 
     // Events require lifetime access to their widgets and associated
     // audio effect properties without going out of scope!
-    typedef std::pair<wxStaticText*, AudioEffect::Property*> EventInformation;
+    typedef std::pair<wxStaticText*, std::string> EventInformation;
     std::vector<EventInformation> event_information;
     void OnSliderMoved(wxCommandEvent& e);
 };
