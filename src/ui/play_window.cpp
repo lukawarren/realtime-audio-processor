@@ -1,4 +1,5 @@
 #include "ui/play_window.h"
+#include "ui/song_window.h"
 #include "ui/effects_window.h"
 #include "effects/effects_list.h"
 #include "presets.h"
@@ -81,7 +82,7 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
 void PlayWindow::CreateMenuBar()
 {
     auto* menu = new wxMenuBar();
-    CreateMenu(menu, "File",            CreateMiscMenu());
+    CreateMenu(menu, "File",            CreateFileMenu());
     CreateMenu(menu, "Effects",         CreateEffectsMenu());
     CreateMenu(menu, "Presets",         CreatePresetsMenu());
     CreateMenu(menu, "Playback",        CreatePlaybackMenu());
@@ -89,9 +90,22 @@ void PlayWindow::CreateMenuBar()
     SetMenuBar(menu);
 }
 
-std::vector<PlayWindow::MenuEntry> PlayWindow::CreateMiscMenu()
+std::vector<PlayWindow::MenuEntry> PlayWindow::CreateFileMenu()
 {
-    return {
+    return
+    {
+        MenuEntry("&Select song\tCtrl-O", MENU_EVENT
+        {
+            // Create song pop-up window with callback
+            new SongWindow
+            (
+                this,
+                playlist,
+                [&](size_t index) {
+                    OnSongChanged(index);
+                }
+            );
+        }),
         MenuEntry("&Quit\tCtrl-Q", MENU_EVENT {
             Close();
         })
@@ -357,6 +371,12 @@ void PlayWindow::OnSpeedChanged(wxCommandEvent& event)
         audio_stream->SetSpeed(GetSpeedValue());
         audio_stream->Play();
     }
+}
+
+void PlayWindow::OnSongChanged(const size_t index)
+{
+    current_song = index;
+    StartPlayback();
 }
 
 float PlayWindow::GetSpeedValue() const

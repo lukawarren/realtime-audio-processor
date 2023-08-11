@@ -27,7 +27,7 @@ private:
 
     // Menu bar
     void CreateMenuBar();
-    std::vector<MenuEntry> CreateMiscMenu();
+    std::vector<MenuEntry> CreateFileMenu();
     std::vector<MenuEntry> CreateEffectsMenu();
     std::vector<MenuEntry> CreatePresetsMenu();
     std::vector<MenuEntry> CreatePlaybackMenu();
@@ -47,6 +47,7 @@ private:
     void OnPause(wxCommandEvent& event);
     void OnNext(wxCommandEvent& event);
     void OnSpeedChanged(wxCommandEvent& event);
+    void OnSongChanged(const size_t index);
 
     // Speed
     float GetSpeedValue() const;

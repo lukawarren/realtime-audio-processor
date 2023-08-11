@@ -168,6 +168,9 @@ public:
             delete previous;
         }
 
+        head = nullptr;
+        tail = nullptr;
+
         mutex->unlock();
     }
 
