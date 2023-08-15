@@ -170,6 +170,7 @@ public:
 
         head = nullptr;
         tail = nullptr;
+        count = 0;
 
         mutex->unlock();
     }
