@@ -3,7 +3,8 @@
 
 AudioFile::AudioFile(const std::string& filename)
 {
-    SDL_LoadWAV(filename.c_str(), &properties, &buffer, &length);
+    if (SDL_LoadWAV(filename.c_str(), &properties, &buffer, &length) == NULL)
+        throw std::runtime_error("Could not open audio file " + filename);
 
     if (properties.format != AUDIO_S16LSB)
         throw std::runtime_error("Unsupported audio format when trying to load " + filename);

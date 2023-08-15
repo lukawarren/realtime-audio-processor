@@ -41,6 +41,13 @@ bool App::OnInit()
 
 void App::OnUnhandledException()
 {
+    // Alert user then quit
+    try { throw; }
+    catch (std::exception& e)
+    {
+        wxMessageBox(wxString(e.what()));
+    }
+
     throw;
 }
 
