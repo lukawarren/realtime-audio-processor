@@ -38,3 +38,21 @@ const std::vector<std::string>& Playlist::Items() const
 {
     return filenames;
 }
+
+void Playlist::Shuffle()
+{
+    /*
+        Perform a "Fisher–Yates" shuffle
+        https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+    */
+
+    const std::size_t size = filenames.size();
+
+    // Iterate through vector in reverse
+    for (std::size_t i = size - 1; i > 0; --i)
+    {
+        // Randomly pick a random index from 0 to N (inclusive) and swap with i
+        const std::size_t index = rand() % (i + 1);
+        std::swap(filenames[i], filenames[index]);
+    }
+}

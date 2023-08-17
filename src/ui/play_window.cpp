@@ -106,6 +106,9 @@ std::vector<PlayWindow::MenuEntry> PlayWindow::CreateFileMenu()
                 }
             );
         }),
+        MenuEntry("&Shuffle playlist\tCtrl-S", MENU_EVENT {
+            playlist.Shuffle();
+        }),
         MenuEntry("&Quit\tCtrl-Q", MENU_EVENT {
             Close();
         })
