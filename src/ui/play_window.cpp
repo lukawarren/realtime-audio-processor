@@ -369,9 +369,15 @@ void PlayWindow::OnSpeedChanged(wxCommandEvent& event)
 {
     if (audio_stream.has_value())
     {
-        audio_stream->Pause();
+        // Suspend playback (but only if a song's playing!) to avoid race conditions
+        const bool should_suspend = audio_stream->IsPlaying();
+        if (should_suspend)
+            audio_stream->Pause();
+
         audio_stream->SetSpeed(GetSpeedValue());
-        audio_stream->Play();
+
+        if (should_suspend)
+            audio_stream->Play();
     }
 }
 

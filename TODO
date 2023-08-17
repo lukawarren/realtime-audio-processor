@@ -10,6 +10,3 @@
 - sanitise playlist files
 - better DS for FFT history
 - clang-tidy
-- can modify with no effects after clear
-- can unpause by changing speed
-- can fullscreen! - re-allow resizing width?
