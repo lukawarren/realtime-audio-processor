@@ -63,8 +63,7 @@ PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
     vertical_sizer->Add(progress_bar, 0, wxEXPAND | wxLEFT | wxRIGHT, margin);
     vertical_sizer->Add(button_sizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxALIGN_CENTER, margin);
     SetSizer(vertical_sizer);
-    SetMinSize({ 800, 200 });
-    SetMaxSize({ 800, 500 });
+    SetMinSize({ 500, 200 });
     SetSize({800, 500});
 
     // Menu / tool bar
