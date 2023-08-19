@@ -3,16 +3,15 @@
 #include <complex>
 #include <array>
 
-class BassEffect : public AudioEffect
+class EqualiserEffect : public AudioEffect
 {
 public:
-    BassEffect();
+    EqualiserEffect();
     void ApplyEffect(Packet& packet) override;
     std::string GetName() const override;
 
 private:
-    std::array<std::vector<float>, 3> CreateWindows(Packet& packet) const;
-    void PerformBassBoost(
+    void ModifyFrequencies(
         std::vector<std::complex<float>>& fft_output,
         const int frequency
     ) const;

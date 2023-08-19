@@ -1,7 +1,7 @@
-#include "effects/bass_effect.h"
+#include "effects/equaliser_effect.h"
 #include "effects/fft.h"
 
-BassEffect::BassEffect()
+EqualiserEffect::EqualiserEffect()
 {
     properties["lower frequency"] = Property(20.0f, 0.0f, 20000.0f);
     properties["upper frequency"] = Property(500.0f, 0.0f, 20000.0f);
@@ -9,7 +9,7 @@ BassEffect::BassEffect()
     properties["iterations"] = Property(1, 1, 5);
 }
 
-void BassEffect::ApplyEffect(Packet& packet)
+void EqualiserEffect::ApplyEffect(Packet& packet)
 {
     for (int i = 0; i < properties["iterations"].value; ++i)
     {
@@ -17,7 +17,7 @@ void BassEffect::ApplyEffect(Packet& packet)
         FastFourierTransform fft(packet.current_samples, std::nullopt);
         std::vector<std::complex<float>>& fft_output = fft.output;
 
-        PerformBassBoost(fft_output, packet.frequency);
+        ModifyFrequencies(fft_output, packet.frequency);
 
         // Perform IFFT to convert back to time domain
         InverseFourierTransform inverse(fft_output);
@@ -36,7 +36,7 @@ void BassEffect::ApplyEffect(Packet& packet)
     }
 }
 
-void BassEffect::PerformBassBoost(
+void EqualiserEffect::ModifyFrequencies(
     std::vector<std::complex<float>>& fft_output,
     const int frequency
 ) const
@@ -65,7 +65,7 @@ void BassEffect::PerformBassBoost(
     }
 }
 
-std::string BassEffect::GetName() const
+std::string EqualiserEffect::GetName() const
 {
-    return "Bass amplifier";
+    return "Equaliser";
 }

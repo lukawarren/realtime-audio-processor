@@ -6,9 +6,9 @@ void SpaciousRoom(AtomicLinkedList<AudioEffect>* effects)
     // Bass (high pitched sounds are more likely to reflect off a
     // surface, so reduce low frequencies accordingly as if we're
     // hearing mostly only the ehco)
-    auto* bass = new BassEffect();
-    bass->properties["upper frequency"].value = 250.0f;
-    effects->Add(bass);
+    auto* equaliser = new EqualiserEffect();
+    equaliser->properties["upper frequency"].value = 250.0f;
+    effects->Add(equaliser);
 
     // Echo
     effects->Add(new EchoEffect());
@@ -16,12 +16,12 @@ void SpaciousRoom(AtomicLinkedList<AudioEffect>* effects)
 
 void LoFi(AtomicLinkedList<AudioEffect>* effects)
 {
-    // Bass ("smooth" most frequencies save for high vocals so as to muffle them)
-    auto* bass = new BassEffect();
-    bass->properties["lower frequency"].value = 250.0f;
-    bass->properties["upper frequency"].value = 8000.0f;
-    bass->properties["multiplier"].value = 0.1f;
-    effects->Add(bass);
+    // "Smooth" most frequencies (save for high vocals) so as to muffle them
+    auto* equaliser = new EqualiserEffect();
+    equaliser->properties["lower frequency"].value = 250.0f;
+    equaliser->properties["upper frequency"].value = 8000.0f;
+    equaliser->properties["multiplier"].value = 0.1f;
+    effects->Add(equaliser);
 
     // Calming noise
     auto* noise = new NoiseEffect();
@@ -36,12 +36,13 @@ void LoFi(AtomicLinkedList<AudioEffect>* effects)
 
 void RemoveFrequencies(AtomicLinkedList<AudioEffect>* effects, float lower, float upper)
 {
-    auto* bass = new BassEffect();
-    bass->properties["lower frequency"].value = lower;
-    bass->properties["upper frequency"].value = upper;
-    bass->properties["multiplier"].value = 0.1f;
-    bass->properties["iterations"].value = 5;
-    effects->Add(bass);
+    // Use many iterations to really stamp it out! :)
+    auto* equaliser = new EqualiserEffect();
+    equaliser->properties["lower frequency"].value = lower;
+    equaliser->properties["upper frequency"].value = upper;
+    equaliser->properties["multiplier"].value = 0.1f;
+    equaliser->properties["iterations"].value = 5;
+    effects->Add(equaliser);
 }
 
 void RemoveBass(AtomicLinkedList<AudioEffect>* effects)
