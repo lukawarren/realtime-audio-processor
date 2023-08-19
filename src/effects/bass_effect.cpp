@@ -3,8 +3,8 @@
 
 BassEffect::BassEffect()
 {
-    properties["lower frequency"] = Property(20.0f, 0.0f, 250.0f);
-    properties["upper frequency"] = Property(500.0f, 250.0f, 8000.0f);
+    properties["lower frequency"] = Property(20.0f, 0.0f, 20000.0f);
+    properties["upper frequency"] = Property(500.0f, 0.0f, 20000.0f);
     properties["multiplier"] = Property(0.0f, 0.0f, 2.0f);
     properties["iterations"] = Property(1, 1, 5);
 }
