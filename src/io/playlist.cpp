@@ -43,10 +43,13 @@ void Playlist::Shuffle()
 {
     /*
         Perform a "Fisher–Yates" shuffle
-        https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle.
+
+        Use the current time as the seed.
     */
 
     const std::size_t size = filenames.size();
+    srand(time(NULL));
 
     // Iterate through vector in reverse
     for (std::size_t i = size - 1; i > 0; --i)
