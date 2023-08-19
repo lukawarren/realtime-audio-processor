@@ -4,9 +4,9 @@
 EqualiserEffect::EqualiserEffect()
 {
     properties["lower frequency"] = Property(20.0f, 0.0f, 20000.0f);
-    properties["upper frequency"] = Property(500.0f, 0.0f, 20000.0f);
+    properties["upper frequency"] = Property(2000.0f, 0.0f, 20000.0f);
     properties["multiplier"] = Property(0.0f, 0.0f, 2.0f);
-    properties["iterations"] = Property(1, 1, 5);
+    properties["iterations"] = Property(3, 1, 5);
 }
 
 void EqualiserEffect::ApplyEffect(Packet& packet)
