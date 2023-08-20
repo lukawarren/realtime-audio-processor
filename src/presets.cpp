@@ -16,10 +16,10 @@ void SpaciousRoom(AtomicLinkedList<AudioEffect>* effects)
 
 void LoFi(AtomicLinkedList<AudioEffect>* effects)
 {
-    // "Smooth" most frequencies (save for high vocals) so as to muffle them
+    // Muffle sound by suppressing frequencies
     auto* equaliser = new EqualiserEffect();
     equaliser->properties["lower frequency"].value = 250.0f;
-    equaliser->properties["upper frequency"].value = 8000.0f;
+    equaliser->properties["upper frequency"].value = 20000.0f;
     equaliser->properties["multiplier"].value = 0.1f;
     effects->Add(equaliser);
 
@@ -36,12 +36,10 @@ void LoFi(AtomicLinkedList<AudioEffect>* effects)
 
 void RemoveFrequencies(AtomicLinkedList<AudioEffect>* effects, float lower, float upper)
 {
-    // Use many iterations to really stamp it out! :)
     auto* equaliser = new EqualiserEffect();
     equaliser->properties["lower frequency"].value = lower;
     equaliser->properties["upper frequency"].value = upper;
-    equaliser->properties["multiplier"].value = 0.1f;
-    equaliser->properties["iterations"].value = 5;
+    equaliser->properties["multiplier"].value = 0.001f;
     effects->Add(equaliser);
 }
 

@@ -15,4 +15,9 @@ private:
         std::vector<std::complex<float>>& fft_output,
         const int frequency
     ) const;
+
+    void ModifyMagnitude(
+        std::complex<float>& number,
+        const float multiplier
+    ) const;
 };
