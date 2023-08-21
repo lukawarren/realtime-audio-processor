@@ -108,8 +108,18 @@ void EqualiserEffect::ModifyFrequencies(
 
     // Work out "bins"
     const float frequency_resolution = (float)frequency / (float)fft_output.size();
-    const int lower_bin = lower_frequency / frequency_resolution;
-    const int upper_bin = upper_frequency / frequency_resolution;
+    int lower_bin = lower_frequency / frequency_resolution;
+    int upper_bin = upper_frequency / frequency_resolution;
+
+    /*
+        Because of the finite bin size, the lower bin may not be 0, even if the
+        frequency is. Likewise, the upper bin may not be the maximum it can be
+        even if the upper frequency is 20,000 Hz! This is sometimes called
+        "spectral leakage" and causes quite a bit of noise. Adding a bit of
+        leeway helps fix this for when the lower frequency is 0 Hz, for example.
+    */
+   lower_bin = std::max(lower_bin - 1, 0);
+   upper_bin = std::min(upper_bin + 1, (int)fft_output.size() - 1);
 
     for (int i = lower_bin; i <= upper_bin; ++i)
     {
