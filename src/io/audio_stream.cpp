@@ -70,10 +70,12 @@ void AudioStream::Pause()
 
 void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
 {
-    // Grab pointers to current buffer, taking into account the current
-    // playback speed!
+    // Grab pointers to previous, current and next buffers, taking into account
+    // the current playback speed!
     int realtime_length = length * input_speed;
+    uint8_t* previous_input = input_buffer + input_progress - realtime_length;
     uint8_t* current_input = input_buffer + input_progress;
+    uint8_t* next_input = input_buffer + input_progress + realtime_length;
     input_progress += realtime_length;
 
     // If we have no data to provide, return a blank buffer
@@ -84,15 +86,25 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
     }
     else
     {
+        bool previous_is_valid = BufferIsInRange(previous_input, realtime_length);
+        bool next_is_valid = BufferIsInRange(next_input, realtime_length);
+
         // Convert to floats for easier processing
+        std::vector<float> empty = {};
+        std::vector<float> previous = previous_is_valid ? ConvertBufferToFloats(previous_input, realtime_length) : empty;
         std::vector<float> current = ConvertBufferToFloats(current_input, realtime_length);
+        std::vector<float> next = next_is_valid ? ConvertBufferToFloats(next_input, realtime_length) : empty;
 
         // "Squash" wave from 2x speed, 3x speed, etc. into 1x speed
+        previous = ResampleBuffer(previous);
         current = ResampleBuffer(current);
+        next = ResampleBuffer(next);
 
         // Apply effects
         AudioEffect::Packet packet = {
+            .previous_samples = previous,
             .current_samples = current,
+            .next_samples = next,
             .frequency = input_frequency
         };
         effects->ForEach([&](AudioEffect* effect) {

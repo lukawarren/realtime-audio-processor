@@ -10,7 +10,9 @@ public:
 
     struct Packet
     {
+        std::vector<float>& previous_samples;
         std::vector<float>& current_samples;
+        std::vector<float>& next_samples;
         const int frequency;
     };
 
