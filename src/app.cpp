@@ -25,9 +25,18 @@ bool App::OnInit()
     else if (n_arguments == 1)
     {
         // Attempt to skip straight to loading playlist file
-        Playlist playlist = Playlist::FromFile(arguments[1].ToStdString());
-        PlayWindow* window = new PlayWindow(nullptr, playlist);
-        window->Show();
+        std::optional<Playlist> playlist = Playlist::FromFile(arguments[1].ToStdString());
+
+        if (playlist.has_value())
+        {
+            PlayWindow* window = new PlayWindow(nullptr, *playlist);
+            window->Show();
+        }
+        else
+        {
+            std::cout << "Failed to load playlist as one or more audio files do not exist or cannot be read" << std::endl;
+            Exit();
+        }
     }
     else
     {

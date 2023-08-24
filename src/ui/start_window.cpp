@@ -56,17 +56,25 @@ void StartWindow::OnLoadButton(wxCommandEvent& event)
     if (dialog.ShowModal() == wxID_CANCEL)
         return;
 
-    // Open main playback window with selected playlist
-    wxLogDebug("Opening %s", dialog.GetPath());
-    Playlist playlist = Playlist::FromFile(dialog.GetPath().ToStdString());
-    PlayWindow* window = new PlayWindow(this, playlist);
-    window->Show();
+    // Attempt to create playlist (may not succeed if has missing audio files)
+    std::optional<Playlist> playlist = Playlist::FromFile(dialog.GetPath().ToStdString());
 
-    // Hide current window, but close it when the above window closes (so as to
-    // close the app as a whole)
-    Hide();
-    window->Bind(wxEVT_CLOSE_WINDOW, [&](wxCloseEvent& event) {
-        this->Close();
-        event.Skip();
-    });
+    if (playlist.has_value())
+    {
+        // Open play window
+        PlayWindow* window = new PlayWindow(this, *playlist);
+        window->Show();
+
+        // Hide current window, but close it when the above window closes (so as to
+        // close the app as a whole)
+        Hide();
+        window->Bind(wxEVT_CLOSE_WINDOW, [&](wxCloseEvent& event) {
+            this->Close();
+            event.Skip();
+        });
+    }
+    else
+    {
+        wxMessageBox("Failed to load playlist as one or more audio files do not exist or cannot be read");
+    }
 }
