@@ -113,7 +113,7 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
 
         // Copy back to buffer
         for (int i = 0; i < length / 2; ++i)
-            ((uint16_t*)buffer)[i] = current[i] * max_sample_value;
+            ((int16_t*)buffer)[i] = current[i] * max_sample_value;
     }
 
     on_progress_changed(GetProgress(), buffer, length);
@@ -138,6 +138,17 @@ std::vector<float> AudioStream::ConvertBufferToFloats(uint8_t* buffer, int lengt
         audio.emplace_back(
             float(*((int16_t*)buffer + i)) / (float)max_sample_value
         );
+
+    // for (int i = 0; i < length / 4; ++i)
+    // {
+    //     audio.emplace_back(
+    //         std::sin((float)i / (float)(length / 2) * 2.0f * M_PIf * 20.0f) * 0.9f
+    //     );
+    //     audio.emplace_back(
+    //         std::sin((float)i / (float)(length / 2) * 2.0f * M_PIf * 20.0f) * 0.9f
+    //     );
+    // }
+
     return audio;
 }
 
