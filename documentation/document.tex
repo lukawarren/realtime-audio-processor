@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{minted}
+
+% Author info %
+\title{AQA A Level Computer Science NEA}
+\date{2023}
+\author{Luka Warren}
+
+% Code snippet config %
+\setminted{fontsize=\footnotesize}
+
+\begin{document}
+	
+	% Title page %
+	\maketitle
+	\pagenumbering{gobble}
+	\tableofcontents
+	\newpage
+	\pagenumbering{arabic}
+	
+	
+	\section{Analysis}
+	Hello World!
+	
+	\begin{minted}{c++}
+void EqualiserEffect::ModifySamples(std::vector<float>& samples, const float frequency) const
+{
+	// Perform FFT to convert to frequency domain
+	FastFourierTransform fft(samples, std::nullopt);
+	std::vector<std::complex<float>>& fft_output = fft.output;
+	
+	ModifyFrequencies(fft_output, frequency);
+	
+	// Perform IFFT to convert back to time domain
+	InverseFourierTransform inverse(fft_output);
+	std::vector<float> scaled_real_components;
+	scaled_real_components.reserve(samples.size());
+	for (const auto& c : inverse.output)
+	scaled_real_components.emplace_back(
+	c.real() / (float)inverse.output.size()
+	);
+	
+	samples = scaled_real_components;
+}
+	\end{minted}
+	
+	\subsection*{Bla}
+	Structuring a document is easy!
+	It really is.
+	
+	\section{Analysis}
+	bla
+	\section{Testing}
+	bla
+	\section{Evaluation}
+	It  was very good
+	
+	
+\end{document}
