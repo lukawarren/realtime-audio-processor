@@ -4,3 +4,4 @@ cmake-*/
 build/
 build.bat
 .vs/
+documentation/*.autosave.xopp
