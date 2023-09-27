@@ -5,4 +5,4 @@ objectives:
 - the user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies) in realtime
 - the user must be able to apply additional "audio effects" to further enhance the music: echo, reverb, volume adjustment and noise
 - the user must be able to configure these "audio effects" individually and also apply pre-made "presets" to quickly reach a desired effect
-
+- syste must run quickly on average school computer

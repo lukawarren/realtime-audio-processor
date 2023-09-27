@@ -10,6 +10,9 @@
 % Code snippet config %
 \setminted{fontsize=\footnotesize}
 
+% Page layout %
+\usepackage[margin=1.0in]{geometry}
+
 \begin{document}
 	
 	% Title page %
@@ -21,9 +24,74 @@
 	
 	
 	\section{Analysis}
-	Hello World!
 	
-	\begin{minted}{c++}
+	\subsection{Background}
+	There exists online many popular "remixes"  where someone has taken an existing song and distorted it, usually by adjusting its speed, bass and pitch, to achieve a desired effect. Often these versions of the song are preferred to the originals when used to accompany short-form content on video-sharing sites such as TikTok. For example,  the song "Money Trees" by Kendrick Lamar has 120 million views on YouTube  in its original form, but also a sizeable 1.6 million views on one "TikTok remix" alone, and indeed on TikTok itself it is rare to hear the original version.
+	
+	\paragraph{}
+	As such it can be seen that there exists a large audience of people who enjoy listening to altered versions of popular songs. However, the most popular music listening programs, including Spotify and YouTube music, provide no mechanism for manually altering songs by one's self. Whilst there exists ready-made "remixes" by others, there are no mainstream programs which allow a user to "remix" a song in real-time as it is being listened to. This presents two main problems:
+	
+	\begin{itemize}
+		\item Many songs do not have any accompanying "remixes" to satisfy a user's need
+		\item The barrier to entry for creating a "remix" prevents easy and user-friendly experimentation
+	\end{itemize}
+	
+	\paragraph{}
+	It is therefore the aim of this coursework to create a system to allow users to "remix" songs in real-time as they listen to them. Such a system would allow for comprehensible, user-friendly experimentation, removing the above barrier to entry, whilst providing a mechanism to alter the sound of any arbitrary audio, removing the need to rely on other's work.
+	
+	\paragraph{}
+	However, a system can only be comprehensible and user-friendly if the exact needs of the users themselves are known, and so first a representative sub-section of the user-base must be interviewed.
+	
+	\subsection{Collection of Data}
+	A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". Below is a transcription of the questions asked and the relevant responses.
+	
+	\paragraph{Question 1 - Why do you sometimes prefer a song's remix?}
+	\subparagraph{Student 1}
+	Videos on TikTok are only about 30 seconds long. It's good to speed up a song because otherwise you couldn't enjoy the full chorus.
+	\subparagraph{Student 2}
+	I'm not sure really - I think I prefer it when a song has more bass than usual, and I like how distorted it sounds.
+	\subparagraph{Student 3}
+	I like watching remixes on YouTube because when they visualise the music it always looks very cool.
+	
+	\paragraph{Question 2 - How does a remix typically differ from the original song?}
+	\subparagraph{Student 1}
+	Usually they're faster and I guess that makes them higher-pitched too.
+	\subparagraph{Student 2}
+	They have more bass and are slowed down a bit. They have a bit of an echo {[effect]} too, and sometimes also they add noise to make it more relaxing. Even the volume is different.
+	\subparagraph{Student 3}
+	A remix usually has a different speed and is higher or lower than the original.
+	
+	\paragraph{Question 3 - What features would you like in a real-time audio editing program to assist in "remixing" music?}
+	\subparagraph{Student 1}
+	I'm not really good with editing so hopefully it would be easy to use. I'd probably only want to apply the same effect every time so there should be a way to help me with that.
+	\subparagraph{Student 2}
+	I'd like to be able to apply it to my entire music collection because that way all my songs could have the same effects applied. In other words I'd like to apply it to my music playlist.
+	\subparagraph{Student 3}
+	I think it would be cool to change the speed of songs and change the bass and treble. My car stereo can do that and it's really interesting to play with.
+
+
+	\subsection{Interview Interpretation and Technical Analysis}
+	\subsubsection{Frequencies}
+	Through the interviews it was understood that the ability to modify certain frequency ranges was desirable, in order to affect both the bass and treble. Typically, there are two main ways of doing this:
+	\begin{itemize}
+		\item Applying a low-pass or high-pass filter to broadly modify the frequencies represented
+		\item Modifying the incoming audio in its frequency domain using a Fourier Transform, then converting it back to the time domain using an Inverse Fourier Transform
+	\end{itemize}
+	Whilst applying a low or high pass filter is a very inexpensive operation, it does not provide exact control over the frequencies modified. Hence in order to best be able to manipulate frequencies, a Fourier Transform must be used.  This is not a computationally trivial task and so every effort must be made to ensure that the program created can still run fast enough to be real-time on typical high school hardware, so as not to increase the barrier of entry, as this would go against the intention of the project.
+	
+	\subsubsection{Playback Speed}
+	The system must also be able to alter the playback speed, as this feature was highly requested. However, again this must not conflict with the real-time requirements of the system on modest high school hardware. In other words, the adjusting of playback speed should not demand a significant computational overhead (or ideally any overhead at all).
+	
+	\subsubsection{Other Audio Effects}
+	Student 2 mentioned "remixes" often contain an "echo" or additional "noise", and so in order to avoid limiting the program to merely changing a song's speed or frequency response, it should also allow the user to apply various audio effects, including but not limited to the ones above. In order to maximise the ease of experimentation, as is desired, the effects should be easily configurable.
+		
+	\subsubsection{Visualisation}
+	As the program is already meant to perform a Fourier Transform on the incoming audio data, it will thus already have a representation of the audio in frequency-space. Hence it would be trivial to display this data graphically so as to provide an audio visualisation feature that is, computationally, essentially free. It is hoped that by providing visual feedback to the audio as it is edited, the effects of, for example, adjusting the bass, will be easy to see and thus the processing the software is carrying out will be easy to comprehend. 
+	
+	
+	
+	\section { Code example }
+		\begin{minted}{c++}
 void EqualiserEffect::ModifySamples(std::vector<float>& samples, const float frequency) const
 {
 	// Perform FFT to convert to frequency domain
@@ -37,24 +105,13 @@ void EqualiserEffect::ModifySamples(std::vector<float>& samples, const float fre
 	std::vector<float> scaled_real_components;
 	scaled_real_components.reserve(samples.size());
 	for (const auto& c : inverse.output)
-	scaled_real_components.emplace_back(
-	c.real() / (float)inverse.output.size()
-	);
+		scaled_real_components.emplace_back(
+			c.real() / (float)inverse.output.size()
+		);
 	
 	samples = scaled_real_components;
 }
 	\end{minted}
-	
-	\subsection*{Bla}
-	Structuring a document is easy!
-	It really is.
-	
-	\section{Analysis}
-	bla
-	\section{Testing}
-	bla
-	\section{Evaluation}
-	It  was very good
 	
 	
 \end{document}
