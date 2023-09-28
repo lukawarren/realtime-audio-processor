@@ -46,7 +46,7 @@
 	However, a system can only be comprehensible and user-friendly if the exact needs of the users themselves are known, and so first a representative sub-section of the user-base must be interviewed.
 	
 	\subsection{Collection of Data}
-	A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". Below is a transcription of the questions asked and the relevant responses.
+	A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". Below is a brief summary of the questions asked and the relevant responses.
 	
 	\paragraph{Question 1 - Why do you sometimes prefer a song's remix?}
 	\subparagraph{Student 1}
@@ -95,7 +95,7 @@
 	As mentioned above, in section 1.3.1, it is essential to use a Fourier Transform to be able to modify the incoming audio in frequency-space (for example to provide a "bass-boost"). However, the primary concern is if this algorithm can be carried out fast enough to be able to process audio in real-time.
 	
 	\paragraph{}
-	The primary method for computing Fourier Transforms efficiently is using a Fast Fourier Transform (FFT), which is itself a subset of the Discrete Fourier Transform (DFT). DFTs operate on discrete packets of data, such as audio samples, as opposed to continuous waves, and are hence ideal for this project. Because of various mathematical tricks used in FFTs, they reduce the time-complexity of computing DFTs from \(O(N^2)\) to \(O(N\log{N})\), providing the performance this project needs (as when dealing with large audio samples N will typically be large).
+	The primary method for computing Fourier Transforms efficiently is using a Fast Fourier Transform (FFT), which is itself a subset of the Discrete Fourier Transform (DFT). DFTs operate on discrete packets of data, such as audio samples, as opposed to continuous waves, and are hence ideal for this project. Because of the various mathematical tricks used in FFTs, they reduce the time-complexity of computing DFTs from \(O(N^2)\) to \(O(N\log{N})\), providing the performance this project needs (as when dealing with large audio samples N will typically be large).
 	
 	\paragraph{}
 	The most popular FFT algorithm is the "Cooley-Turkey" algorithm, which recursively breaks down its input into two halves. The only limitation of  this approach is that the input data size must generally be a power of two, but as the program should have control over how much data it processes at a time, this should not be an issue.
