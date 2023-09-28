@@ -5,3 +5,9 @@ build/
 build.bat
 .vs/
 documentation/*.autosave.xopp
+documentation/*.aux
+documentation/*.log
+documentation/*.pdf
+documentation/*.gz
+documentation/*.toc
+documentation/_minted-document/
