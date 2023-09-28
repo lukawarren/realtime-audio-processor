@@ -117,7 +117,7 @@
 	Languages such as Python and Ruby, whilst intuitive and easy to use, may not provide sufficient CPU performance to easily allow the system to be real-time. Most music typically has two channels, each at a sample rate of around 44,000 Hz, meaning the system must process roughly 88,000 floating point numbers per second at minimum. This number can quickly grow if, for example, an echo is required, as then multiple seconds of audio may need to be considered. Whilst most machines have CPUs powerful enough to accomplish this even when under an interpreted language, it may result in high CPU usage and significant energy requirements, raising the barrier of entry to using the program. Ideally, the program should therefore not use an interpreted language, so as to maximise the number of people who can run it.
 	
 	\paragraph{Garbage-collected and JIT languages}
-	Languages such as C\# and Java are both Just-In-Time  (JIT) compiled and garbage collected.  This is unacceptable for a real-time audio processing application as both JIT compilation and garbage collection typically introduce frequent micro-stutters, which may result in occasional blips in the program's audio, ruining the experience.
+	Languages such as C\# and Java are both Just-In-Time  (JIT) compiled and garbage collected.  This is unacceptable for a real-time audio processing application as both JIT compilation and garbage collection typically introduce frequent micro-stutters, which may result in occasional blips in the program's audio, ruining the output.
 	
 	\paragraph{}
 	After excluding the two groups of languages above, it can be seen that any language chosen must be compiled ahead-of-time to native machine code to maximise performance and avoid JIT stutter, whilst also providing direct control over memory to avoid the garbage-collection issues described above. Ideally, it should also be a modern language capable of OOP. After reviewing this requirements I have decided to use C++, as I am extremely familiar with the language and believe it suits all these requirements.
@@ -128,14 +128,18 @@
 	\includegraphics[width=13cm]{DFD}
 
 	\subsection{Final objectives}
-	\begin{itemize}
+	\begin{enumerate}
 	\item  The user must be able to load a collection of audio files known as a "playlist" and then play the audio files contained within in a logical order
 	\item  The user must be able to visualise the current audio being played in the frequency domain (i.e. visualise the frequencies)
 	\item The user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies such as by performing a bass boost) in realtime
 	\item The user must be able to apply additional "audio effects" to further enhance the music: echo, volume adjustment and noise
 	\item The user must be able to configure these "audio effects" individually and also apply pre-made "presets" to quickly reach a desired effect
-	\item  The system must run quickly on an average school computer
-	\end{itemize}
+	\item  The system must run in real-time on an average school computer
+	\end{enumerate}
+
+	\section { Design }
+	\section {  Testing }
+	\section {  Evaluation }
 
 	\section { Code example }
 		\begin{minted}{c++}
