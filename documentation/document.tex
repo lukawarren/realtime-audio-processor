@@ -17,7 +17,7 @@
 \usepackage[margin=1.0in]{geometry}
 
 \begin{document}
-	
+
 	% Title page %
 	\maketitle
 	\pagenumbering{gobble}
@@ -133,6 +133,14 @@
 	\subsection{Analysis of Similar Software Products}
 	Every consideration must be given to the existence of other software products which may implement, either partially or fully, the features of the program yet to be implemented.
 	
+	\paragraph{}
+	There exists two broad categories of software which provides features similar to this project:
+	\begin{itemize}
+		\item Real-time music players - the majority of music listeners listen to music in real-time using streaming services such as Spotify or Apple Music, which can provide certain features to adjust songs in frequency-space (albeit crudely)
+		
+		\item Audio editors - for those who wish to radically alter audio (e.g. to create a remix), software such as Audacity provides many effects and processing opportunities. These are, however, "offline" in the sense that such software is not real-time.
+	\end{itemize}
+		
 	\subsubsection{Streaming Services}
 	Currently within the market the two most popular music streaming products are Apple Music, with 88 million customers in 2022, and Spotify, which over 500 million. These allow users to listen to music on-demand, with both providing an "equaliser" feature that allows the user to modify the relative volume of frequencies within a song in real-time. In other words, with both these products one can, for example, perform a "bass boost", which mirrors very closely one of the main aims of this project.
 	
@@ -165,9 +173,66 @@
 	\end{itemize}
 
 	\paragraph{}
-	Thus whilst on a surface-level, the presence of "audio equalisers" in both software products may appear to conflict with the aims of this project, closer inspection reveals that they offer only extremely limited options, without the ability to customise which precise frequencies are adjusted or indeed apply any other audio effects.
+	Thus whilst on a surface-level, the presence of "audio equalisers" in both software products may appear to conflict with the aims of this project, especially as they perform their processing in real-time, closer inspection reveals that they offer only extremely limited options, without the ability to customise which precise frequencies are adjusted or indeed apply any other audio effects.
 
 	\subsubsection{Audio Editing Software}
+	On the other hand, there exists many programs which allow a user to modify audio using a great range of effects and filters. As the aim of this project is to lower the barrier of entry to creating song "remixes", it is to be free, and as such it is most worthwhile only considering other free audio editing software.
+	
+	\paragraph{}
+	The most popular free audio editing application is Audacity, an open-source project that supports an extremely large number of effects. Additionally, it supports viewing a spectrogram of the audio being played (which visualises the audio in frequency-space just like this project aims to do), although the feature is somewhat hidden away.
+	
+	\begin{figure}[H]
+		\caption{Audacity when configured to display a spectrogram of the audio, seen as two multi-coloured strips (one for each channel)}
+		\begin{center}
+			\includegraphics[width=15cm]{audacity spectogram}
+		\end{center}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\caption{Audacity's "effects menu", offering a number of categories which themselves all contain numerous effects}
+		\begin{center}
+			\includegraphics[width=5cm]{audacity effects menu}
+		\end{center}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\caption{Audacity offering a menu to configure the application of a computationally-intensive, though highly accurate, reverb effect}
+		\begin{center}
+			\includegraphics[width=9cm]{audacity effects}
+		\end{center}
+	\end{figure}
+	
+	\paragraph{}
+	As can be seen above, Audacity thus presents a number of strengths which could be seen to risk overshadowing this project:
+	\begin{itemize}
+		\item A great number of effects are supported, far greater than this project's scope could hope to provide
+		\item The effects are all highly physically accurate, with extreme levels of customisation
+	\end{itemize}
+	
+	However, its weaknesses should also be stressed:
+	\begin{itemize}
+		\item The user interface is daunting for new users, raising the barrier of entry. For example, the process of displaying a spectrogram is not at all obvious and is hidden away.
+		\item The sheer number of parameters for controlling effects is likely very daunting for people that just want a "quick remix".
+		\item There are no ready-made "presets" for those too confused to immediately start applying effects themselves, or for those quickly looking for a specific modification.
+		\item One cannot apply any effects in real-time, and often the effects are so computationally expensive that one must wait multiple seconds before hearing the result, even on powerful hardware.
+		\item It is impossible to create a "music playlist" to listen to multiple songs in quick succession.
+	\end{itemize}
+	
+	Hence it can be seen that whilst Audacity, and other audio editing software, provides many mechanisms for manipulating audio, it cannot be done in real-time, and often powerful hardware is required. They are also completely unsuitable as real-time music players, as they cannot play "playlists". Additionally, the sheer range of editing options would likely prove daunting to even the most experienced user, and so when one considers the high barrier of entry, the failure to be real-time, and the lack of "playlist" functionality, it is clear that audio editing programs such as Audacity do not conflict with the aims of this project.
+
+	\subsubsection{Summary of Similar Software Products}
+	\begin{figure}[H]
+		\caption{S.W.O.T diagram for streaming services}
+		\begin{center}
+			\includegraphics[width=10cm]{SWOT streaming}
+		\end{center}
+	\end{figure}
+	\begin{figure}[H]
+		\caption{S.W.O.T diagram for audio editing prograrms}
+		\begin{center}
+			\includegraphics[width=10cm]{SWOT audacity}
+		\end{center}
+	\end{figure}
 
 	\subsection{Final objectives}
 	\begin{enumerate}
