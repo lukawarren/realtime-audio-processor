@@ -125,7 +125,49 @@
 	\subsection{Data Flow Diagram}
 	After considering the requirements of the project, I believe the following should serve as a good model of how data should be treated.
 	
-	\includegraphics[width=13cm]{DFD}
+	\begin{figure}[h]
+		\includegraphics[width=13cm]{DFD}
+		\caption{The data flow diagram (DFD)}
+	\end{figure}
+
+	\subsection{Analysis of Similar Software Products}
+	Every consideration must be given to the existence of other software products which may implement, either partially or fully, the features of the program yet to be implemented.
+	
+	\subsubsection{Streaming Services}
+	Currently within the market the two most popular music streaming products are Apple Music, with 88 million customers in 2022, and Spotify, which over 500 million. These allow users to listen to music on-demand, with both providing an "equaliser" feature that allows the user to modify the relative volume of frequencies within a song in real-time. In other words, with both these products one can, for example, perform a "bass boost", which mirrors very closely one of the main aims of this project.
+	
+	\begin{figure}[H]
+		\caption{The Spotify equaliser}
+		\begin{center}
+			\includegraphics[width=5cm]{spotify equaliser}
+		\end{center}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\caption{The Apple equaliser}
+		\begin{center}
+			\includegraphics[width=10cm]{apple equaliser}
+		\end{center}
+	\end{figure}
+	
+	As can be seen above, there are a number of similarities with the aims of this project:
+	\begin{itemize}
+		\item The user can easily drag various points  to modify the relative volumes of a number of "frequency groups". For example, one could drag the left-most dot to its maximum height in both to boost frequencies under either 60 or 30 Hz.
+		\item Ready-made "presets" can be chosen at will to assist those who may be unfamiliar with the settings presented or want to achieve a particular, pre-made effect.
+		\item In Apple Music, the overall volume of the music can be adjusted.
+	\end{itemize}
+	
+	\paragraph{}
+	However, there are also a few notable areas in which the two products above fall short of the features being implemented in this project, and hence fail to satisfy the needs of the users outlined in section 1.1.
+	\begin{itemize}
+		\item In neither case does the user have exact control over the precise frequencies being modified.  If, for example, one had identified a particularly intriguing instrument playing from 500 Hz - 700 Hz, it would be impossible to isolate that frequency and boost it.
+		\item There is no option to apply other audio effects such as an echo or noise. As such there are very few ways one can actually modify the audio, so creating a full "remix", that feels distinct from the original, is impossible.
+	\end{itemize}
+
+	\paragraph{}
+	Thus whilst on a surface-level, the presence of "audio equalisers" in both software products may appear to conflict with the aims of this project, closer inspection reveals that they offer only extremely limited options, without the ability to customise which precise frequencies are adjusted or indeed apply any other audio effects.
+
+	\subsubsection{Audio Editing Software}
 
 	\subsection{Final objectives}
 	\begin{enumerate}
