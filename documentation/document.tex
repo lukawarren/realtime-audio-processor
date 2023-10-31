@@ -29,6 +29,10 @@
 	\newpage
 	\pagenumbering{arabic}
 	
+	% Page breaks %
+	\AddToHook{cmd/section/before}{\clearpage}
+	% \AddToHook{cmd/subsection/before}{\clearpage} %
+	
 	\section{Analysis}
 	
 	\subsection{Background}
@@ -248,7 +252,6 @@
 	\end{enumerate}
 
 
-	\pagebreak
 	\section { Design }
 	
 	\subsection{Audio Effects Data Structure}
@@ -284,14 +287,10 @@
 		 Race conditions occur when one thread tries to read data whilst the other writes to it. If, for example, the GUI thread removed an audio effect from the audio effect list (see section 2.1) and freed it from memory whilst the audio thread was applying that same effect, the audio thread would suddenly be reading from invalid memory, likely resulting in a crash or undefined behaviour.
 	}, the data that is read by both threads should be thread-safe - only one thread should be able to access the data at a time. This can be achieved by using mutexes\footnote{See above footnote on mutexes}.
 	
-	
-	\pagebreak
 	\section {  Testing }
 	
-	\pagebreak
 	\section {  Evaluation }
 	
-	\pagebreak
 	\section { Appendix  }
 	
 	\subsection{Copy of Interview Questionnaire}
