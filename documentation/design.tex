@@ -31,3 +31,26 @@ To avoid race conditions\footnote{
 To satisfy the requirements of multithreading (see above), I will write my own custom "atomic linked list", backed by a mutex\footnote{
 	See above footnote on mutexes
 }, which will function just like a normal linked list but maintain thread-safety in all its operations.
+
+
+\pagebreak
+\subsection{Audio Effects}
+The full list of audio effects detailed in the analysis section is as follows:
+\begin{itemize}
+	\item Frequency modification - selectively modifying frequencies such as by performing a bass boost
+	\item Echo - making audio sound like it's recorded in a large room
+	\item Volume adjustment - modifying the amplitude of the audio
+	\item Noise - adding subtle imperfections to the audio
+\end{itemize}
+
+\paragraph{}
+Immediately it is obvious that all audio effects will share many common features. Each effect shall:
+\begin{itemize}
+	\item Take a number of audio samples as input
+	\item Have a number of configurable options which need to be exposed to the GUI front-end
+	\item Perform processing on all audio samples at once
+	\item Output their final processed audio
+\end{itemize}
+
+\paragraph{}
+Given these requirements it is wise to use an object-orientated inheritance approach where effect subclass inherits from a common parent, which provides common functionality (such as the storage and exposing of configuration options), as well as providing a common interface that other parts of the code can use.
