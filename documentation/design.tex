@@ -34,16 +34,50 @@ To satisfy the requirements of multithreading (see above), I will write my own c
 
 
 \pagebreak
-\subsection{Audio Effects}
+\subsection{Audio Effects Architecture}
 The full list of audio effects detailed in the analysis section is as follows:
 \begin{itemize}
-	\item Frequency modification - selectively modifying frequencies such as by performing a bass boost
+	\item Equaliser (frequency modification) - selectively modifying frequencies such as by performing a bass boost
 	\item Echo - making audio sound like it's recorded in a large room
 	\item Volume adjustment - modifying the amplitude of the audio
 	\item Noise - adding subtle imperfections to the audio
 \end{itemize}
 
-\paragraph{}
+\subsubsection{Unique Audio Effect Traits}
+Each audio effect will need its own properties, and potentially its own mutable state (for example, the echo effect needs to "remember" the previous audio samples so it can repeat them later). Below is a summary of the requirements, properties and state of each audio effect.
+
+{
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[h!]
+	\begin{center}
+		\begin{tabularx}{1.0 \textwidth} {
+				| >{\raggedright\arraybackslash}X 
+				| >{\raggedright\arraybackslash}X
+				| >{\raggedright\arraybackslash}X 
+				| >{\raggedright\arraybackslash}X  |
+			}
+			\hline
+			Effects & Requirements & Properties & State \\
+			
+			\hline
+			Equaliser & Allow the user to alter the volume of a selected frequency range. Multiple equaliser effects can be applied successively to cover multiple ranges.  & Lower frequency \newline  Upper frequency \newline Multiplier  & None \\
+			
+			\hline
+			Echo & Produce an echo effect where audio sounds like it's getting reflected in a large room & Fall-off (how quickly echoes fade) \newline Delay samples (how many samples must pass before a sample is echoed) & Previous audio samples buffer \\
+			
+			\hline
+			Volume & Adjust the volume / amplitude of incoming audio & Volume multiplier & None \\
+			
+			\hline
+			Noise & Add subtle imperfections to the audio & Intensity (the volume of the noise) & None\\
+			
+			\hline
+		\end{tabularx}
+	\end{center}
+\end{table}
+}
+
+\subsubsection{Common Audio Effect Traits}
 Immediately it is obvious that all audio effects will share many common features. Each effect shall:
 \begin{itemize}
 	\item Take a number of audio samples as input
@@ -53,4 +87,25 @@ Immediately it is obvious that all audio effects will share many common features
 \end{itemize}
 
 \paragraph{}
-Given these requirements it is wise to use an object-orientated inheritance approach where effect subclass inherits from a common parent, which provides common functionality (such as the storage and exposing of configuration options), as well as providing a common interface that other parts of the code can use.
+Given these requirements it is wise to use an object-orientated inheritance approach where effect subclass inherits from a common parent, which provides common functionality (such as the storage and exposing of configuration options), as well as providing a common interface that other parts of the code can use. In order to abstract away the details of interacting with an audio effect, two new classes will also be needed.
+
+\subparagraph{Packet} A packet represents a chunk of audio awaiting processing by the effect. However, some effects require knowledge of both the previous audio samples and future audio samples (like echo). Thus, each packet will consist of 3 audio buffers - one for the previous, current and next buffer of audio samples. A packet will also contain the frequency of the incoming audio as this is required for the FFT maths.
+
+\subparagraph{Property} Each audio effect has a number of configurable properties. To aid in validation, each property will have a current,  minimum and maximum value, as well as a flag to differentiate between integer values and decimal values.
+
+\paragraph{}
+Both these classes will be independent of the main audio effect parent class. The audio effect parent class will merely use these classes to represent the data provided and stored by it. This is an example of {\it composition}.
+
+\subsubsection{Properties Data Structure}
+Each audio effect will have a list of properties. When drawing a properties GUI, the front-end code will want an easy and convenient way of both getting a list of all available properties, along with their respective names. In a similar fashion, when setting the values of certain properties, it will be most convenient if properties can be accessed using their names.
+
+\paragraph{}
+I will use a hash-map as my data structure for this purpose. Hash-maps can be indexed by using the name of the property (e.g. "minimum frequency" as the key), simplifying the front-end code and avoiding the need for a separate "property name" variable. In addition, they provide very fast look-up with an O(1) time. Whilst hash-maps are expensive when it comes to adding and removing elements, each audio effect will only have a fixed number of properties so this will not be an issue.
+
+\subsubsection{UML Class Diagram}
+After considering all the requirements of the multiple classes required, I have constructed a class diagram. However, a slight modification has been made to the typical UML structure: properties of audio effects are prefixed with an * (asterisk) in order to indicate that their are not attributes {\it per se}, but rather are elements in their parent's properties hashmap.
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{effects class diagram}
+	\caption{UML class diagram containing attributes, operations and custom "properties"}
+\end{figure}
