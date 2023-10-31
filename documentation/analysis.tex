@@ -16,6 +16,7 @@ It is therefore the aim of this coursework to create a system to allow users to 
 \paragraph{}
 However, a system can only be comprehensible and user-friendly if the exact needs of the users themselves are known, and so first a representative sub-section of the user-base must be interviewed.
 
+\pagebreak
 \subsection{Collection of Data}
 A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". Below is a brief summary of the questions asked and the relevant responses.
 
@@ -43,7 +44,7 @@ I'd like to be able to apply it to my entire music collection because that way a
 \subparagraph{Student 3}
 I think it would be cool to change the speed of songs and change the bass and treble. My car stereo can do that and it's really interesting to play with.
 
-
+\pagebreak
 \subsection{Interview Interpretation}
 \subsubsection{Frequencies}
 Through the interviews it was understood that the ability to modify certain frequency ranges was desirable, in order to affect both the bass and treble. Typically, there are two main ways of doing this:
@@ -62,6 +63,7 @@ Student 2 mentioned "remixes" often contain an "echo" or additional "noise", and
 \subsubsection{Visualisation}
 As the program is already meant to perform a Fourier Transform on the incoming audio data, it will thus already have a representation of the audio in frequency-space. Hence it would be trivial to display this data graphically so as to provide an audio visualisation feature that is, computationally, essentially free. It is hoped that by providing visual feedback to the audio as it is edited, the effects of, for example, adjusting the bass, will be easy to see and thus the processing the software is carrying out will be easy to comprehend.
 
+\pagebreak
 \subsection{Fourier Technical Analysis}
 As mentioned above, in section 1.3.1, it is essential to use a Fourier Transform to be able to modify the incoming audio in frequency-space (for example to provide a "bass-boost"). However, the primary concern is if this algorithm can be carried out fast enough to be able to process audio in real-time.
 
@@ -81,6 +83,7 @@ However, a Fourier Transform is essentially just a process to convert a signal i
 \paragraph{}
 It therefore appears that the issue of manipulating frequencies in the coursework should be technically possible, providing performance is maximised by using a Cooley-Turkey FFT.
 
+\pagebreak
 \subsection{Programming Language  and Performance Technical Analysis}
 Before embarking on a project design, an appropriate programming language must be chosen. By considering the project requirements it is apparent that two main groups of languages will likely prove insufficient.
 
@@ -93,6 +96,7 @@ Languages such as C\# and Java are both Just-In-Time  (JIT) compiled and garbage
 \paragraph{}
 After excluding the two groups of languages above, it can be seen that any language chosen must be compiled ahead-of-time to native machine code to maximise performance and avoid JIT stutter, whilst also providing direct control over memory to avoid the garbage-collection issues described above. Ideally, it should also be a modern language capable of OOP. After reviewing this requirements I have decided to use C++, as I am extremely familiar with the language and believe it suits all these requirements.
 
+\pagebreak
 \subsection{Data Flow Diagram}
 After considering the requirements of the project, I believe the following should serve as a good model of how data should be treated.
 
@@ -101,6 +105,7 @@ After considering the requirements of the project, I believe the following shoul
 	\caption{The data flow diagram (DFD)}
 \end{figure}
 
+\pagebreak
 \subsection{Analysis of Similar Software Products}
 Every consideration must be given to the existence of other software products which may implement, either partially or fully, the features of the program yet to be implemented.
 
@@ -205,6 +210,7 @@ Hence it can be seen that whilst Audacity, and other audio editing software, pro
 	\end{center}
 \end{figure}
 
+\pagebreak
 \subsection{Final objectives}
 \begin{enumerate}
 	\item  The user must be able to load a collection of audio files known as a "playlist" and then play the audio files contained within in a logical order
