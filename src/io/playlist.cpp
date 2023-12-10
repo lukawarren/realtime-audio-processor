@@ -31,6 +31,10 @@ std::optional<Playlist> Playlist::FromFile(const std::string& path)
     while (std::getline(input_file, line))
         lines.emplace_back(line);
 
+    // Verify playlist is not empty
+    if (lines.size() == 0)
+        return std::nullopt;
+
     // Verify each file actually exists
     for (const auto& filename : lines)
     {

@@ -34,7 +34,7 @@ bool App::OnInit()
         }
         else
         {
-            std::cout << "Failed to load playlist as one or more audio files do not exist or cannot be read" << std::endl;
+            std::cout << "Failed to load playlist as is either empty or contains non-existent audio" << std::endl;
             Exit();
         }
     }
