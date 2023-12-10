@@ -1,3 +1,4 @@
+- crash if playlist empty
 - can't see "Heuss L'enfoiré, Jul - Moulaga.mp3"
 - defensive programming
 - in documentation, detail why destructors are used for some things (but not widgets)
