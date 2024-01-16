@@ -34,6 +34,70 @@ To satisfy the requirements of multithreading (see above), I will write my own c
 
 
 \pagebreak
+
+\subsection{Audio Data and Playback}
+
+\subsubsection{Audio Data}
+The program will have to load a variety of  user-supplied data in order to operate:
+\begin{itemize}
+	\item As described in objective 1, the user must be able to load a collection of audio files known as  a "playlist", which will contain the paths of one or more audio files on the system.
+	\item Each audio file will consist of a number of audio samples, which will need to be loaded into memory when needed, then freed when not in use.
+	\item Audio files also contain other crucial information, such as the audio frequency (e.g. 44,000 Hz), the number of channels (usually mono (1) or stereo (2)), and the number of samples.
+	\item Thus to keep track of the audio files loaded into memory, each audio file will need to store its raw audio samples, its frequency, the number of channels, and the number of samples.
+\end{itemize}
+
+\subsubsection{The Need for Streaming}
+It may be tempting to load and unload all audio data in a hierarchal  fashion as such:
+\begin{enumerate}
+	\item An attempt is made in the code to load a playlist.
+	\item To do this, the playlist will be read from disk and all the audio file paths contained within will be loaded into memory.
+	\item Each audio file path will be verified to check it is valid exists on the system.
+	\item If the playlist is valid, each audio file will then be loaded using the paths provided.
+	\item Thus the loading of a playlist will involve loading all audio files referenced within.
+	\item At the end of the program, when the playlist is no longer needed, all the playlist's audio files will be freed from memory, followed by the playlist itself.
+\end{enumerate}
+
+However, this is not a practical approach due to memory usage constraints. If a user attempted to load a playlist consisting of 200 songs, each 5 MB each, this would consume roughly 1000 MB of memory for the entire duration of the program, even though only 1 audio file can be played at once (and hence only one needs to be in memory at any one time). This conflicts with objective 6 ("the system must run in real-time on an average school computer") as many computers may not have large amounts of free memory, particularly if other programs are running, which may lead to an out-of-memory crash. 
+
+\paragraph{}
+Instead, I have decided to "stream" audio files as they are played, so that only the audio file currently needed is resident in memory. This can be modelled as followed:
+\begin{enumerate}
+	\item An attempt is made in the code to load a playlist.
+	\item To do this, the playlist will be read from disk and all the audio file paths contained within will be loaded into memory.
+	\item Each audio file path will be verified to check it is valid exists on the system. If the playlist is valid, the execution of the program will continue.
+	\item Each time the next audio file is to be played from the playlist, the program will dynamically load it from disk (using the path from the playlist) and store it in memory.
+	\item When the next audio file is chosen, it is loaded as described above. Crucially however, the previous audio file is first unloaded from memory, as it is no longer needed.
+	\item At the end of the program, the currently playing audio file and playlist are both freed.
+\end{enumerate}
+
+\paragraph{}
+In this way, the issue of large playlists resulting in extremely large memory consumption will be avoided, as only one audio file will be loaded at once. 
+
+\subsubsection{Audio Playback}
+The playback of audio itself presents many challenges. In order to make the code as modular and decoupled as possible, I will abstract away the low-level creation of audio devices, pausing, un-pausing, etc. into an "AudioStream" class. One will simply create an "AudioStream", supply it with data, and the class will manage the various complexities of multithreading and feed the audio buffer with data at the appropriate times.
+
+\paragraph{}
+In order to maximise portability of the code,  and hence make it as cross-platform as possible in order to maximise the program's audience, I have decided to use a library called "SDL2" to handle audio playback, as it abstracts away the native APIs one would have to otherwise use. In this way, separate audio code does not have to be written for Windows, Linux, etc.
+
+\paragraph{}
+The code that plays audio on the system will run on a separate thread (see multithreading section). This audio thread is invoked at regular intervals by the operating system by way of a "callback" function. When this happens, it is the program's responsibility to supply the operating system with the next buffer of audio. This is summarised below:
+
+\begin{enumerate}
+	\item An "AudioStream" is created and supplied with the raw audio samples from the audio file, as well as pointers to the atomic linked list of audio effects and to the visualisation data buffer.
+	\item The AudioStream used SDL2 to invoke audio playback at regular intervals on a separate thread (the "audio thread") using a callback
+	\item Every time the callback is called, the AudioStream will fetch the next section of upcoming audio that it has been supplied with.
+	\item Each audio effect will then be applied (using the audio effects atomic linked list).
+	\item The audio visualisation module will then be invoked on the audio just processed, and its output written to the visualisation data buffer.
+	\item Now that all work is done for the current section of audio, the processed audio will be copied to the callback's audio buffer and the audio thread will suspend itself.
+	\item When the next section of audio is due, the callback will be re-invoked.
+\end{enumerate}
+
+TODO:
+- add flowchart for that in summary section
+- create summary section with UML for AudioFile, AudioStream and Playlist and flowchart for streaming
+
+\pagebreak
+
 \subsection{Audio Effects Architecture}
 The full list of audio effects detailed in the analysis section is as follows:
 \begin{itemize}
@@ -155,4 +219,5 @@ After considering all the requirements of the multiple classes required, I have 
 	\item talk about merge sort
 	\item talk about atomic linked list
 	\item talk about tree
+	\item talk about wxwidgets in GUI part
 \end{itemize}
