@@ -237,6 +237,9 @@ The user will navigate through a variety of "screens" in order to use the progra
 	\item "Edit effect" screen
 \end{itemize}
 
+\paragraph{Popups}
+Minor tasks such as  selecting a new song from a playlist or modifying visualisation settings will be handled with popup dialogue menus.
+
 \begin{figure}[H]
 	\includegraphics[width=14cm]{gui flow}
 	\caption{GUI flow for program }
@@ -250,9 +253,21 @@ The user will navigate through a variety of "screens" in order to use the progra
 \end{figure}
 
 \begin{figure}[H]
-	\includegraphics[width=8cm]{gui wireframes two}
+	\includegraphics[width=14cm]{gui wireframes two}
 	\caption{GUI wireframes for ancillary windows }
 \end{figure}
+
+\subsubsection{Relation to the Code}
+As I am using "wxWidgets" (see above), all GUIs must be programmed directly in code. I have decided, therefore, to create the following classes to abstract away the details of the GUI:
+\begin{itemize}
+	\item StartupWindow - implements the initial "choice screen"
+	\item PlaylistWindow - implements the "create playlist screen"
+	\item FileBrowser - responsible for fetching and drawing the  list of audio files on the system (used by PlaylistWindow). This is abstracted away as "wxWidgets" does not provide a native "widget" for this, so I must create my own.
+	\item PlayWindow - implements the "playback screen"
+	\item EffectsWindow - implements the "effects list" screen
+	\item PropertiesWindow - implements the "edit effect" screen
+	\item SongSelectionWindow - draws the popup for when the user chooses to select a new song from the current playlist (abstracted as is non-trivial to implement)
+\end{itemize}
 
 \pagebreak
 \subsection{Final overview of project hierarchy}
