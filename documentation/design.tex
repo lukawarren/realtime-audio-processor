@@ -210,6 +210,51 @@ After considering all the requirements of the multiple classes required, I have 
 \end{figure}
 
 \pagebreak
+\subsection{Program GUI}
+
+\paragraph{}
+The user will interact with the program using a GUI. In order to maximise the potential user-base, I have decided to use a popular C++ GUI library called "wxWidgets", which allows for the creation of GUIs using a singular code-base for Windows, Linux and MacOS, amongst others.
+
+\subsubsection{GUI "screens"}
+The user will navigate through a variety of "screens" in order to use the program. The GUI flow can be modelled as followed:
+\begin{itemize}
+	\item When the program starts, the user must chose to either load an existing playlist (see "Audio Data and Playback"), or create a new one - this is the "choice screen".
+	\item Should the user chose to create a playlist, a new "screen" will be displayed where they can append audio files on the system to a playlist, before saving it.
+	\item Returning back to the initial "choice screen", the user will then chose to load their existing playlist, or optionally create another one for later use.
+	\item After a playlist has been selected, the main "playback screen" will be displayed. Audio playback will begin.
+	\item The user can view the current audio visualisation, as well as audio playback progress.
+	\item A menu will allow the user to configure the current playback and visualisation, such as by adding new audio effects or changing the visualisation settings.
+	\item A separate "screen" can be displayed allowing the user to view current audio effects.
+	\item In this screen, if a user chooses to edit a current audio effect, a new screen will be displayed, showing the various options one can adjust.
+\end{itemize}
+
+\paragraph{Summary of "screens"}
+\begin{itemize}
+	\item "Choice" screen (create new playlist or load existing one)
+	\item "Create playlist" screen
+	\item "Playback" screen
+	\item "Effects list" screen
+	\item "Edit effect" screen
+\end{itemize}
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{gui flow}
+	\caption{GUI flow for program }
+\end{figure}
+
+\subsubsection{GUI Wireframes}
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{gui wireframes one}
+	\caption{GUI wireframes for main windows }
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=8cm]{gui wireframes two}
+	\caption{GUI wireframes for ancillary windows }
+\end{figure}
+
+\pagebreak
 \subsection{Final overview of project hierarchy}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{hierarchy chart}
