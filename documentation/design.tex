@@ -42,9 +42,15 @@ The program will have to load a variety of  user-supplied data in order to opera
 \begin{itemize}
 	\item As described in objective 1, the user must be able to load a collection of audio files known as  a "playlist", which will contain the paths of one or more audio files on the system.
 	\item Each audio file will consist of a number of audio samples, which will need to be loaded into memory when needed, then freed when not in use.
-	\item Audio files also contain other crucial information, such as the audio frequency (e.g. 44,000 Hz), the number of channels (usually mono (1) or stereo (2)), and the number of samples.
+	\item Audio files also contain other crucial information, such as the audio frequency (e.g. 44,000 Hz), the number of channels (usually mono (1) or stereo (2)), and the number of samples (the "length").
 	\item Thus to keep track of the audio files loaded into memory, each audio file will need to store its raw audio samples, its frequency, the number of channels, and the number of samples.
 \end{itemize}
+
+\subsubsection{ Audio Data UML }
+\begin{figure}[H]
+	\includegraphics[width=14cm]{audio io uml}
+	\caption{UML for Audio Data and IO - separate getter and setter exists for AudioStream progress as the caller will express progress as percentage (e.g. 50\% played) so that it is independent of file size. The playlist contains the filenames of all audio files on disk, and an AudioFile instance is created, when needed, by loading the audio file from disk using this filename. }
+\end{figure}
 
 \subsubsection{The Need for Streaming}
 It may be tempting to load and unload all audio data in a hierarchal  fashion as such:
@@ -84,7 +90,7 @@ The code that plays audio on the system will run on a separate thread (see multi
 
 \begin{enumerate}
 	\item An "AudioStream" is created and supplied with the raw audio samples from the audio file, as well as pointers to the atomic linked list of audio effects and to the visualisation data buffer.
-	\item The AudioStream used SDL2 to invoke audio playback at regular intervals on a separate thread (the "audio thread") using a callback
+	\item The AudioStream uses SDL2 to invoke audio playback at regular intervals on a separate thread (the "audio thread") using a callback
 	\item Every time the callback is called, the AudioStream will fetch the next section of upcoming audio that it has been supplied with.
 	\item Each audio effect will then be applied (using the audio effects atomic linked list).
 	\item The audio visualisation module will then be invoked on the audio just processed, and its output written to the visualisation data buffer.
@@ -92,9 +98,11 @@ The code that plays audio on the system will run on a separate thread (see multi
 	\item When the next section of audio is due, the callback will be re-invoked.
 \end{enumerate}
 
-TODO:
-- add flowchart for that in summary section
-- create summary section with UML for AudioFile, AudioStream and Playlist and flowchart for streaming
+\subsubsection { Audio Playback Flowchart }
+\begin{figure}[H]
+	\includegraphics[width=14cm]{audio io flowchart}
+	\caption{Flowchart for AudioStream's SDL audio device callback}
+\end{figure}
 
 \pagebreak
 
