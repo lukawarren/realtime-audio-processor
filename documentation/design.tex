@@ -289,7 +289,7 @@ In order to meet the objectives described in the analysis section, I have decide
 			\begin{enumerate}
 				\item  The user must be able to load a collection of audio files known as a "playlist" and then play the audio files contained within in a logical order
 				\item  The user must be able to visualise the current audio being played in the frequency domain (i.e. visualise the frequencies)
-				\item The user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies such as by performing a bass boost) in realtime
+				\item The user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies such as by performing a bass boost)
 				\item The user must be able to apply additional "audio effects" to further enhance the music: echo, volume adjustment and noise
 				\item The user must be able to configure these "audio effects" individually and also apply pre-made "presets" to quickly reach a desired effect
 				\item  The system must run in real-time on an average school computer
@@ -298,6 +298,7 @@ In order to meet the objectives described in the analysis section, I have decide
 	\end{minipage}}
 }
 
+\pagebreak
 \subsubsection{Testing Objective 1}
 \paragraph{Description} "The user must be able to load a collection of audio files known as a "playlist" and then play the audio files contained within in a logical order"
 
@@ -310,35 +311,83 @@ I will then test if playlists created in the program can be successfully saved t
 \paragraph{Test 1.3}
 After loading a playlist, the audio files contained within must appear "in a logical order", so I will verify that entries in the playlist are organised alphabetically, as is custom in audio programs.
 
+\pagebreak
 \subsubsection{Testing Objective 2}
 \paragraph{Description} "The user must be able to visualise the current audio being played in the frequency domain (i.e. visualise the frequencies)"
 
 \paragraph{}
-As it is difficult for humans to visualise the frequency domain of audio themselves, I will generate audio files consisting of a sin wave of a constant, known frequency. Thus, when the frequency domain is visualised, there should be a single visual peak corresponding to the chosen frequency. By testing the visualisation in this manner across a range of frequencies, it should therefore be possible to deduce if the visualisation is correct.
+As it is difficult for humans to visualise the frequency domain of audio themselves, I will generate audio files consisting of a sine wave of a constant, known frequency. Thus, when the frequency domain is visualised, there should be a single visual peak corresponding to the chosen frequency. By testing the visualisation in this manner across a range of frequencies, it should therefore be possible to deduce if the visualisation is correct.
 
 \paragraph{}
 Obviously the vast majority of audio being played will consist of multiple frequencies. I will therefore combine multiple sine waves in a single audio file (e.g. 500 Hz and 1000 Hz, both playing at the same time). Thus there should be multiple identifiable peaks, each one corresponding to a sine wave frequency chosen.
 
+\paragraph{}
+It should be stressed that human hearing only extends from 20 Hz to 20,000 Hz, and as such any audio visualisation must exclude frequencies outside these ranges.
+
 \begin{figure}[H]
 	\includegraphics[width=14cm]{fft test example}
-	\caption{An example piece of audio, with the time domain shown above and the frequency domain below. If my tests succeed, they should look similar to the first picture (multiple sine waves will of course have multiple peaks of this nature). Credit - Aniket Kamat: https://aniket-kamat.medium.com/demystifying-the-fourier-transform-a995bdb6d73a}
+	\caption{An example piece of audio, with the time domain shown above and the frequency domain below. If my tests succeed, they should look similar to the first picture (multiple sine waves will of course have multiple peaks of this nature). }
+	% Credit - Aniket Kamat: https://aniket-kamat.medium.com/demystifying-the-fourier-transform-a995bdb6d73a
 \end{figure}
 
 \paragraph{Test 2.1} A correct visualisation of a sine wave is apparent at 500 Hz, with a single peak corresponding to that frequency.
 \paragraph{Test 2.2} A correct visualisation of a sine wave is apparent at 1,000 Hz, with a single peak corresponding to that frequency.
-\paragraph{Test 2.3} A correct visualisation of a sine wave is apparent at 10,000 Hz, with a single peak corresponding to that frequency.
+\paragraph{Test 2.3} Sine waves outside the human audible range, at 10 Hz and 100,000 Hz respectively, produce no visible output, as they are inaudible.
 \paragraph{Test 2.4} A correct visualisation of two sine waves (one at 1,000 Hz and one at 10,000 Hz) is apparent, with two separate peaks corresponding to those frequencies.
 \paragraph{Test 2.5} A correct visualisation of three sine waves (1,000 Hz, 5,000 Hz and 20,000 Hz ) is apparent, with three separate peaks corresponding to those frequencies.
 
+\pagebreak
 \subsubsection{Testing Objective 3}
-\paragraph{Description} "The user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies such as by performing a bass boost) in realtime"
+\paragraph{Description} "The user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies such as by performing a bass boost)"
 
 \paragraph{Test 3.1}
 The most common use case for this feature will be when adjusting the bass and treble of music. I will therefore play multiple songs in the program with the equaliser effect applied, and verify by ear that the program is able to selectively reduce the range of frequencies chosen.
 
 \paragraph{Test 3.2}
-I will ensure that the audio does not appear to slow down when the equaliser effect is applied, such that it can be seen to be playing in realtime.
+As a sanity test, I will also ensure that changes made to the audio's frequency domain are clearly visible in the audio visualisation.\footnote{
+	For example, if one chooses to reduce the bass, then the parts
+	of the visualisation corresponding to the lower frequencies must
+	visually appear smaller in relation to the other frequencies.
+}
 
+\pagebreak
+\subsection{Testing Objective 4}
+\paragraph{Description} "The user must be able to apply additional "audio effects" to further enhance the music: echo, volume adjustment and noise"
+
+\paragraph{}
+Due to the subjective nature of audio effects, I will ask multiple people from the program's target audience to provide in-depth feedback on all the audio effects.
+At least one of these people will be someone experienced in audio processing, so that they are able to assess if the effects provided sound physically accurate
+(particularly the echo).
+
+\paragraph{Test 4.1} A select group from the target audience certify that the echo effect sounds physically plausible
+\paragraph{Test 4.2} A select group from the target audience certify  that the noise effect sounds physically plausible
+\paragraph{Test 4.3} A select group from the target audience certify that the volume effect adjusts the volume correctly
+
+\pagebreak
+\subsection{Testing Objective 5}
+\paragraph{Description} "The user must be able to configure these "audio effects" individually and also apply pre-made "presets" to quickly reach a desired effect"
+
+\paragraph{Test 5.1} All presets present in the application can be loaded successfully and results in the desired effects being applied correctly
+\paragraph{Test 5.2} All effects can have their various parameters modified, which results in a correct change in the audio playback
+
+\pagebreak
+\subsection{Testing Objective 6}
+\paragraph{Description}  "The system must run in real-time on an average school computer"
+
+\paragraph{}
+I will test the performance of the program by running it on a computer in my school, which represents more-or-less average hardware.
+I will also test it on my school laptop too, which has more modest hardware, to ensure that in all contexts in which a student might run the program, there will be no performance issues.
+In order to appear to run in real-time, the following must be observed:
+\begin{enumerate}
+	\item The audio  playback must not slow down \footnote{If audio processing takes too long, then the audio callback will be called less frequently than the hardware demands, resulting
+		in a very noticeable slowdown. This must not happen.}.
+	\item The visualisation graphics must update in less than 16.6 ms, such that it is displayed at 60 FPS, which is the most common refresh rate on school hardware. This will be measured by
+	the code itself as it's running.
+\end{enumerate}
+
+\paragraph{Test 6.1} The program must run, without any effects applied, in real-time on the specified hardware
+\paragraph{Test 6.2} The program must run in real-time, for every preset applied separately, in real-time on the specified hardware.  
+\paragraph{Test 6.3} The program must run in real-time, with every effect applied at once, in real-time on the specified hardware.  
 
 \pagebreak
 \subsection{TODO}
