@@ -272,7 +272,8 @@ As I am using "wxWidgets" (see above), all GUIs must be programmed directly in c
 \pagebreak
 \subsection{Test Design}
 \paragraph{}
-In order to meet the objectives described in the analysis section, I have decided to design a variety of measurable tests which will indicate if these objectives have been met. For convenience, the objectives are repeated below:
+In order to meet the objectives described in the analysis section, I have decided to design a variety of measurable tests which will indicate if these objectives have been met.
+\textbf{For convenience, the objectives from above are repeated below:}
 
 \paragraph{}
 {
@@ -323,11 +324,13 @@ It should be stressed that human hearing only extends from 20 Hz to 20,000 Hz, a
 	% Credit - Aniket Kamat: https://aniket-kamat.medium.com/demystifying-the-fourier-transform-a995bdb6d73a
 \end{figure}
 
+\begin{multicols}{2}
 \paragraph{Test 2.1} A correct visualisation of a sine wave is apparent at 500 Hz, with a single peak corresponding to that frequency.
 \paragraph{Test 2.2} A correct visualisation of a sine wave is apparent at 1,000 Hz, with a single peak corresponding to that frequency.
 \paragraph{Test 2.3} Sine waves outside the human audible range, at 10 Hz and 100,000 Hz respectively, produce no visible output, as they are inaudible.
 \paragraph{Test 2.4} A correct visualisation of two sine waves (one at 1,000 Hz and one at 10,000 Hz) is apparent, with two separate peaks corresponding to those frequencies.
 \paragraph{Test 2.5} A correct visualisation of three sine waves (1,000 Hz, 5,000 Hz and 20,000 Hz ) is apparent, with three separate peaks corresponding to those frequencies.
+\end{multicols}
 
 \pagebreak
 \subsubsection{Testing Objective 3}
