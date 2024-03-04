@@ -106,7 +106,7 @@ void AudioVisualiser::OnPaint(const wxPaintEvent& event)
         if (m > max_magnitude)
             max_magnitude = m;
 
-    const float scale = (float)height / max_magnitude * 1;
+    const float scale = (float)height / max_magnitude;
 
     // Draw bars
     for (wxCoord i = 0; i < width / bar_width; ++i)

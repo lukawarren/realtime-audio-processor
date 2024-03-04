@@ -52,15 +52,6 @@ void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input, const 
     if (N <= 1)
         return;
 
-    std::vector<std::complex<float>> temp(N);
-    if (mode == Mode::Inverse)
-    {
-        // Inverse FFTs require we take the complex conjugate of the input data
-        for (int i = 0; i < N; ++i)
-            temp[i] = std::conj(input[i]);
-    }
-    else temp = input;
-
     std::vector<std::complex<float>> even(N / 2);
     std::vector<std::complex<float>> odd(N / 2);
 
