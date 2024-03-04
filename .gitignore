@@ -10,4 +10,5 @@ documentation/*.log
 documentation/*.pdf
 documentation/*.gz
 documentation/*.toc
+documentation/*.out
 documentation/_minted-document/

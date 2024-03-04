@@ -210,6 +210,210 @@ After considering all the requirements of the multiple classes required, I have 
 \end{figure}
 
 \pagebreak
+\subsection{Audio Visualisation and Fourier Algorithm}
+
+\paragraph{} As can be seen in the equaliser flowchart, there is a need to perform both a Fourier Transform and an Inverse Fourier Transform on audio data in order to manipulate the audio in its frequency domain (i.e. to manipulate certain frequencies in isolation). In addition, as per the objectives outlined above, the program has a need to use this data to visualise the audio being played ("the user must be able to visualise the current audio being played in the frequency domain").
+
+\paragraph{} Hence there is a need for pseudo-code to be designed to perform the three algorithms involved:
+\begin{enumerate}
+	\item A Fast Fourier Transform to convert incoming time-domain audio to its frequency-domain
+	\item An algorithm that graphically displays this frequency-domain audio for the purposes of visualisation
+	\item An Inverse Fast Fourier Transform to convert frequency-domain audio back to the time-domain
+\end{enumerate}
+
+\subsubsection{Cooley-Tukey FFT and IFFT Algorithm}
+
+\paragraph{Summary of Fourier Analysis from Section 1}  Careful consideration of the problem in the analysis section revealed that acceptable performance could be achieved by using a Fast Fourier Transform (FFT), which used various mathematical techniques to reduce time complexity from \(O(N^2)\) to \(O(N\log{N})\), greatly reducing computational overhead. The most popular FFT algorithm, the "Cooley-Tukey"  FFT, was chosen, due to its use of recursion to both efficiently  and elegantly perform the computations required.
+
+\paragraph{Comparing the FFT and IFFT}
+It should be stressed that there is very little difference between performing a "normal" Fast Fourier Transform using the Cooley-Tukey algorithm and an \textit{inverse} Fast Fourier Transform. For this reason, I have decided to combine the two into a single function to eliminate as much code duplication as possible.
+ 
+\pagebreak
+\paragraph{Pseudo-code implementation of algorithm}
+\begin{minted}{ada}
+-- Converts an array of floats (i.e. the audio samples) into an array of complex numbers
+-- by using 0 for the imaginary parts. We must check the incoming data is a power of 2
+-- as later code that uses the results of this computation (i.e. the FFT) depends on this.
+function convert_samples_to_complex_form(samples: array of float) -> array of complex:
+	if size of samples is not a power of 2:
+		raise error "FFT data has invalid size"
+	
+	complex_samples := new array of complex with size equal to size of samples
+	for each sample in samples:
+		append (sample, 0.0) as a complex number to complex_samples
+	
+	return complex_samples
+
+-- Performs both either an FFT or an IFFT recursively by diving the data into two
+-- until the trivial base case is reached
+function do_fft(input: reference to array of complex, mode: Mode):
+	N := size of input
+	if N <= 1:
+		return
+	
+	-- Split data by even and odd indices
+	even := new array of complex with size N/2
+	odd := new array of complex with size N/2
+	for i from 0 to N/2 - 1:
+		even[i] := input[2*i]
+		odd[i] := input[2*i + 1]
+		
+	-- Perform FFT / IFFT recursively on even and odd halves
+	do_fft(even, mode)
+	do_fft(odd, mode)
+	
+	for k from 0 to N/2 - 1:
+		-- Perform FFT calculation by manipulating audio sample in the complex plane
+		-- as per the formal defition (see analysis section)
+		sign := if mode is Normal then -1.0 else 1.0
+		t := polar(1.0, sign * 2.0 * PI * k / N) * odd[k]
+		input[k] := even[k] + t
+		input[k + N/2] := even[k] - t
+		
+-- Example code for using FFT
+incoming_audio = fetch_upcoming_audio_data_from_buffer()
+complex_audio = convert_samples_to_complex_form(incoming_audio)
+do_fft(complex_audio, Mode::Normal)
+
+-- (calculations on frequency domain, including visualisation, performed here)
+
+-- Convert back to time domain (example code using IFFT)
+do_fft(fft_result, Mode::Inverse)
+final_audio = discard_imaginary_parts_of_complex_array(complex_audio)
+submit_audio_to_speakers(final_audio)
+\end{minted}
+
+\pagebreak
+\subsubsection{Visualisation Algorithm}
+
+\paragraph{Interpreting the results of an FFT}
+After an FFT has been performed, the resultant frequency-domain data needs to be visualised. The data returned from an FFT is an array of complex numbers where each index corresponds to a particular range of frequencies. The amplitude of these frequencies is just the magnitude of the complex number at that index. For example, index 12 might correspond to frequencies from 100 Hz to 130 Hz, and the magnitude of the complex number at fft\_array[12] would be the amplitude. 
+
+\paragraph{}
+The range of frequencies each element in the FFT data represents is called the "frequency resolution", whereby:
+\[
+\text{frequency resolution} = \frac{\text{frequency of incoming audio}}{\text{number of samples in audio provided to FFT algorithm}}
+\]
+
+\paragraph{}
+Hence for any given index in the array, the minimum frequency it represents is given by:
+\[
+	\text{min frequency} = \text{index in the array} \times \text{frequency resolution}
+\]
+
+\paragraph{}
+The visualisation I have chosen is a bar chart, where the x-axis represents frequency and the y-axis represents amplitude. Each bar can be said to have:
+\begin{itemize}
+	\item a minimum frequency
+	\item a maximum frequency
+	\item an amplitude
+\end{itemize}
+Hence an algorithm is needed to convert the incoming FFT frequency-domain data into the above format for later rendering. The minimum and maximum frequencies can be derived from the equations above.
+
+\paragraph{Using a non-uniform scale for frequency}
+The human ear does not perceive frequencies in a linear fashion. In other words, if one adds 500 Hz to a sound-wave repeatedly, the "jump" in pitch will not always sound the same.  This is because human-hearing follows a roughly logarithmic scale when it comes to detecting frequencies. This represents a problem as using a uniform, linear scale on the visualisation bar chart, whilst mathematically correct, will not sound plausible to the ear. Instead, the x-axis (frequency) for the bar chart must be adjusted so that, relative to the human ear, each bar represents roughly the same jump in \textit{perceived} pitch. The most suitable scale for this is the "Bark scale", where "equal distances correspond with perceptually equal distances" as described above. A frequency can be converted into its Bark equivalent using a simple formula:
+\[
+\text{Bark} = 13 \arctan(0.00076 \times \text{frequency}) + 3.5 \arctan ((\text{frequency} / 7500)^2)
+\]
+
+\paragraph{Using a non-uniform scale for amplitude}
+Just like with frequency, the human ears perceive amplitude logarithmically too. If a sound-wave has twice the frequency, it will not necessarily sound twice as loud. Thus the y-axis of the bar chart must be adjusted to reflect the \textit{perceived} loudness. A good  approximation is to take each amplitude and log it to base 10.
+
+\paragraph{Ignoring inaudible sounds}
+The human ear cannot hear sounds below 20 Hz or above 20,000 Hz. These frequencies should therefore be ignored in the visualisation, and hence the algorithm should be able to reject frequencies outside a specified frequency,
+
+\pagebreak
+\begin{minted}{ada}
+function hertz_to_bark_scale(hertz: float) -> float:
+	return 13.0 * arctan(0.00076 * hertz) + 3.5 * arctan((hertz / 7500.0) * (hertz / 7500.0))
+
+-- GroupSettings is a data structure consiting of the number of samples ("buckets") provided to the FFT,
+-- the frequency of the incoming audio, and the minimum and maximum  acceptable frequencies. 
+function convert_fft_to_bar_chart_format(fft: array of complex, group_settings: GroupingSettings) -> array of FrequencyRange:
+	
+	-- Work out frequency resolution
+	n_samples := size of fft
+	frequency_resolution := group_settings.frequency / n_samples
+	
+	-- Work out min and max frequencies in Bark scale and distance between "buckets"
+	minimum_frequency_bark := hertz_to_bark_scale(group_settings.minimum_audible_frequency)
+	maximum_frequency_bark := hertz_to_bark_scale(group_settings.maximum_audible_frequency)
+	bark_distance := (maximum_frequency_bark - minimum_frequency_bark) / group_settings.n_buckets
+	
+	buckets := new array of float with size equal to group_settings.n_buckets, initialized with zeros
+	
+	-- The FFT is symmetrical (because audio data lies only on the real axis), so we actually only  need
+	-- to visualise the first half of it
+	for i from 0 to (n_samples/2 - 1):
+		frequency := i * frequency_resolution
+		if frequency >= group_settings.minimum_audible_frequency
+		  and frequency <= group_settings.maximum_audible_frequency:
+			
+			-- Use Bark scale conversion to work out location of "bar" in bar chart
+			bark_frequency := HertzToBarkScale(frequency)
+			index := (bark_frequency - minimum_frequency_bark) / bark_distance
+			
+			if index < size of buckets:
+				-- Calculate amplitude of frequency (i.e. the magnitude of the complex number)
+				-- Add this to the height of the bar at this point in the bar chart
+				buckets[index] += absolute value of fft[i]
+	
+	-- Work out maximum amplitude in bar chart
+	max_magnitude := 0.0
+	for each bucket in buckets:
+		if bucket > max_magnitude:
+			max_magnitude := bucket
+	
+	-- Scale magnitudes logarithmically
+	for each bucket in buckets:
+		bucket := logarithm base 10 of (1.0 + bucket / max_magnitude)
+	
+	-- Convert bucket array (raw bar chart data) into a more usable format
+	ranges := new array of FrequencyRange with size equal to size of buckets
+	for i from 0 to size of buckets - 1:
+		lower_freq := minimum_frequency_bark + (i + 0.0) * bark_distance
+		upper_freq := maximum_frequency_bark + (i + 1.0) * bark_distance
+		
+		-- Convert back to Hertz scale
+		lower_freq := 0.5 + 600.0 * sinh(lower_freq / 6.0)
+		upper_freq := 0.5 + 600.0 * sinh(upper_freq / 6.0)
+		
+		ranges[i] := FrequencyRange {
+			min_frequency: integer part of lower_freq,
+			max_frequency: integer part of upper_freq,
+			magnitude: buckets[i]
+		}
+	
+	return ranges
+\end{minted}
+\pagebreak
+\begin{minted}{ada}
+function draw_bar_chart(bars: array of FrequencyRange):
+	draw_screen_background()
+	
+	-- Find max magnitude
+	max_magnitude := 0.0
+	for i from 0 to size of bars - 1:
+		if (bars[i].magnitude > max_magnitude)
+			max_magnitude = bars[i].magnitude
+	
+	-- Work out scaling
+	bar_width := screen_width / (size of bars)
+	bar_height_scale := screen_heigh / max_magnitude
+	
+	for i from 0 to size of bars - 1:
+		bar_height = bars[i].magnitude * bar_height_scale
+		draw_rectangle(
+			x: i * bar_width,
+			y: 0,
+			width: bar_width,
+			height: bar_height
+		)
+\end{minted}
+
+\pagebreak
+
+\pagebreak
 \subsection{Program GUI}
 
 \paragraph{}

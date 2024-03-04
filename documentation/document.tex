@@ -22,10 +22,23 @@
 \usepackage[hang]{footmisc}
 \setlength{\footnotemargin}{4mm}
 
+% Make table of contents have link to the pages %
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
 % Fix quotes %
 \usepackage [english]{babel}
 \usepackage [autostyle, english = american]{csquotes}
 \MakeOuterQuote{"}
+
+% Allow use of text in MathJax
+\usepackage{amsmath}
 
 % Tables %
 \usepackage{tabularx}
