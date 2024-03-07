@@ -43,11 +43,6 @@ void LoFi(AtomicLinkedList<AudioEffect>* effects)
     auto* noise = new NoiseEffect();
     noise->properties["intensity"].value = 1.0f;
     effects->Add(noise);
-
-    // Reduce volume
-    auto* volume = new VolumeEffect();
-    volume->properties["volume"].value = 0.5f;
-    effects->Add(volume);
 }
 
 void RemoveFrequencies(AtomicLinkedList<AudioEffect>* effects, float lower, float upper)

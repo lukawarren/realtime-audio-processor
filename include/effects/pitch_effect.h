@@ -1,10 +1,10 @@
 #pragma once
 #include "effects/fourier_effect.h"
 
-class EqualiserEffect : public FourierEffect
+class PitchEffect : public FourierEffect
 {
 public:
-    EqualiserEffect();
+    PitchEffect();
     std::string GetName() const override;
 
 private:
@@ -12,9 +12,4 @@ private:
         std::vector<std::complex<float>>& fft_output,
         const int frequency
     ) const override;
-
-    void ModifyMagnitude(
-        std::complex<float>& number,
-        const float multiplier
-    ) const;
 };

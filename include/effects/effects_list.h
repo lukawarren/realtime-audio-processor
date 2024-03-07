@@ -3,7 +3,7 @@
 #include <functional>
 #include "effects/echo_effect.h"
 #include "effects/noise_effect.h"
-#include "effects/volume_effect.h"
+#include "effects/pitch_effect.h"
 #include "effects/equaliser_effect.h"
 
 /*
@@ -14,7 +14,7 @@ typedef std::pair<std::string, std::function<AudioEffect*()>> EffectListEntry;
 
 static std::vector<EffectListEntry> EFFECTS_LIST =
 {
-    { VolumeEffect().GetName(),     []() { return new VolumeEffect(); } },
+    { PitchEffect().GetName(),      []() { return new PitchEffect(); } },
     { EchoEffect().GetName(),       []() { return new EchoEffect(); } },
     { EqualiserEffect().GetName(),  []() { return new EqualiserEffect(); } },
     { NoiseEffect().GetName(),      []() { return new NoiseEffect(); } }
