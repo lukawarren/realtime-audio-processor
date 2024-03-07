@@ -10,7 +10,52 @@ EqualiserEffect::EqualiserEffect()
 
 void EqualiserEffect::ApplyEffect(Packet& packet)
 {
-    ModifySamples(packet.current_samples, packet.frequency);
+    /*
+        Because we only apply the equaliser effect to the current packet,
+        the boundaries between adjecent packets will often suffer from
+        sudden jumps in amplitude, because the FFT does not know what audio
+        comes after, and what comes before. To solve this, we combine the
+        current packet with the previous and next packet.
+
+        However, this can only be done if the previous and next packets
+        do indeed exist (which they won't when we're at the beginning or
+        end of an audio file).
+    */
+
+   if (packet.next_samples.size() == packet.current_samples.size() &&
+        packet.previous_samples.size() == packet.current_samples.size())
+    {
+        // Copy half of previous packet, entire current packet, and half of next packet
+        std::vector<float> combined_samples;
+        combined_samples.reserve(packet.current_samples.size() * 3);
+        combined_samples.insert(
+            combined_samples.end(),
+            packet.previous_samples.begin() + packet.previous_samples.size() / 2,
+            packet.previous_samples.end()
+        );
+        combined_samples.insert(
+            combined_samples.end(),
+            packet.current_samples.begin(),
+            packet.current_samples.end()
+        );
+        combined_samples.insert(
+            combined_samples.end(),
+            packet.next_samples.begin(),
+            packet.next_samples.begin() + packet.next_samples.size() / 2
+        );
+
+        ModifySamples(combined_samples, packet.frequency);
+
+        // Copy only the middle part back to packet current samples
+        packet.current_samples.assign(
+            combined_samples.begin() + combined_samples.size() / 4,
+            combined_samples.begin() + combined_samples.size() / 4 + combined_samples.size() / 2
+        );
+    }
+    else
+    {
+        ModifySamples(packet.current_samples, packet.frequency);
+    }
 }
 
 void EqualiserEffect::ModifySamples(std::vector<float>& samples, const float frequency) const
@@ -58,6 +103,7 @@ void EqualiserEffect::ModifyFrequencies(
    lower_bin = std::max(lower_bin - 1, 0);
    upper_bin = std::min(upper_bin + 1, (int)fft_output.size() - 1);
 
+    // Apply windowing function
     for (int i = lower_bin; i <= upper_bin; ++i)
     {
         // Modify both positive and negative frequency components

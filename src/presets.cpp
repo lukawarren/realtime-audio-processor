@@ -8,6 +8,22 @@ void SpaciousRoom(AtomicLinkedList<AudioEffect>* effects)
     // hearing mostly only the ehco)
     auto* equaliser = new EqualiserEffect();
     equaliser->properties["upper frequency"].value = 250.0f;
+    equaliser->properties["lower frequency"].value = 20.0f;
+    equaliser->properties["multiplier"].value = 0.0f;
+    effects->Add(equaliser);
+
+    // Echo
+    effects->Add(new EchoEffect());
+}
+
+void FarAwayRoom(AtomicLinkedList<AudioEffect>* effects)
+{
+    // "Smudge" frequency space by "incorrectly" applying equaliser
+    // (makes audio sound very echo-ey without adding delay)
+    auto* equaliser = new EqualiserEffect();
+    equaliser->properties["upper frequency"].value = 20000.0f;
+    equaliser->properties["lower frequency"].value = 20.0f;
+    equaliser->properties["multiplier"].value = 0.0f;
     effects->Add(equaliser);
 
     // Echo
@@ -25,7 +41,7 @@ void LoFi(AtomicLinkedList<AudioEffect>* effects)
 
     // Calming noise
     auto* noise = new NoiseEffect();
-    noise->properties["intensity"].value = 5.0f;
+    noise->properties["intensity"].value = 1.0f;
     effects->Add(noise);
 
     // Reduce volume
@@ -61,7 +77,7 @@ void LowQualitySpeakers(AtomicLinkedList<AudioEffect>* effects)
 
     // Noise (e.g. from poor wiring)
     auto* noise = new NoiseEffect();
-    noise->properties["intensity"].value = 7.0f;
+    noise->properties["intensity"].value = 2.0f;
     effects->Add(noise);
 
     // Very small amount of echo to simulate "tinny" sound
@@ -73,10 +89,11 @@ void LowQualitySpeakers(AtomicLinkedList<AudioEffect>* effects)
 
 std::vector<Preset> EFFECT_PRESETS =
 {
-    { .name = "Spacious Room",          .functor = SpaciousRoom,        .speed_steps =  0 },
+    { .name = "Spacious room",          .functor = SpaciousRoom,        .speed_steps =  0 },
+    { .name = "Far away room",          .functor = FarAwayRoom,         .speed_steps =  0 },
     { .name = "Lo-fi - relaxing",       .functor = LoFi,                .speed_steps = -1 },
     { .name = "Lo-fi - energy",         .functor = LoFi,                .speed_steps = +1 },
     { .name = "Remove bass",            .functor = RemoveBass,          .speed_steps =  0 },
     { .name = "Remove trebble",         .functor = RemoveTrebble,       .speed_steps =  0 },
-    { .name = "Low-quality Speakers",   .functor = LowQualitySpeakers,  .speed_steps =  0 },
+    { .name = "Low-quality speakers",   .functor = LowQualitySpeakers,  .speed_steps =  0 },
 };
