@@ -103,8 +103,15 @@ void PlaylistWindow::OnContinue(wxCommandEvent& event)
         return;
 
     // Save
-    Playlist playlist(GetItems());
-    playlist.SaveToFile(dialog.GetPath().ToStdString());
+    try
+    {
+        Playlist playlist(GetItems());
+        playlist.SaveToFile(dialog.GetPath().ToStdString());
+    }
+    catch (std::exception&)
+    {
+        wxMessageBox("Failed to save playlist");
+    }
 
     Close();
 }

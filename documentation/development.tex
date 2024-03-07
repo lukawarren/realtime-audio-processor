@@ -1,0 +1,64 @@
+\section{Development and Implementation}
+
+Whilst the full source code is available in the appendix, the following section contains the most important parts of the code-base, highlighting the techniques used and technical solutions employed.
+
+\subsection{Summary of techniques}
+For handy reference, below is a table summarising the various techniques used in the codebase. \textbf{These are expanded upon in more detail below}.
+
+{
+	\renewcommand{\arraystretch}{1.5}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}X 
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X 
+					|
+				}
+				\hline
+				Source File & Technique & Purpose \\
+				
+				\hline
+				include/data/atomic\_linked\_list.h & Thread-safe linked list from scratch & Provides data structure for inter-thread communication (see section 2.1) \\
+				
+				\hline
+				include/data/tree.h & Tree data structure & Used in file browser to represent filesystem structure \\
+				
+				\hline
+				src/data/merge-sort.cpp & Recursive merge-sort  algorithm implementation & To sort playlist files alphabetically \\
+				
+				\hline
+				src/ui/file\_browser.cpp & Recursively navigate filesystem & Allows the user to browse for audio files on their system \\
+				
+				\hline
+				src/effects/fft.cpp & Cooley-Tukey Fast Fourier algorithm implementation & To aid in audio procession and visualisation \\
+				
+				\hline
+				src/ui/audio\_visualiser.cpp & Uses FFT data & Renders audio visualisation \\
+				
+				\hline
+				include/effects/audio\_effect.cpp & Polymorphic "audio effect" base class (inherited by children) - including use of hashmap & Manages common interface \\
+				
+				\hline
+				src/effects/echo\_effect.cpp & Inheritance & Echo effect implementation \\
+				
+				\hline
+				src/effects/equaliser\_effect.cpp &  Inheritance and use of Fourier algorithms & Audio equaliser implementation \\
+				
+				\hline
+				src/effects/noise\_effect.cpp & Inheritance & Noise effect implementation \\
+				
+				\hline
+				src/effects/volume\_effect.cpp & Inheritance & Volume effect implementation \\
+				
+				\hline
+				Various files & Use of function callbacks & Used in many places, including preset creation and UI code \\
+				
+				\hline
+				Various files & Error handling and user input sanitisation & Prevent program from experiencing crashes, security issues and undefined behaviour \\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}

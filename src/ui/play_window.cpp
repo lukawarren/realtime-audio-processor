@@ -306,8 +306,21 @@ void PlayWindow::StartPlayback()
     if (audio_stream.has_value()) audio_stream.reset();
     if (audio_file.has_value()) audio_file.reset();
 
-    // Create audio file and corresponding audio stream
-    audio_file.emplace(playlist.Items()[current_song]);
+    // Create audio file...
+    try
+    {
+        audio_file.emplace(playlist.Items()[current_song]);
+    }
+    catch (std::exception&)
+    {
+        wxMessageBox(
+            "Failed to load audio file " + playlist.Items()[current_song] + "." +
+            " One or more file(s) on disk referenced by the playlist has been modified since " +
+            " it was opened.");
+        Destroy();
+    }
+
+    // Create corresponding audio stream
     audio_stream.emplace(&*audio_file, &effects);
     audio_stream->SetSpeed(GetSpeedValue());
     audio_stream->SetProgressChangedCallback([&](float progress, uint8_t* buffer, int length)
