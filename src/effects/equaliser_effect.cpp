@@ -51,6 +51,17 @@ void EqualiserEffect::ApplyEffect(Packet& packet)
             combined_samples.begin() + combined_samples.size() / 4,
             combined_samples.begin() + combined_samples.size() / 4 + combined_samples.size() / 2
         );
+
+        // Do the same for previous and next samples (because later audio effects
+        // may need to do the same process as us)
+        packet.previous_samples.assign(
+            combined_samples.begin(),
+            combined_samples.begin() + combined_samples.size() / 4
+        );
+        packet.next_samples.assign(
+            combined_samples.begin() + combined_samples.size() / 4 * 3,
+            combined_samples.end()
+        );
     }
     else
     {
@@ -103,7 +114,6 @@ void EqualiserEffect::ModifyFrequencies(
    lower_bin = std::max(lower_bin - 1, 0);
    upper_bin = std::min(upper_bin + 1, (int)fft_output.size() - 1);
 
-    // Apply windowing function
     for (int i = lower_bin; i <= upper_bin; ++i)
     {
         // Modify both positive and negative frequency components
