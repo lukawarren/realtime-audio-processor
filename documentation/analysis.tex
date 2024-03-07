@@ -61,7 +61,7 @@ The system must also be able to alter the playback speed, as this feature was hi
 Student 2 mentioned "remixes" often contain an "echo" or additional "noise", and so in order to avoid limiting the program to merely changing a song's speed or frequency response, it should also allow the user to apply various audio effects, including but not limited to the ones above. In order to maximise the ease of experimentation, as is desired, the effects should be easily configurable.
 
 \subsubsection{Visualisation}
-As the program is already meant to perform a Fourier Transform on the incoming audio data, it will thus already have a representation of the audio in the frequency domain. Hence it would be trivial to display this data graphically so as to provide an audio visualisation feature that is, computationally, essentially free. It is hoped that by providing visual feedback to the audio as it is edited, the effects of, for example, adjusting the bass, will be easy to see and thus the processing the software is carrying out will be easy to comprehend. The exact nature of this visualisation (that is: how audio is to be graphically displayed in frequency space) is to be covered in detail below in section 2 ("Design"). However, put simply, one can imagine  a "bar chart", with frequency ranges on the x-axis, and amplitude on the y-axis. Such a visualisation would allow the user to easily see, for example, the immediate effects a "bass boost" would have on the frequency space of the audio being played. 
+As the program is already meant to perform a Fourier Transform on the incoming audio data, it will thus already have a representation of the audio in the frequency domain. Hence it would be trivial to display this data graphically so as to provide an audio visualisation feature that is, computationally, essentially free. It is hoped that by providing visual feedback to the audio as it is edited, the effects of, for example, adjusting the bass, will be easy to see and thus the processing the software is carrying out will be easy to comprehend. The exact nature of this visualisation (that is: how audio is to be graphically displayed in frequency space) is to be covered in detail below in section 2 ("Design"). However, put simply, one can imagine  a "bar chart", with frequency ranges on the x-axis, and amplitude on the y-axis. Such a visualisation would allow the user to easily see, for example, the immediate effects a "bass boost" would have on the frequency space of the audio being played.
 
 \pagebreak
 \subsection{Fourier Technical Analysis}
@@ -101,7 +101,7 @@ After excluding the two groups of languages above, it can be seen that any langu
 After considering the requirements of the project, I believe the following should serve as a good model of how data should be treated.
 
 \begin{figure}[h]
-	\includegraphics[width=13cm]{DFD}
+	\includegraphics[width=13cm]{./DFD.png}
 	\caption{The data flow diagram (DFD)}
 \end{figure}
 
@@ -123,14 +123,14 @@ Currently within the market the two most popular music streaming products are Ap
 \begin{figure}[H]
 	\caption{The Spotify equaliser}
 	\begin{center}
-		\includegraphics[width=5cm]{spotify equaliser}
+		\includegraphics[width=5cm]{./spotify equaliser.jpg}
 	\end{center}
 \end{figure}
 
 \begin{figure}[H]
 	\caption{The Apple equaliser}
 	\begin{center}
-		\includegraphics[width=10cm]{apple equaliser}
+		\includegraphics[width=10cm]{./apple equaliser.png}
 	\end{center}
 \end{figure}
 
@@ -160,21 +160,21 @@ The most popular free audio editing application is Audacity, an open-source proj
 \begin{figure}[H]
 	\caption{Audacity when configured to display a spectrogram of the audio, seen as two multi-coloured strips (one for each channel)}
 	\begin{center}
-		\includegraphics[width=15cm]{audacity spectogram}
+		\includegraphics[width=15cm]{./audacity spectogram.png}
 	\end{center}
 \end{figure}
 
 \begin{figure}[H]
 	\caption{Audacity's "effects menu", offering a number of categories which themselves all contain numerous effects}
 	\begin{center}
-		\includegraphics[width=5cm]{audacity effects menu}
+		\includegraphics[width=5cm]{./audacity effects menu.png}
 	\end{center}
 \end{figure}
 
 \begin{figure}[H]
 	\caption{Audacity offering a menu to configure the application of a computationally-intensive, though highly accurate, reverb effect}
 	\begin{center}
-		\includegraphics[width=9cm]{audacity effects}
+		\includegraphics[width=9cm]{./audacity effects.png}
 	\end{center}
 \end{figure}
 
@@ -200,13 +200,13 @@ Hence it can be seen that whilst Audacity, and other audio editing software, pro
 \begin{figure}[H]
 	\caption{S.W.O.T diagram for streaming services}
 	\begin{center}
-		\includegraphics[width=10cm]{SWOT streaming}
+		\includegraphics[width=10cm]{./SWOT streaming.png}
 	\end{center}
 \end{figure}
 \begin{figure}[H]
 	\caption{S.W.O.T diagram for audio editing prograrms}
 	\begin{center}
-		\includegraphics[width=10cm]{SWOT audacity}
+		\includegraphics[width=10cm]{./SWOT audacity.png}
 	\end{center}
 \end{figure}
 
