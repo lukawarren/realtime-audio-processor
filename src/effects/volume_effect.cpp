@@ -2,13 +2,13 @@
 
 VolumeEffect::VolumeEffect()
 {
-    properties["volume"] = Property(0.5f, 0.01f, 1.0f);
+    properties["volume"] = new FloatingPointProperty(0.5f, 0.01f, 1.0f);
 }
 
 void VolumeEffect::ApplyEffect(Packet& packet)
 {
     for (float& sample : packet.current_samples)
-        sample *= properties["volume"].value;
+        sample *= GetProperty<float>("volume");
 }
 
 std::string VolumeEffect::GetName() const

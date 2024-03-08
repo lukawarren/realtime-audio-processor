@@ -10,8 +10,8 @@ public:
     PropertiesWindow(wxWindow* parent, AudioEffect* effect);
 
 private:
-    void AddProperty(const std::string& name, AudioEffect::Property* property);
-    std::string GetPropertyLabel(const std::string& name, AudioEffect::Property* property);
+    void AddProperty(const std::string& name, Property* property);
+    std::string GetPropertyLabel(const std::string& name, Property* property);
 
     AudioEffect* effect;
     wxGridSizer* sizer;

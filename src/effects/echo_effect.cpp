@@ -2,15 +2,16 @@
 
 EchoEffect::EchoEffect()
 {
-    properties["fall-off"] = Property(1.0f, 1.0f, 3.0f);
-    properties["delay samples"] = Property(1024 * 20, 1024 * 5, 1024 * 100);
+    properties["fall-off"] = new FloatingPointProperty(1.0f, 1.0f, 3.0f);
+    properties["delay samples"] = new IntegerProperty(1024 * 20, 1024 * 5, 1024 * 100);
 }
 
 void EchoEffect::ApplyEffect(Packet& packet)
 {
     // Re-size buffer if value changed
-    if (delay_buffer.size() != properties["delay samples"].value)
-        delay_buffer.resize(properties["delay samples"].value, 0.0f);
+    const size_t delay_samples = (size_t) GetProperty<int>("delay samples");
+    if (delay_buffer.size() != delay_samples)
+        delay_buffer.resize(delay_samples, 0.0f);
 
     std::vector<float>& samples = packet.current_samples;
     const size_t length = samples.size();
@@ -26,7 +27,7 @@ void EchoEffect::ApplyEffect(Packet& packet)
     for (size_t i = 0; i < length; ++i)
     {
         const int gap = 128;
-        const float fall_off = properties["fall-off"].value;
+        const float fall_off = GetProperty<float>("fall-off");
 
         // Add increasingly "old" echoes with diminishing volume
         float amplitude = samples[i];

@@ -149,6 +149,7 @@ Each audio effect will need its own properties, and potentially its own mutable 
 \end{table}
 }
 
+\pagebreak
 \subsubsection{Common Audio Effect Traits}
 Immediately it is obvious that all audio effects will share many common features. Each effect shall:
 \begin{itemize}
@@ -161,9 +162,14 @@ Immediately it is obvious that all audio effects will share many common features
 \paragraph{}
 Given these requirements it is wise to use an object-orientated inheritance approach where effect subclass inherits from a common parent, which provides common functionality (such as the storage and exposing of configuration options), as well as providing a common interface that other parts of the code can use. In order to abstract away the details of interacting with an audio effect, two new classes will also be needed.
 
-\subparagraph{Packet} A packet represents a chunk of audio awaiting processing by the effect. However, some effects require knowledge of both the previous audio samples and future audio samples (like echo). Thus, each packet will consist of 3 audio buffers - one for the previous, current and next buffer of audio samples. A packet will also contain the frequency of the incoming audio as this is required for the FFT maths.
+\subparagraph{Packet} A packet represents a chunk of audio awaiting processing by the effect. However, some effects require knowledge of both the previous audio samples and future audio samples\footnote{
+	This is because performing Fourier transforms on isolated "chunks" of audio and then
+	playing them back after modification will result in a periodic "clicking" sound at the boundary between chunks due to sudden changes in sound amplitude. This is because
+	of the limited resolution of a Discrete Fourier Transform. To solve this, we must take
+	into account both the sound packet that comes after, and the one that comes before.
+}. Thus, each packet will consist of 3 audio buffers - one for the previous, current and next buffer of audio samples. A packet will also contain the frequency of the incoming audio as this is required for the FFT maths.
 
-\subparagraph{Property} Each audio effect has a number of configurable properties. To aid in validation, each property will have a current,  minimum and maximum value, as well as a flag to differentiate between integer values and decimal values.
+\subparagraph{Property} Each audio effect has a number of configurable properties. To aid in validation, each property will have a current,  minimum and maximum value.
 
 \paragraph{}
 Both these classes will be independent of the main audio effect parent class. The audio effect parent class will merely use these classes to represent the data provided and stored by it. This is an example of {\it composition}.
@@ -172,13 +178,16 @@ Both these classes will be independent of the main audio effect parent class. Th
 Each audio effect will have a list of properties. When drawing a properties GUI, the front-end code will want an easy and convenient way of both getting a list of all available properties, along with their respective names. In a similar fashion, when setting the values of certain properties, it will be most convenient if properties can be accessed using their names.
 
 \paragraph{}
-I will use a hash-map as my data structure for this purpose. Hash-maps can be indexed by using the name of the property (e.g. "minimum frequency" as the key), simplifying the front-end code and avoiding the need for a separate "property name" variable. In addition, they provide very fast look-up with an O(1) time. Whilst hash-maps are expensive when it comes to adding and removing elements, each audio effect will only have a fixed number of properties so this will not be an issue.
+I will use a hash-map as my data structure for this purpose. Hash-maps can be indexed by using the name of the property (e.g. "minimum frequency" as the key), simplifying the front-end code and avoiding the need for a separate "property name" variable. In addition, they provide very fast look-up with an O(1) time, which may be important if future effects have a large number of properties to avoid wasting CPU cycles iterating through properties (e.g. if stored in a list). Whilst hash-maps are expensive when it comes to adding and removing elements, each audio effect will only have a fixed number of properties that are added once at creation so this will not be an issue.
+
+\paragraph{Polymorphism}
+Some properties will be floating point values, whilst others will be integer values. If this project is continued further, I may wish to also add boolean values as well. To accommodate this, I will use polymorphism by creating a \textit{Property} base class, then \textit{FloatingPointProperty} and \textit{IntegerProperty}  children, which will share a common interface.
 
 \subsubsection{UML Class Diagram}
-After considering all the requirements of the multiple classes required, I have constructed a class diagram. However, a slight modification has been made to the typical UML structure: properties of audio effects are prefixed with an * (asterisk) in order to indicate that their are not attributes {\it per se}, but rather are elements in their parent's properties hashmap.
+After considering all the requirements of the multiple classes required, I have constructed a class diagram. However, a slight modification has been made to the typical UML structure: \textit{properties} of audio effects appear in the lower box in each class, in order to indicate that they are not attributes {\it per se}, but rather are elements in their parent's properties hashmap.
 
 \begin{figure}[h]
-	\includegraphics[width=\textwidth]{./effects class diagram.png}
+	\includegraphics[width=\textwidth]{./effects class diagram new.png}
 	\caption{UML class diagram containing attributes, operations and custom "properties"}
 \end{figure}
 

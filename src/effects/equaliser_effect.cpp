@@ -3,9 +3,9 @@
 
 EqualiserEffect::EqualiserEffect()
 {
-    properties["lower frequency"] = Property(20.0f, 0.0f, 20000.0f);
-    properties["upper frequency"] = Property(2000.0f, 0.0f, 20000.0f);
-    properties["multiplier"] = Property(0.0f, 0.0f, 2.0f);
+    properties["lower frequency"] = new FloatingPointProperty(20.0f, 0.0f, 20000.0f);
+    properties["upper frequency"] = new FloatingPointProperty(2000.0f, 0.0f, 20000.0f);
+    properties["multiplier"] = new FloatingPointProperty(0.0f, 0.0f, 2.0f);
 }
 
 void EqualiserEffect::ApplyEffect(Packet& packet)
@@ -95,9 +95,9 @@ void EqualiserEffect::ModifyFrequencies(
 ) const
 {
     // Properties
-    const float lower_frequency = GetProperty("lower frequency");
-    const float upper_frequency = GetProperty("upper frequency");
-    const float multiplier = GetProperty("multiplier");
+    const float lower_frequency = GetProperty<float>("lower frequency");
+    const float upper_frequency = GetProperty<float>("upper frequency");
+    const float multiplier = GetProperty<float>("multiplier");
 
     // Work out "bins"
     const float frequency_resolution = (float)frequency / (float)fft_output.size();

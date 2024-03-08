@@ -1,7 +1,6 @@
 #include "ui/properties_window.h"
 #include <cassert>
 #include <cctype>
-#include <format>
 
 PropertiesWindow::PropertiesWindow(wxWindow* parent, AudioEffect* effect) :
     PopupWindow(parent, "Effect Properties"),
@@ -14,26 +13,20 @@ PropertiesWindow::PropertiesWindow(wxWindow* parent, AudioEffect* effect) :
     sizer = new wxGridSizer(2);
 
     for (auto& [name, property] : effect->properties)
-        AddProperty(name, &property);
+        AddProperty(name, property);
 
     SetSizerAndFit(sizer);
     SetMinSize({ 400, 200 });
 }
 
-void PropertiesWindow::AddProperty(const std::string& name, AudioEffect::Property* property)
+void PropertiesWindow::AddProperty(const std::string& name, Property* property)
 {
     // Label
     const std::string& text = GetPropertyLabel(name, property);
     auto* label = new wxStaticText(this, wxID_ANY, text);
 
-    // Slider
-    auto* slider = new wxSlider(
-        this,
-        wxID_ANY,
-        property->value / property->GetSmallestUnit(),
-        property->minimum / property->GetSmallestUnit(),
-        property->maximum / property->GetSmallestUnit()
-    );
+    // Slider using polymorphic interface
+    auto* slider = property->CreateSliderForGUI(this);
 
     // Layout
     const int margin = FromDIP(10);
@@ -46,23 +39,15 @@ void PropertiesWindow::AddProperty(const std::string& name, AudioEffect::Propert
     slider->Bind(wxEVT_SLIDER, &PropertiesWindow::OnSliderMoved, this);
 }
 
-std::string PropertiesWindow::GetPropertyLabel(const std::string& name, AudioEffect::Property* property)
+std::string PropertiesWindow::GetPropertyLabel(const std::string& name, Property* property)
 {
     // Convert first letter of name to upper-case
     assert(name.length() >= 1);
     std::string label_text = name;
     label_text[0] = std::toupper(label_text[0]);
 
-    if (property->is_integer)
-    {
-        label_text += ": " + std::to_string((int)property->value);
-    }
-    else
-    {
-        // Append value to N decimal places
-        label_text += ": " + std::format("{:.2f}", property->value);
-    }
-
+    // Add value itself (polymorphic interface for different types)
+    label_text += ": " + property->ToString();
     return label_text;
 }
 
@@ -73,10 +58,10 @@ void PropertiesWindow::OnSliderMoved(wxCommandEvent& e)
     EventInformation& information = event_information[(size_t)slider->GetClientData()];
     wxStaticText* label = information.first;
     std::string name = information.second;
-    AudioEffect::Property* property = &effect->properties[name];
+    Property* property = effect->properties[name];
 
-    // Set value for property itself
-    property->value = (float)slider->GetValue() * property->GetSmallestUnit();
+    // Set value for property itself (polymorphic interface for different types)
+    property->SetValueFromSlider(slider);
 
     // Update text
     label->SetLabelText(GetPropertyLabel(name, property));

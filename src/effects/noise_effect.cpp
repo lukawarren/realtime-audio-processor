@@ -2,12 +2,12 @@
 
 NoiseEffect::NoiseEffect()
 {
-    properties["intensity"] = Property(1.0f, 0.0f, 10.0f);
+    properties["intensity"] = new FloatingPointProperty(1.0f, 0.0f, 10.0f);
 }
 
 void NoiseEffect::ApplyEffect(Packet& packet)
 {
-    const float intensity = properties["intensity"].value / 100.0f;
+    const float intensity = GetProperty<float>("intensity") / 100.0f;
 
     for (float& sample : packet.current_samples)
     {

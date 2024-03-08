@@ -37,6 +37,9 @@ For handy reference, below is a table summarising the various techniques used in
 				include/effects/audio\_effect.cpp & Polymorphic "audio effect" base class (inherited by children) - including use of hashmap & Manages common interface \\
 				
 				\hline
+				include/effects/*property.h & Polymorphic "property" base class and associated children & Provides common interface for setting and getting properties of different types \\
+				
+				\hline
 				src/effects/echo\_effect.cpp & Inheritance & Echo effect implementation \\
 				
 				\hline
@@ -115,3 +118,54 @@ The file browser uses the tree data structure to store its files, and uses recur
 \paragraph{The \textit{ScanDirectory} subroutine} This function is called on the root audio file directory (the user's Music folder). It creates a tree with a single node, containing the path to this directory. It then iterates through all the files and folders in the root directory. Files are added as children of the root node. If a directory is encountered instead, a tree for that directory is created by recursively calling \textit{ScanDIrectory} again, which is then added as a child to the existing tree. In this way, all files and folders contained within the root directory are added.  
 
 \paragraph{The \textit{AddDirectory} subroutine} This subroutine is called once the tree containing all files and folders has already been created in \textit{ScanDirectory}. Each element is recursively added to a \textit{wxTreeListCtrl} (for the purposes of displaying the tree in the GUI) by first adding the directory itself, followed by the files contained within, then adding the sub-directories, which is done by recursively calling the function.
+
+\pagebreak
+\subsection{Merge Sort - \textit{src/data/merge\_sort.cpp}}
+For ordering playlists alphabetically, a sorting  algorithm was needed. I decided to use a merge sort due to its low time complexity of \(O(N \log{N})\).
+\inputminted[linenos]{c++}{../src/data/merge_sort.cpp}
+
+\pagebreak
+\subsection{Fourier Processing - \textit{src/effects/fft.cpp}}
+This implements the pseudo-code produced in section 2.5, and hence uses recursion and the relevant Fourier maths, as well as linearising frequencies using the Bark scale. The relevant code is contained below.
+
+\subsubsection{FFT Algorithm}
+\inputminted[linenos, firstline=1, lastline=79]{c++}{../src/effects/fft.cpp}
+
+\pagebreak
+\subsubsection{Visualisation Algorithm}
+As discussed in section 2.5, this transforms the data into a format easily plottable by the GUI code, and takes into account the non-linear scale of human hearing.
+\inputminted[linenos, firstline=81, lastline=148]{c++}{../src/effects/fft.cpp}
+
+\pagebreak
+\subsubsection{Corresponding code to draw in GUI - \textit{src/ui/audio\_visualiser.cpp}}
+Initially, results from the FFT were plotted straight to the screen. However, a key issue arose: audio changed so rapidly between frames that any visualisation was too flickery to be useful or readable.  To solve this, it was necessary to average the results of the FFT over multiple frames, so that changes in frequencies appeared more gradually. I also decided to colour the bars in the bar chart in accordance with their frequencies in order to increase the readability of the visualisation.
+
+Each time a fixed buffer of audio is fed to the audio device (i.e. played to the speakers), the \textit{FeedAudio} subroutine is called, which performs a Fourier transform, adds it to the list of previous results for averaging, then triggers a GUI refresh.
+\inputminted[linenos, firstline=15, lastline=44]{c++}{../src/ui/audio_visualiser.cpp}
+\inputminted[linenos, firstline=67, lastline=156]{c++}{../src/ui/audio_visualiser.cpp}
+
+\pagebreak
+\subsection{Audio Effects and Properties}
+
+\subsubsection{Base Audio Effect Class - \textit{include/effects/audio\_effect.h}}
+The \textit{AudioEffect} base class has three key features:
+\begin{enumerate}
+	\item Provides a common interface for accessing "properties" (such as effect intensity). These properties are stored in a hashmap so that the names of the properties can be used as keys, and so that properties can be looked up with constant time complexity, which is important if any audio effects are added in the future that have a large number of properties to avoid wasting CPU cycles.
+	\item Provides a common interface to identify the name of an effect in the GUI
+	\item Provides a common interface to apply the effect to a "packet" of audio
+\end{enumerate}
+\inputminted[linenos]{c++}{../include/effects/audio_effect.h}
+
+\pagebreak
+\subsubsection{Property Base class - \textit{include/effects/property.h}}
+\inputminted[linenos]{c++}{../include/effects/property.h}
+
+\pagebreak
+\subsubsection{IntegerProperty - \textit{include/effects/integer\_property.h}}
+\inputminted[linenos]{c++}{../include/effects/integer_property.h}
+
+\pagebreak
+\subsubsection{FloatingPointProperty - \textit{include/effects/floating\_point\_property.h}}
+\inputminted[linenos]{c++}{../include/effects/floating_point_property.h}
+
+

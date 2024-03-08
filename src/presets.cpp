@@ -7,9 +7,9 @@ void SpaciousRoom(AtomicLinkedList<AudioEffect>* effects)
     // surface, so reduce low frequencies accordingly as if we're
     // hearing mostly only the ehco)
     auto* equaliser = new EqualiserEffect();
-    equaliser->properties["upper frequency"].value = 250.0f;
-    equaliser->properties["lower frequency"].value = 20.0f;
-    equaliser->properties["multiplier"].value = 0.0f;
+    equaliser->SetProperty<float>("upper frequency", 240.0f);
+    equaliser->SetProperty<float>("lower frequency", 20.0f);
+    equaliser->SetProperty<float>("multiplier", 0.0f);
     effects->Add(equaliser);
 
     // Echo
@@ -21,9 +21,9 @@ void FarAwayRoom(AtomicLinkedList<AudioEffect>* effects)
     // "Smudge" frequency space by "incorrectly" applying equaliser
     // (makes audio sound very echo-ey without adding delay)
     auto* equaliser = new EqualiserEffect();
-    equaliser->properties["upper frequency"].value = 20000.0f;
-    equaliser->properties["lower frequency"].value = 20.0f;
-    equaliser->properties["multiplier"].value = 0.0f;
+    equaliser->SetProperty<float>("upper frequency", 20000.0f);
+    equaliser->SetProperty<float>("lower frequency", 20.0f);
+    equaliser->SetProperty<float>("multiplier", 0.0f);
     effects->Add(equaliser);
 
     // Echo
@@ -34,28 +34,28 @@ void LoFi(AtomicLinkedList<AudioEffect>* effects)
 {
     // Muffle sound by suppressing frequencies
     auto* equaliser = new EqualiserEffect();
-    equaliser->properties["lower frequency"].value = 250.0f;
-    equaliser->properties["upper frequency"].value = 20000.0f;
-    equaliser->properties["multiplier"].value = 0.1f;
+    equaliser->SetProperty<float>("upper frequency", 20000.0f);
+    equaliser->SetProperty<float>("lower frequency", 250.0f);
+    equaliser->SetProperty<float>("multiplier", 0.1f);
     effects->Add(equaliser);
 
     // Calming noise
     auto* noise = new NoiseEffect();
-    noise->properties["intensity"].value = 1.0f;
+    noise->SetProperty<float>("intensity", 1.0f);
     effects->Add(noise);
 
     // Reduce volume
     auto* volume = new VolumeEffect();
-    volume->properties["volume"].value = 0.5f;
+    volume->SetProperty<float>("volume", 0.5f);
     effects->Add(volume);
 }
 
 void RemoveFrequencies(AtomicLinkedList<AudioEffect>* effects, float lower, float upper)
 {
     auto* equaliser = new EqualiserEffect();
-    equaliser->properties["lower frequency"].value = lower;
-    equaliser->properties["upper frequency"].value = upper;
-    equaliser->properties["multiplier"].value = 0.001f;
+    equaliser->SetProperty<float>("upper frequency", upper);
+    equaliser->SetProperty<float>("lower frequency", lower);
+    equaliser->SetProperty<float>("multiplier", 0.0f);
     effects->Add(equaliser);
 }
 
@@ -77,13 +77,13 @@ void LowQualitySpeakers(AtomicLinkedList<AudioEffect>* effects)
 
     // Noise (e.g. from poor wiring)
     auto* noise = new NoiseEffect();
-    noise->properties["intensity"].value = 2.0f;
+    noise->SetProperty<float>("intensity", 2.0f);
     effects->Add(noise);
 
     // Very small amount of echo to simulate "tinny" sound
     auto* echo = new EchoEffect();
-    echo->properties["fall-off"].value = 1.3f;
-    echo->properties["delay samples"].value = 4096;
+    echo->SetProperty<float>("fall-off", 1.3f);
+    echo->SetProperty<int>("delay samples", 4096);
     effects->Add(echo);
 }
 
