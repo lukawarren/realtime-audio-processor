@@ -130,27 +130,36 @@ void AudioVisualiser::OnPaint(const wxPaintEvent& event)
     }
 }
 
+/*
+    Convert HSV (hue, saturation and value) to RGB (red, green, blue).
+    Hue = the "base colour"
+    Saturation = the "colour intensity",
+    Value = the "brightness"
+*/
 wxColour AudioVisualiser::ConvertHSVToRGB(
-    const float h,
-    const float s,
-    const float v
+    const float hue,
+    const float saturation,
+    const float value
 )
 {
-    const int i = int(h * 6);
-    const float f = h * 6 - i;
-    const float p = v * (1 - s);
-    const float q = v * (1 - f * s);
-    const float t = v * (1 - (1 - f) * s);
+    // Calculate the indices and factors needed for conversion
+    const int hue_segment = int(hue * 6);
+    const float fraction = hue * 6 - hue_segment;
+    const float p = value * (1 - saturation);
+    const float q = value * (1 - fraction * saturation);
+    const float t = value * (1 - (1 - fraction) * saturation);
 
-    switch (i % 6)
+    // Convert HSV to RGB based on the indices
+    switch (hue_segment % 6)
     {
-        case 0: return { uint8_t(v * 255), uint8_t(t * 255), uint8_t(p * 255)};
-        case 1: return { uint8_t(q * 255), uint8_t(v * 255), uint8_t(p * 255)};
-        case 2: return { uint8_t(p * 255), uint8_t(v * 255), uint8_t(t * 255)};
-        case 3: return { uint8_t(p * 255), uint8_t(q * 255), uint8_t(v * 255)};
-        case 4: return { uint8_t(t * 255), uint8_t(p * 255), uint8_t(v * 255)};
-        case 5: return { uint8_t(v * 255), uint8_t(p * 255), uint8_t(q * 255)};
+        case 0: return { uint8_t(v * 255), uint8_t(t * 255), uint8_t(p * 255)}; // Red to Magenta
+        case 1: return { uint8_t(q * 255), uint8_t(v * 255), uint8_t(p * 255)}; // Magenta to Blue
+        case 2: return { uint8_t(p * 255), uint8_t(v * 255), uint8_t(t * 255)}; // Blue to Cyan
+        case 3: return { uint8_t(p * 255), uint8_t(q * 255), uint8_t(v * 255)}; // Cyan to Green
+        case 4: return { uint8_t(t * 255), uint8_t(p * 255), uint8_t(v * 255)}; // Green to Yellow
+        case 5: return { uint8_t(v * 255), uint8_t(p * 255), uint8_t(q * 255)}; // Yellow to Red
     }
 
     return {};
 }
+

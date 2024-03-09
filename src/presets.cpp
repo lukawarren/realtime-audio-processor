@@ -22,7 +22,7 @@ void FarAwayRoom(AtomicLinkedList<AudioEffect>* effects)
     // (makes audio sound very echo-ey without adding delay)
     auto* equaliser = new EqualiserEffect();
     equaliser->SetProperty<float>("upper frequency", 20000.0f);
-    equaliser->SetProperty<float>("lower frequency", 20.0f);
+    equaliser->SetProperty<float>("lower frequency", 120.0f);
     equaliser->SetProperty<float>("multiplier", 0.0f);
     effects->Add(equaliser);
 
