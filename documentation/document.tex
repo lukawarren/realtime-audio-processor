@@ -55,6 +55,27 @@
 	% Page breaks %
 	\AddToHook{cmd/section/before}{\clearpage}
 	% \AddToHook{cmd/subsection/before}{\clearpage} %
+	
+	\setcounter{section}{-1}
+	\section {Preface}
+	\paragraph{}
+	This project makes use of language which may be unfamiliar to the reader, or uses language in a way that may appear unusual. Below is a brief glossary of the most important key terms used, for the benefit of eliminating confusion:
+	
+	\begin{itemize}
+		\item \textbf{Real-time}: This project uses the term "real-time" in the same sense that is used in computer graphics, \textit{not embedded systems}. In other words, a program is considered "real-time" if visual or auditory changes can be made quickly enough that there is no perceivable delay. For example, a video game is "real-time" as the picture on the screen responds to player input virtually immediately, whereas a compiler would not be considered "real-time", as a user must perceivably wait before any change made to the code becomes apparent in the final translation unit.
+		
+		\item \textbf{Time domain}: The standard way of representing a signal such as a sound wave, with time on the x-axis and amplitude on the y-axis.
+		
+		\item \textbf{Frequency domain}: Representing a signal using frequency on the x-axis instead. A signal can be converted from the time domain to the frequency domain using an FFT, and then converted back using an IFFT.
+		
+		\item \textbf{FFT}: Short for Fast Fourier Transform - an algorithm to convert an incoming signal (in this case audio) from the time domain into the frequency domain.
+		
+		\item \textbf{IFFT}: Short for Inverse Fast Fourier Transform - achieves the opposite of an FFT.
+		
+		\item \textbf{Playlist}: A list of audio files (usually songs)  intended to be played consecutively.
+		
+		\item \textbf{Equaliser}: An equaliser is a piece or component of software that allows for specific frequencies within the audio to be modified. Equalisers alter the music in frequency space.
+	\end{itemize}
 
 	\include{analysis.tex}
 	\include{design.tex}
@@ -74,19 +95,31 @@
 				{\huge Luka's Questionnaire Form}
 				\end{center}
 	
-				For my A-level Computer Science coursework  I am writing a program that allows users to easily apply various audio effects to songs, in order to make experimenting with music and creating remixes easier. In order to create the best possible software, I would like your opinion on what makes a remix good. Please answer the questions below in a concise and understandable manner, then email me your responses.
+				For my A-level Computer Science coursework  I am writing a program that allows users to easily apply various audio effects to live songs, in order to make experimenting with music and creating remixes easier. In other words, I am writing a program where you can "remix" music as you listen to it, so that experimentation can be done quickly and without hassle. In order to create the best possible software, I would like your opinion on what makes a remix good, and what features you would expect my software to have. Please answer the questions below by editing this document in a concise and comprehensible manner, then email me your responses.
 	
 				\paragraph{Questions}
 				\begin{enumerate}
 					\item Why do you sometimes prefer a song's remix?
 					\item How does a remix typically differ from the original song?
-					\item What features would you like in a real-time audio editing program to assist in "remixing" music?
+					\item My program is meant to lower the barrier of entry for editing audio as much as possible. How can I further enhance ease-of-use?
+					\item Are there any other features  you would like in a real-time audio editing program to assist in "remixing" music?
+					\item How do you currently listen to music?
 				\end{enumerate}
+				
+				\paragraph{Responses:}
+				\begin{enumerate}
+					\item
+					\item \bigskip \bigskip \bigskip
+					\item \bigskip \bigskip \bigskip
+					\item \bigskip \bigskip \bigskip
+					\item \bigskip \bigskip \bigskip
+				\end{enumerate}
+				\bigskip \bigskip \bigskip
 		\end{minipage}}
 	}
 	
 	\subsection{Full Source Code}
-	\include{full_source.tex}
+	% \include{full_source.tex}
 	
 	\subsection{TODO}
 	\begin{itemize}

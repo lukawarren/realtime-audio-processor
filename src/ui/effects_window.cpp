@@ -57,6 +57,8 @@ void EffectsWindow::FillList()
 void EffectsWindow::OnRemove(wxCommandEvent& e)
 {
     auto effect = GetSelectedEffect();
+
+    // Only remove effect if there was indeed an effect selected
     if (effect.has_value())
         effects->Remove(*effect);
 

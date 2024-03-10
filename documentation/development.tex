@@ -52,7 +52,10 @@ For handy reference, below is a table summarising the various techniques used in
 				src/effects/volume\_effect.cpp & Inheritance & Volume effect implementation \\
 				
 				\hline
-				Various files & Reading and writing files to and from disk. This employs defensive programming patterns. & Used with audio files and playlists \\
+				Various files & Employing defensive programming patterns when reading and writing files to and from disk, as well as when modifying audio effects & Used with audio files , audio effects and playlists \\
+				
+				\hline
+				src/io/audio\_stream.cpp, amongst others & Key program logic & Manages the audio playback loop, including processing and inter-thread communication. \\
 				
 				\hline
 			\end{tabularx}
@@ -62,7 +65,7 @@ For handy reference, below is a table summarising the various techniques used in
 
 \pagebreak
 \subsection{Atomic Linked List - \textit{include/data/atomic\_linked\_list.h}}
-As discussed in section 2, the atomic linked list is a crucial component of the project.  It makes use of generics (C++ "templates") to allow it to store any arbitrary data type. 
+As discussed in section 2, the atomic linked list is a crucial component of the project, and was chosen as using a linked list means adding and removing elements can be done in constant time.  It makes use of generics (C++ "templates") to allow it to store any arbitrary data type. 
 
 The full code is listed below, followed by explanations below of the most critical parts.
 
@@ -234,7 +237,7 @@ The noise effect uses a \textit{uniform real distribution}, so that all frequenc
 
 
 \pagebreak
-\subsection{Reading and Writing Data Using Defensive Programming}
+\subsection{Defensive Programming}
 
 \subsubsection{Reading Audio Files}
 \paragraph{}
@@ -269,3 +272,68 @@ Saving playlists is very straightforward as we know the files exist, given they 
 \paragraph{}
 Naturally, we must also check the operation succeeded using a try-catch block in \textit{src/ui/playlist\_window.cpp}:
 \inputminted[linenos, firstline=84, lastline=118]{c++}{../src/ui/playlist_window.cpp}
+
+\pagebreak
+\subsubsection{Defensive Programming with Audio Effects}
+Whilst not strictly related to the saving and loading of audio files, defensive programming was also used in the effects window, where the user can remove effects or change the order in which they are applied. This was needed as:
+\begin{enumerate}
+	\item There is no guarantee that, when the user clicks the remove button, an audio effect was actually selected
+	\item There should be no way for a user to move an effect already at the top of the list "even higher", and an audio effect at the bottom of the list "even lower".
+\end{enumerate}
+Below is the relevant code from \textit{src/ui/effects\_window.cpp}:
+\inputminted[linenos, firstline=57, lastline=102]{c++}{../src/ui/effects_window.cpp}
+
+\pagebreak
+\subsection{Audio Playback Subroutines}
+\paragraph{}
+In section 2.2.5, an audio playback flowchart was designed, which formed the backbone of the project. In brief, it described a subroutine in which a buffer of audio was first fetched, processed by all active effects, then played by the system's speakers, all whilst being visualised on the GUI thread.
+
+\subsubsection{Definition of Interfaces}
+\paragraph{}
+Naturally the management of this proved complicated, and so it was abstracted into the \textit{AudioStream} and \textit{AudioFile} class. Recall that UML class diagrams were designed for these in section 2.2.2.
+
+\paragraph{}
+The interface for the \textit{AudioFile} class was defined in \textit{include/io/audio\_file.h}:
+\inputminted[linenos]{c++}{../include/io/audio_file.h}
+
+\pagebreak
+\paragraph{}
+Next, the interface for the \textit{AudioStream} class was defined in \textit{include/io/audio\_stream.h}:
+\inputminted[linenos]{c++}{../include/io/audio_stream.h}
+
+\pagebreak
+\subsubsection{Implementation of AudioStream Logic}
+\paragraph{}
+When an \textit{AudioStream} is created, it handles the creation of the SDL2 audio device, including verifying that the computer the software is running on supports the required settings. It also registers a callback so that, on a separate audio thread which will be created by SDL2, audio data can be sent to the operating system. This happens in the constructor of \textit{src/io/audio\_stream.cpp}:
+ \inputminted[linenos, firstline=6, lastline=54]{c++}{../src/io/audio_stream.cpp}
+ 
+ \pagebreak
+ \paragraph{}
+ When this audio callback occurs, five key steps occur:
+ \begin{enumerate}
+ 	\item Buffers to the previous, current and next audio chunks from the \textit{AudioFile} are fetched
+ 	\item These are verified using the \textit{BufferIsInRange} function, as one can imagine not all three will be valid at the beginning or end of a file's playback.
+ 	\item The audio buffers are "resampled" if the playback speed has been modified (as the audio wave needs "squishing" or "stretching")
+ 	\item Next, the \textit{AudioEffect} instances stored in the "effects" \textit{AtomicLinkedList} are applied to the audio
+ 	\item Finally, the \textit{AudioStream} will call the \textit{on\_progress\_changed} callback, to notify the GUI that playback has advanced.
+ \end{enumerate}
+ 
+ \paragraph{}
+ Below is the relevant code:
+ \inputminted[linenos, firstline=68, lastline=177]{c++}{../src/io/audio_stream.cpp}
+  
+ \pagebreak
+ \subsubsection{Communication with GUI thread}
+ \paragraph{}
+ When the AudioStream is created in \textit{src/ui/play\_window.cpp}, its callback is set. Care is taken to enqueue the work needed to the GUI thread using a custom-defined event:
+ \inputminted[linenos, firstline=341, lastline=345]{c++}{../src/ui/play_window.cpp}
+ 
+ \paragraph{}
+ The \textit{AudioStreamUpdatedEvent} is a derived from the wxEvent class, and contains the needed data for the updating of the GUI. The code is contained under \textit{include/ui/custom\_events.h}:
+ \inputminted[linenos]{c++}{../include/ui/custom_events.h}
+ 
+ \pagebreak
+ \paragraph{}
+Hence the \textit{AudioStream} callback arrives at the following code in \textit{src/ui/play\_window.cpp}, in which the GUI is updated. Recall that the contents of the FeedAudio subroutine has already been covered in section 3.5.3.
+\inputminted[linenos, firstline=350, lastline=362]{c++}{../src/ui/play_window.cpp}
+ 

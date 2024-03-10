@@ -1,53 +1,35 @@
 \section{Analysis}
+
 \subsection{Background}
 There exists online many popular "remixes"  where someone has taken an existing song and distorted it, usually by adjusting its speed, bass and pitch, to achieve a desired effect. Often these versions of the song are preferred to the originals when used to accompany short-form content on video-sharing sites such as TikTok. For example,  the song "Money Trees" by Kendrick Lamar has 120 million views on YouTube  in its original form, but also a sizeable 1.6 million views on one "TikTok remix" alone, and indeed on TikTok itself it is rare to hear the original version.
 
 \paragraph{}
-As such it can be seen that there exists a large audience of people who enjoy listening to altered versions of popular songs. However, the most popular music listening programs, including Spotify and YouTube music, provide no mechanism for manually altering songs by one's self. Whilst there exists ready-made "remixes" by others, there are no mainstream programs which allow a user to "remix" a song in real-time as it is being listened to. This presents two main problems:
-
+As such it can be seen that there exists a large audience of people who enjoy listening to altered versions of popular songs. However, the most popular music listening programs, including Spotify and YouTube music, provide no mechanism for manually altering songs by one's self. Instead, "remixes" must be created in external audio editing programs. Thus if a user wants to create their own "remixes", a unique issue is presented:
 \begin{itemize}
-	\item Many songs do not have any accompanying "remixes" to satisfy a user's need
-	\item The barrier to entry for creating a "remix" prevents easy and user-friendly experimentation
+	\item Suppose, for example, that a user wants to listen to a selection of songs, but sped-up and with a bass-boost applied, as is typical for song "remixes" on TikTok. Many songs do not have any accompanying "remixes" to satisfy this user's need, so they wish to do things themselves.
+	\item As there exists no mainstream solution to edit music in real-time, the user would have to import their music files into an audio editing program and apply any desired effects to each file. This will take considerable time.
+	\item However, what if the user then wishes to change the intensity or nature of the effects applied?
+	\item Unfortunately now, they would have to repeat the entire audio-editing process again, waiting considerable time before the results of their experimentation could be heard.
+	\item The barrier for entry for creating and experimenting with different audio effects for large catalogues of music is thus considerable. One cannot quickly decide to turn up the bass or add an echo, for example, without opening an external program and interrupting playback.
+	\item Easy and user-friendly experimentation is hence prevented, limiting the number of people willing to try editing audio, and hence the number of remixes that exist.
 \end{itemize}
 
 \paragraph{}
-It is therefore the aim of this coursework to create a system to allow users to "remix" songs in real-time as they listen to them. Such a system would allow for comprehensible, user-friendly experimentation, removing the above barrier to entry, whilst providing a mechanism to alter the sound of any arbitrary audio, removing the need to rely on other's work.
+It is therefore the aim of this coursework to create a system to allow users to "remix" songs in real-time as they listen to them. In other words, the goal is to create a program that can not only play a user's music, but also allow them to edit it live, removing the need for external program and allowing them to tweaks audio effects instantly, without delay. Such a system would allow for comprehensible, user-friendly experimentation, removing the above barrier to entry and providing great convenience.
 
 \paragraph{}
 However, a system can only be comprehensible and user-friendly if the exact needs of the users themselves are known, and so first a representative sub-section of the user-base must be interviewed.
 
 \pagebreak
 \subsection{Collection of Data}
-A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". Below is a brief summary of the questions asked and the relevant responses.
+A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". The full interview form can be seen in the appendix. Below are the responses collected from my peers, which I believe represents the target demographic for this software, as those who listen to song remixes, particularly on TikTok, are typically my age.
 
-\paragraph{Question 1 - Why do you sometimes prefer a song's remix?}
-\subparagraph{Student 1}
-Videos on TikTok are only about 30 seconds long. It's good to speed up a song because otherwise you couldn't enjoy the full chorus.
-\subparagraph{Student 2}
-I'm not sure really - I think I prefer it when a song has more bass than usual, and I like how distorted it sounds.
-\subparagraph{Student 3}
-I like watching remixes on YouTube because when they visualise the music it always looks very cool.
-
-\paragraph{Question 2 - How does a remix typically differ from the original song?}
-\subparagraph{Student 1}
-Usually they're faster and I guess that makes them higher-pitched too.
-\subparagraph{Student 2}
-They have more bass and are slowed down a bit. They have a bit of an echo {[effect]} too, and sometimes also they add noise to make it more relaxing. Even the volume is different.
-\subparagraph{Student 3}
-A remix usually has a different speed and is higher or lower than the original.
-
-\paragraph{Question 3 - What features would you like in a real-time audio editing program to assist in "remixing" music?}
-\subparagraph{Student 1}
-I'm not really good with editing so hopefully it would be easy to use. I'd probably only want to apply the same effect every time so there should be a way to help me with that.
-\subparagraph{Student 2}
-I'd like to be able to apply it to my entire music collection because that way all my songs could have the same effects applied. In other words I'd like to apply it to my music playlist.
-\subparagraph{Student 3}
-I think it would be cool to change the speed of songs and change the bass and treble. My car stereo can do that and it's really interesting to play with.
+\input{questionnare_responses.tex}
 
 \pagebreak
 \subsection{Interview Interpretation}
 \subsubsection{Frequencies}
-Through the interviews it was understood that the ability to modify certain frequency ranges was desirable, in order to affect both the bass and treble. Typically, there are two main ways of doing this:
+Through the interviews it was understood that the ability to modify certain frequency ranges was desirable, particularly in order to affect both the bass and treble. Typically, there are two main ways of doing this:
 \begin{itemize}
 	\item Applying a low-pass or high-pass filter to broadly modify the frequencies represented
 	\item Modifying the incoming audio in its frequency domain using a Fourier Transform, then converting it back to the time domain using an Inverse Fourier Transform
@@ -55,13 +37,16 @@ Through the interviews it was understood that the ability to modify certain freq
 Whilst applying a low or high pass filter is a very inexpensive operation, it does not provide exact control over the frequencies modified. Hence in order to best be able to manipulate frequencies, a Fourier Transform must be used.  This is not a computationally trivial task and so every effort must be made to ensure that the program created can still run fast enough to be real-time on typical high school hardware, so as not to increase the barrier of entry, as this would go against the intention of the project.
 
 \subsubsection{Playback Speed}
-The system must also be able to alter the playback speed, as this feature was highly requested. However, again this must not conflict with the real-time requirements of the system on modest high school hardware. In other words, the adjusting of playback speed should not demand a significant computational overhead (or ideally any overhead at all).
+The system must also be able to alter the playback speed, as this feature was highly requested. However, again this must not conflict with the real-time requirements of the system on modest high school hardware. In other words, the adjusting of playback speed should not demand a significant computational overhead.
 
 \subsubsection{Other Audio Effects}
-Student 2 mentioned "remixes" often contain an "echo" or additional "noise", and so in order to avoid limiting the program to merely changing a song's speed or frequency response, it should also allow the user to apply various audio effects, including but not limited to the ones above. In order to maximise the ease of experimentation, as is desired, the effects should be easily configurable.
+Students 2 and 3 mentioned "remixes" often contain an "echo", with student 2 also wishing for an additional "noise", and so it seems that, in order to allow most types of song "remixes" to be fully made, these effects should be supported too. In order to maximise the ease of experimentation, as is desired, the effects should be easily configurable, just like the frequency modifications.
 
 \subsubsection{Visualisation}
-As the program is already meant to perform a Fourier Transform on the incoming audio data, it will thus already have a representation of the audio in the frequency domain. Hence it would be trivial to display this data graphically so as to provide an audio visualisation feature that is, computationally, essentially free. It is hoped that by providing visual feedback to the audio as it is edited, the effects of, for example, adjusting the bass, will be easy to see and thus the processing the software is carrying out will be easy to comprehend. The exact nature of this visualisation (that is: how audio is to be graphically displayed in frequency space) is to be covered in detail below in section 2 ("Design"). However, put simply, one can imagine  a "bar chart", with frequency ranges on the x-axis, and amplitude on the y-axis. Such a visualisation would allow the user to easily see, for example, the immediate effects a "bass boost" would have on the frequency space of the audio being played.
+Multiple students wished for a form of audio visualisation to make it easier to visualise how the music was being changed. As the program is already meant to perform a Fourier Transform on the incoming audio data (for the purposes of changing specific frequencies), it will thus already have a representation of the audio in the frequency domain. Hence it would be trivial to display this data graphically so as to provide an audio visualisation feature that is, computationally, essentially free. It is hoped that by providing visual feedback to the audio as it is edited, the effects of, for example, adjusting the bass, will be easy to see and thus the processing the software is carrying out will be easy to comprehend. The exact nature of this visualisation (that is: how audio is to be graphically displayed in frequency space) is to be covered in detail below in section 2 ("Design"). However, put simply, one can imagine  a "bar chart", with frequency ranges on the x-axis, and amplitude on the y-axis. Such a visualisation would allow the user to easily see, for example, the immediate effects a "bass boost" would have on the frequency space of the audio being played.
+
+\subsubsection{Playlists}
+Students seemed to have amassed a large collection of music stored in "playlists", and hoped that the real-time nature of the software would allow them to apply audio effects to their entire playlist easily. The software should therefore support playing not just a single audio file, but an entire collection, so that convenience is maximised, further lowering the barrier of entry.
 
 \pagebreak
 \subsection{Fourier Technical Analysis}

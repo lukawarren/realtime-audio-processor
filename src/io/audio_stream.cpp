@@ -49,11 +49,8 @@ AudioStream::AudioStream(const AudioFile* file, const AtomicLinkedList<AudioEffe
         actual_format.samples != desired_format.samples)
         throw std::runtime_error("Unable to create audio device with desired settings");
 
-    input_buffer = file->GetData();
-    input_length = file->GetLength();
-    max_sample_value = file->MaxSampleValue();
-    input_frequency = file->GetFrequency();
     this->effects = effects;
+    this->input_file = file;
 }
 
 void AudioStream::Play()
@@ -70,6 +67,12 @@ void AudioStream::Pause()
 
 void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
 {
+    // Get info from audio file
+    uint8_t* input_buffer = input_file->GetData();
+    uint32_t input_length = input_file->GetLength();
+    uint16_t max_sample_value = input_file->MaxSampleValue();
+    int input_frequency = input_file->GetFrequency();
+
     // Grab pointers to previous, current and next buffers, taking into account
     // the current playback speed!
     int realtime_length = length * input_speed;
@@ -95,7 +98,7 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
         std::vector<float> current = ConvertBufferToFloats(current_input, realtime_length);
         std::vector<float> next = next_is_valid ? ConvertBufferToFloats(next_input, realtime_length) : empty;
 
-        // "Squash" wave from 2x speed, 3x speed, etc. into 1x speed
+        // "Squash" wave from 2x speed, 3x speed, etc. into the length expected
         previous = ResampleBuffer(previous);
         current = ResampleBuffer(current);
         next = ResampleBuffer(next);
@@ -119,8 +122,14 @@ void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
     on_progress_changed(GetProgress(), buffer, length);
 }
 
-bool AudioStream::BufferIsInRange(uint8_t* buffer, int length)
+/*
+    Determines if audio buffer is within the range of the audio file
+    being played.
+*/
+bool AudioStream::BufferIsInRange(uint8_t* buffer, int length) const
 {
+    const uint8_t* input_buffer = input_file->GetData();
+    const uint32_t input_length = input_file->GetLength();
     return !(
         length == 0 ||
         input_length == 0 ||
@@ -134,9 +143,12 @@ std::vector<float> AudioStream::ConvertBufferToFloats(uint8_t* buffer, int lengt
 {
     std::vector<float> audio;
     audio.reserve(length / 2);
+
+    const float max_sample_value = (float)input_file->MaxSampleValue();
+
     for (int i = 0; i < length / 2; ++i)
         audio.emplace_back(
-            float(*((int16_t*)buffer + i)) / (float)max_sample_value
+            float(*((int16_t*)buffer + i)) / max_sample_value
         );
 
     return audio;
@@ -144,6 +156,10 @@ std::vector<float> AudioStream::ConvertBufferToFloats(uint8_t* buffer, int lengt
 
 std::vector<float> AudioStream::ResampleBuffer(std::vector<float>& buffer)
 {
+    // No need to re-sample if we're already at 1x speed
+    if (input_speed == 1.0f)
+        return buffer;
+
     // Allocate output buffer
     std::vector<float> output;
     size_t targetSize = (size_t)std::round(buffer.size() / input_speed);
@@ -171,13 +187,13 @@ void AudioStream::SetProgress(const float progress)
     SDL_ClearQueuedAudio(device);
 
     // Change progress but round to nearest multiple of buffer length to avoid artifacts
-    this->input_progress = input_length * progress;
+    this->input_progress = input_file->GetLength() * progress;
     this->input_progress = int(this->input_progress / buffer_length) * buffer_length;
 }
 
 float AudioStream::GetProgress() const
 {
-    return (float)input_progress / (float)input_length;
+    return (float)input_progress / (float)input_file->GetLength();
 }
 
 void AudioStream::SetSpeed(const float speed)
