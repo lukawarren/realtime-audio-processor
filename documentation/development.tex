@@ -130,7 +130,7 @@ This implements the pseudo-code produced in section 2.5, and hence uses recursio
 
 \subsubsection{FFT Algorithm}
 The Cooley-Tukey Fast Fourier Transform and corresponding Inverse Fast Fourier Transform are performed in the following function, using the pseudo-code written in Section 2. As such, it is recursive and manipulates each audio sample in the complex plane by manipulating its polar representation:
-\inputminted[linenos, firstline=49, lastline=79]{c++}{../src/effects/fft.cpp}
+\inputminted[linenos, firstline=49, lastline=81]{c++}{../src/effects/fft.cpp}
 
 \pagebreak
 \subsubsection{Visualisation Algorithm}
@@ -237,7 +237,7 @@ The noise effect uses a \textit{uniform real distribution}, so that all frequenc
 
 
 \pagebreak
-\subsection{Defensive Programming}
+\subsection{Defensive Programming and IO}
 
 \subsubsection{Reading Audio Files}
 \paragraph{}
