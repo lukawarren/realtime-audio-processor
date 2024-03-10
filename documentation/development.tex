@@ -249,3 +249,23 @@ When loading an \textit{AudioFile} in the constructor, an exception is raised if
 Then in \textit{src/ui/play\_window.cpp},  defensive programming is used to ensure the program does not behave incorrectly:
 \pagebreak
 \inputminted[linenos, firstline=303, lastline=348]{c++}{../src/ui/play_window.cpp}
+
+\pagebreak
+\subsubsection{Reading Playlists}
+Recall that playlists are just text files where each line is a path to an audio file. Recall also that if an audio file is corrupt or does not exist, it will be caught later on when the audio file is read. However, it is still prudent to check the audio files do indeed exist when loading the playlist\footnote{
+	This is purely for convenience. Imagine, for example, that a user has a very large playlist with hundreds of audio files. Rather than force them to listen to every single one to verify that they all exist on disk, let's check beforehand when the playlist is loaded too.
+}. Below is the relevant code from \textit{src/io/playlist.cpp}:
+\inputminted[linenos, firstline=25, lastline=55]{c++}{../src/io/playlist.cpp}
+
+\paragraph{}
+If this operation fails, the user will have an error message displayed in \textit{src/ui/start\_window.cpp}:
+\inputminted[linenos, firstline=44, lastline=80]{c++}{../src/ui/start_window.cpp}
+
+\pagebreak
+\subsubsection{Saving Playlists}
+Saving playlists is very straightforward as we know the files exist, given they have been selected within the program using the GUI. However we must still check the file can actually be saved. Below is the relevant code from \textit{src/io/playlist.cpp}:
+\inputminted[linenos, firstline=25, lastline=55]{c++}{../src/io/playlist.cpp}
+
+\paragraph{}
+Naturally, we must also check the operation succeeded using a try-catch block in \textit{src/ui/playlist\_window.cpp}:
+\inputminted[linenos, firstline=84, lastline=118]{c++}{../src/ui/playlist_window.cpp}
