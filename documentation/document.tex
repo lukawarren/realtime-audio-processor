@@ -67,48 +67,26 @@
 	\section { Appendix  }
 
 	\subsection{Copy of Interview Questionnaire}
-
 	{
-	\centering
-	\fbox{\begin{minipage}{15cm}
-			\begin{center}
-			{\huge Luka's Questionnaire Form}
-			\end{center}
-
-			For my A-level Computer Science coursework  I am writing a program that allows users to easily apply various audio effects to songs, in order to make experimenting with music and creating remixes easier. In order to create the best possible software, I would like your opinion on what makes a remix good. Please answer the questions below in a concise and understandable manner, then email me your responses.
-
-			\paragraph{Questions}
-			\begin{enumerate}
-				\item Why do you sometimes prefer a song's remix?
-				\item How does a remix typically differ from the original song?
-				\item What features would you like in a real-time audio editing program to assist in "remixing" music?
-			\end{enumerate}
-	\end{minipage}}
-}
-
-
-	\section { Code example }
-		\begin{minted}{c++}
-void EqualiserEffect::ModifySamples(std::vector<float>& samples, const float frequency) const
-{
-	// Perform FFT to convert to frequency domain
-	FastFourierTransform fft(samples, std::nullopt);
-	std::vector<std::complex<float>>& fft_output = fft.output;
-
-	ModifyFrequencies(fft_output, frequency);
-
-	// Perform IFFT to convert back to time domain
-	InverseFourierTransform inverse(fft_output);
-	std::vector<float> scaled_real_components;
-	scaled_real_components.reserve(samples.size());
-	for (const auto& c : inverse.output)
-		scaled_real_components.emplace_back(
-			c.real() / (float)inverse.output.size()
-		);
-
-	samples = scaled_real_components;
-}
-	\end{minted}
+		\centering
+		\fbox{\begin{minipage}{15cm}
+				\begin{center}
+				{\huge Luka's Questionnaire Form}
+				\end{center}
+	
+				For my A-level Computer Science coursework  I am writing a program that allows users to easily apply various audio effects to songs, in order to make experimenting with music and creating remixes easier. In order to create the best possible software, I would like your opinion on what makes a remix good. Please answer the questions below in a concise and understandable manner, then email me your responses.
+	
+				\paragraph{Questions}
+				\begin{enumerate}
+					\item Why do you sometimes prefer a song's remix?
+					\item How does a remix typically differ from the original song?
+					\item What features would you like in a real-time audio editing program to assist in "remixing" music?
+				\end{enumerate}
+		\end{minipage}}
+	}
+	
+	\subsection{Full Source Code}
+	\include{full_source.tex}
 	
 	\subsection{TODO}
 	\begin{itemize}
@@ -126,7 +104,7 @@ void EqualiserEffect::ModifySamples(std::vector<float>& samples, const float fre
 		\item defensive programming section with all the wxMessageBox and throws
 		\item add defensive programming to tests
 		\item code for flowchart 2.2.5
-		\item include use of atomic linked list, maybe in \^\^
+		\item include use of atomic linked list, maybe in above
 	\end{itemize}
 	
 
