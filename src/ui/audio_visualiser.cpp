@@ -150,6 +150,7 @@ wxColour AudioVisualiser::ConvertHSVToRGB(
     const float t = value * (1 - (1 - fraction) * saturation);
 
     // Convert HSV to RGB based on the indices
+    const auto v = value;
     switch (hue_segment % 6)
     {
         case 0: return { uint8_t(v * 255), uint8_t(t * 255), uint8_t(p * 255)}; // Red to Magenta

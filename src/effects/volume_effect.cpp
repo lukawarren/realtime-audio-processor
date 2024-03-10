@@ -13,5 +13,5 @@ void VolumeEffect::ApplyEffect(Packet& packet)
 
 std::string VolumeEffect::GetName() const
 {
-    return "Quieten";
+    return "Volume";
 }

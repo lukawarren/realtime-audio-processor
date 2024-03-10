@@ -24,9 +24,13 @@ void Playlist::SaveToFile(const std::string& path) const
 
 std::optional<Playlist> Playlist::FromFile(const std::string& path)
 {
+    // Check file actually exists
+    std::ifstream input_file(path);
+    if (!input_file.good())
+        return std::nullopt;
+
     // Read file line by line
     std::string line;
-    std::ifstream input_file(path);
     std::vector<std::string> lines;
     while (std::getline(input_file, line))
         lines.emplace_back(line);
@@ -50,7 +54,7 @@ std::optional<Playlist> Playlist::FromFile(const std::string& path)
     return Playlist(lines);
 }
 
-const std::vector<std::string>& Playlist::Items() const
+std::vector<std::string>& Playlist::Items()
 {
     return filenames;
 }

@@ -483,6 +483,65 @@ As I am using "wxWidgets" (see above), all GUIs must be programmed directly in c
 \end{itemize}
 
 \pagebreak
+\subsection{Defensive Programming}
+
+\subsubsection{Reading and Writing Audio Files and Playlists}
+\paragraph{}
+Naturally the program has a need to consume data in various forms. There are three key filesystem operations:
+\begin{itemize}
+	\item Saving user-created playlists to disk
+	\item Loading user-created playlists
+	\item Loading audio files from disk
+\end{itemize}
+
+\paragraph{}
+It should be stressed that any one of these operations could fail. A great many number of edge cases exist:
+\begin{itemize}
+	\item Upon loading a playlist, one or more audio files referenced may not actually exist
+	\item An audio file may be unable to be loaded
+	\item The user may lack sufficient permissions to save a playlist to a particular folder (e.g. /root)
+	\item The user may input an invalid path when trying to load a playlist
+\end{itemize}
+
+\paragraph{}
+Thus there is a need to carefully design IO-related subroutines so that, upon the event of failure, the program does not crash or behave incorrectly.
+
+\paragraph{Loading Playlists}
+\begin{enumerate}
+	\item Upon a playlist file being selected, check it actually exists and can be read
+	\item Read the file line by line (where each line corresponds to a path for an audio file)
+	\item Verify each audio file actually exists on the system
+	\item If an audio file is invalid or cannot be read, further defensive programming (described below when loading audio files themselves) will be employed.
+\end{enumerate}
+
+\paragraph{Loading Audio Files}
+\begin{enumerate}
+	\item When an audio file is loaded by the program (as it's about to be played), raise an exception if, for whatever reason, SDL cannot parse the audio file\footnote{
+		Recall that SDL is being used as an audio library to load WAV files. SDL will return an error
+		code if it fails, which may occur if the file is corrupt.
+	}.
+	\item Catch this exception in a try-catch block in the relevant GUI code.
+	\item Remove the offending audio file from the playlist \textit{in memory} (not on the filesystem).
+	\item If there are other audio files in the playlist, notify the user then skip to them instead (i.e. go to step 1 again).
+	\item However if no valid audio files can be found, the entire playlist is invalid. Notify the user then terminate the program.
+\end{enumerate}
+
+\paragraph{Saving Playlists}
+\begin{enumerate}
+	\item Attempt to save the playlist file at the location the user specified.
+	\item If the operation returned an error code, inform the user. Due to the control flow of the GUI, there is no need to further alter program flow\footnote{
+		This is because the user saves playlists in the "create playlist" window. Once they click save, the window closes, and they are back at the screen presenting them with a choice to load an existing playlist or create a new one, regardless of whether or not the process succeeded. Hence all we need to do is notify the user if something went wrong.
+	}.
+\end{enumerate}
+
+\subsubsection{Changing Audio Effect Properties}
+\paragraph{}
+Recall that each audio effect property has a minimum and a maximum value as defined in my UML class diagrams. These will be set explicitly in the code, so that a user cannot, for example, set the "volume property" in the volume effect to a negative number or chose a frequency in the equaliser effect that is outside the range of human hearing.
+
+\paragraph{}
+When the relevant GUI sliders are created to allow these properties to be changed, they must have their minimum and maximum values set respectively. This will ensure it is impossible to input invalid settings.
+
+\pagebreak
 \subsection{Test Design}
 \paragraph{}
 In order to meet the objectives described in the analysis section, I have decided to design a variety of measurable tests which will indicate if these objectives have been met.

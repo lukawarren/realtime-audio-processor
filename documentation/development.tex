@@ -52,10 +52,7 @@ For handy reference, below is a table summarising the various techniques used in
 				src/effects/volume\_effect.cpp & Inheritance & Volume effect implementation \\
 				
 				\hline
-				Various files & Use of function callbacks & Used in many places, including preset creation and UI code \\
-				
-				\hline
-				Various files & Error handling and user input sanitisation & Prevent program from experiencing crashes, security issues and undefined behaviour \\
+				Various files & Reading and writing files to and from disk. This employs defensive programming patterns. & Used with audio files and playlists \\
 				
 				\hline
 			\end{tabularx}
@@ -129,20 +126,45 @@ For ordering playlists alphabetically, a sorting  algorithm was needed. I decide
 This implements the pseudo-code produced in section 2.5, and hence uses recursion and the relevant Fourier maths, as well as linearising frequencies using the Bark scale. The relevant code is contained below.
 
 \subsubsection{FFT Algorithm}
-\inputminted[linenos, firstline=1, lastline=79]{c++}{../src/effects/fft.cpp}
+The Cooley-Tukey Fast Fourier Transform and corresponding Inverse Fast Fourier Transform are performed in the following function, using the pseudo-code written in Section 2. As such, it is recursive and manipulates each audio sample in the complex plane by manipulating its polar representation:
+\inputminted[linenos, firstline=49, lastline=79]{c++}{../src/effects/fft.cpp}
 
 \pagebreak
 \subsubsection{Visualisation Algorithm}
-As discussed in section 2.5, this transforms the data into a format easily plottable by the GUI code, and takes into account the non-linear scale of human hearing.
+As discussed in section 2.5, this transforms the data into a format easily plottable by the GUI code, and takes into account the non-linear scale of human hearing by using the Bark Scale and  a logarithmic scale for sound amplitude.
+
+\paragraph{}
+Converting from Hertz to the Bark scale is performed using the appropriate equation:
+\inputminted[linenos, firstline=150, lastline=156]{c++}{../src/effects/fft.cpp}
+
+\paragraph{}
+The data is then converted into the desired "plottable format". To do this, two new structs are defined in the corresponding header file:
+\inputminted[linenos, firstline=16, lastline=29]{c++}{../include/effects/fft.h}
+
+\paragraph{}
+Finally, the function known as \textit{convert\_fft\_to\_bar\_chart\_format} in the pseudo-code has been defined:
 \inputminted[linenos, firstline=81, lastline=148]{c++}{../src/effects/fft.cpp}
 
 \pagebreak
 \subsubsection{Corresponding code to draw in GUI - \textit{src/ui/audio\_visualiser.cpp}}
-Initially, results from the FFT were plotted straight to the screen. However, a key issue arose: audio changed so rapidly between frames that any visualisation was too flickery to be useful or readable.  To solve this, it was necessary to average the results of the FFT over multiple frames, so that changes in frequencies appeared more gradually. I also decided to colour the bars in the bar chart in accordance with their frequencies in order to increase the readability of the visualisation.
+Initially, results from the FFT were plotted straight to the screen. However, a key issue arose: audio changed so rapidly between frames that any visualisation was too flickery to be useful or readable.  To solve this, it was necessary to average the results of the FFT over multiple frames, so that changes in frequencies appeared more gradually. 
 
+\paragraph{}
+I also decided to colour the bars in the bar chart in accordance with their frequencies in order to increase the readability of the visualisation. It was also hoped that making the program more visually appealing would encourage more users to try it by capturing their attention. As I was, by default, displaying the full spectrum of audible frequencies, I wanted to intuitively communicate this using the full spectrum of colours. Modelling this using the typical RGB colour space was difficult. However luckily it is trivial using the HSV (hue-saturation-value) colour space, in which:
+\begin{itemize}
+	\item Hue represents the "base colour" (in essence the wavelength of light it corresponds to)
+	\item Saturation represents the contrast of the colour
+	\item Value represents the brightness of the colour
+\end{itemize}
+\inputminted[linenos, firstline=133, lastline=164]{c++}{../src/ui/audio_visualiser.cpp}
+
+\paragraph{}
 Each time a fixed buffer of audio is fed to the audio device (i.e. played to the speakers), the \textit{FeedAudio} subroutine is called, which performs a Fourier transform, adds it to the list of previous results for averaging, then triggers a GUI refresh.
 \inputminted[linenos, firstline=15, lastline=44]{c++}{../src/ui/audio_visualiser.cpp}
-\inputminted[linenos, firstline=67, lastline=165]{c++}{../src/ui/audio_visualiser.cpp}
+
+\paragraph{}
+When this GUI refresh occurs, it is finally time to draw the bar chart using the data stored in the class members:
+\inputminted[linenos, firstline=67, lastline=131]{c++}{../src/ui/audio_visualiser.cpp}
 
 \pagebreak
 \subsection{Audio Effects and Properties}
@@ -154,6 +176,10 @@ The \textit{AudioEffect} base class has three key features:
 	\item Provides a common interface to identify the name of an effect in the GUI
 	\item Provides a common interface to apply the effect to a "packet" of audio
 \end{enumerate}
+
+Here and elsewhere in the code, the project makes heavy use of OOP encapsulation. In this particular instance, external code remains unaware of each audio effect's particular property values or other member variables. Instead, audio effects can only be manipulated using the public interface defined. There is, however, an exception for the PropertiesWindow class due to performance concerns - this is discussed at length in the code's comments.    
+
+\pagebreak
 \inputminted[linenos]{c++}{../include/effects/audio_effect.h}
 
 \pagebreak
@@ -169,3 +195,57 @@ The \textit{AudioEffect} base class has three key features:
 \inputminted[linenos]{c++}{../include/effects/floating_point_property.h}
 
 
+\pagebreak
+\subsection{Implementation of Audio Effects - \textit{src/effects/*\_effect.cpp}}
+Each audio effect was implemented using the flowcharts designed in section 2. Naturally, each audio effect class is a child of the base \textit{AudioEffect} class as discussed above.
+
+\subsubsection{Echo Effect Header File - \textit{include/effects/echo\_effect.h}}
+\inputminted[linenos]{c++}{../include/effects/echo_effect.h}
+\pagebreak
+\subsubsection{Echo Effect Source File - \textit{src/effects/echo\_effect.cpp}}
+\inputminted[linenos]{c++}{../src/effects/echo_effect.cpp}
+
+\pagebreak
+\subsubsection{Equaliser Effect Header File - \textit{include/effects/equaliser\_effect.h}}
+\inputminted[linenos]{c++}{../include/effects/equaliser_effect.h}
+\pagebreak
+\subsubsection{Equaliser Effect Source File - \textit{src/effects/equaliser\_effect.cpp}}
+The equaliser effect is the only effect to manipulate audio in its frequency domain. As such, I encountered a variety of issues when implementing it:
+\begin{itemize}
+	\item One must be careful to not alter the phase of individual frequencies when adjusting the magnitudes - see EqualiserEffect::ModifyMagnitude
+	\item Because audio "packets" are processed separately and then essentially "stitched together" when they are played in the real world by the user's speakers, it is crucial that there are no abrupt "jumps" in magnitude, as otherwise the speakers will not be able to physically move fast enough to accommodate this, causing crackling and significant noise. However, if one naively  processes audio packets without considering the adjacent packets, the discrete nature of the Discrete Fourier Transform will mean that the "boundaries" between packets will not perfectly align, resulting in this exact problem. The solution to this is discussed in detail within the code's comments, within the \textit{ApplyEffect} subroutine.
+\end{itemize}
+\inputminted[linenos]{c++}{../src/effects/equaliser_effect.cpp}
+
+\pagebreak
+\subsubsection{Noise Effect Header File - \textit{include/effects/noise\_effect.h}}
+The noise effect uses a \textit{uniform real distribution}, so that all frequencies are equally affected. This is known as white noise, and mimics the backdrop of ambient sound. 
+\inputminted[linenos]{c++}{../include/effects/noise_effect.h}
+\pagebreak
+\subsubsection{Noise Effect Source File - \textit{src/effects/noise\_effect.cpp}}
+\inputminted[linenos]{c++}{../src/effects/noise_effect.cpp}
+
+\pagebreak
+\subsubsection{Volume Effect Header File - \textit{include/effects/volume\_effect.h}}
+\inputminted[linenos]{c++}{../include/effects/volume_effect.h}
+\pagebreak
+\subsubsection{Volume Effect Source File - \textit{src/effects/volume\_effect.cpp}}
+\inputminted[linenos]{c++}{../src/effects/volume_effect.cpp}
+
+
+\pagebreak
+\subsection{Reading and Writing Data Using Defensive Programming}
+
+\subsubsection{Reading Audio Files}
+\paragraph{}
+The AudioFile class provides an OOP interface for querying information about each file. Below is the definition in \textit{include/io/audio\_file.h}:
+\inputminted[linenos]{c++}{../include/io/audio_file.h}
+
+\paragraph{}
+When loading an \textit{AudioFile} in the constructor, an exception is raised if an error occurs:
+\inputminted[linenos, firstline=4, lastline=10]{c++}{../src/io/audio_file.cpp}
+
+\paragraph{}
+Then in \textit{src/ui/play\_window.cpp},  defensive programming is used to ensure the program does not behave incorrectly:
+\pagebreak
+\inputminted[linenos, firstline=303, lastline=348]{c++}{../src/ui/play_window.cpp}

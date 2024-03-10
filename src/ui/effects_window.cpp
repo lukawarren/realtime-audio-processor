@@ -70,7 +70,7 @@ void EffectsWindow::OnEdit(wxCommandEvent& e)
     {
         // Check effect actually has modifiable proeprties
         AudioEffect* effect = effects->GetNthNode(*selected)->data;
-        if (effect->properties.size() == 0)
+        if (!effect->HasProperties() == 0)
             wxMessageBox("This effect cannot be modified");
         else
             new PropertiesWindow(this, effect);

@@ -6,7 +6,7 @@
 class PlaylistWindow : public PopupWindow
 {
 public:
-    PlaylistWindow(wxWindow* parent);
+    PlaylistWindow(const std::string& root_folder, wxWindow* parent);
 
 private:
     // UI elements

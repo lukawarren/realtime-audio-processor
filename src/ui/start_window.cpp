@@ -38,7 +38,7 @@ StartWindow::StartWindow() : wxFrame(nullptr, wxID_ANY, "Choose a playlist")
 
 void StartWindow::OnCreateButton(wxCommandEvent& event)
 {
-    new PlaylistWindow(this);
+    new PlaylistWindow(App::GetAppAudioPath(), this);
 }
 
 void StartWindow::OnLoadButton(wxCommandEvent& event)
@@ -46,7 +46,7 @@ void StartWindow::OnLoadButton(wxCommandEvent& event)
     wxFileDialog dialog = wxFileDialog(
         this,                               // Parent
         "Open playlist",                    // Title
-        App::GetAppDataPath(),              // Default directory
+        App::GetAppPlaylistPath(),          // Default directory
         "playlist.txt",                     // Default filename
         "Text files (*.txt)|*.txt",         // Filter / wildcard
         wxFD_OPEN                           // Flags
@@ -75,6 +75,6 @@ void StartWindow::OnLoadButton(wxCommandEvent& event)
     }
     else
     {
-        wxMessageBox("Failed to load playlist as one or more audio files do not exist or cannot be read");
+        wxMessageBox("Failed to load playlist");
     }
 }

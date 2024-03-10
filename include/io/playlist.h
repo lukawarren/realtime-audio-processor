@@ -10,7 +10,7 @@ public:
 
     void SaveToFile(const std::string& path) const;
     static std::optional<Playlist> FromFile(const std::string& path);
-    const std::vector<std::string>& Items() const;
+    std::vector<std::string>& Items();
     void Shuffle();
 
 private:

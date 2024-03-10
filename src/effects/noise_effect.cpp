@@ -11,7 +11,9 @@ void NoiseEffect::ApplyEffect(Packet& packet)
 
     for (float& sample : packet.current_samples)
     {
-        // Add noise then avoid clipping
+        // Add noise then avoid clipping (recall that a sound wave played
+        // by a speaker cannot range from more than -100% to +100% displacement,
+        // and trying to do so would result in a form of audio distortion)
         sample += random_distribution(random_generator) * intensity;
         sample = std::max(sample, -1.0f);
         sample = std::min(sample, 1.0f);

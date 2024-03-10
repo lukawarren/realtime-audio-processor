@@ -2,7 +2,7 @@
 
 SongWindow::SongWindow(
     wxWindow* parent,
-    const Playlist& playlist,
+    Playlist& playlist,
     std::function<void(size_t)> on_song_selected
 ) :
     PopupWindow(parent, "Select a song"),

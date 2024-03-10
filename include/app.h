@@ -8,8 +8,10 @@ public:
     bool OnInit() override;
     void OnUnhandledException() override;
 
-    static std::string GetAppDataPath();
+    static std::string GetAppPlaylistPath();
+    static std::string GetAppAudioPath();
 
 private:
     void CreateDataDirectories();
+    static std::string EscapeRegex(const std::string& input);
 };

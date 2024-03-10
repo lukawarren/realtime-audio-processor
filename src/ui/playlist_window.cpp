@@ -2,7 +2,8 @@
 #include "io/playlist.h"
 #include "app.h"
 
-PlaylistWindow::PlaylistWindow(wxWindow* parent) : PopupWindow(parent, "Create a playlist")
+PlaylistWindow::PlaylistWindow(const std::string& root_folder, wxWindow* parent) :
+    PopupWindow(parent, "Create a playlist")
 {
     SetSize({1024, 768});
 #ifdef WIN32
@@ -23,7 +24,7 @@ PlaylistWindow::PlaylistWindow(wxWindow* parent) : PopupWindow(parent, "Create a
     };
     file_browser = new FileBrowser(
         this,
-        "/home/luka/Music",
+        root_folder,
         is_valid_file,
         on_file_double_clicked
     );
@@ -92,7 +93,7 @@ void PlaylistWindow::OnContinue(wxCommandEvent& event)
     wxFileDialog dialog = wxFileDialog(
         this,                               // Parent
         "Save File",                        // Title
-        App::GetAppDataPath(),              // Default directory
+        App::GetAppPlaylistPath(),          // Default directory
         "playlist.txt",                     // Default filename
         "Text files (*.txt)|*.txt",         // Filter / wildcard
         wxFD_SAVE | wxFD_OVERWRITE_PROMPT   // Flags

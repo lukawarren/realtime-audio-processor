@@ -10,7 +10,7 @@
 class PlayWindow : public wxFrame
 {
 public:
-    PlayWindow(wxWindow* parent, const Playlist& playlist);
+    PlayWindow(wxWindow* parent, Playlist& playlist);
     ~PlayWindow();
 
 private:

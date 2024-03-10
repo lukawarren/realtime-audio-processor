@@ -15,11 +15,25 @@ void EqualiserEffect::ApplyEffect(Packet& packet)
         the boundaries between adjecent packets will often suffer from
         sudden jumps in amplitude, because the FFT does not know what audio
         comes after, and what comes before. To solve this, we combine the
-        current packet with the previous and next packet.
+        current packet with the previous and next packet. As a consequence,
+        the "sudden jumps" are still there, but appear at the beginning of the
+        previous packet and at the end of the next packet. Thus when we only
+        extract the audio data for the current packet, we avoid extracting
+        any "jumps".
+
+        Note that the FFT algorithm used requires data to be a power of 2 as
+        a consequence of how it divides and conquers using recursion. As a
+        result, we can only take *half* of the previous and next packets,
+        because 1 + 1/2 + 1/2 = 2 = 2^1. This is actually favourable as it
+        reduces the number of sound packets that must be processed, and as
+        the "sudden jumps" are still not present in the *current* packet, there
+        is no difference in the final audio generated.
 
         However, this can only be done if the previous and next packets
         do indeed exist (which they won't when we're at the beginning or
-        end of an audio file).
+        end of an audio file). We must therefore verify that the appropriate
+        packets are present and of the same size as the current one (to
+        preserve the power of 2 restriction).
     */
 
    if (packet.next_samples.size() == packet.current_samples.size() &&
@@ -128,11 +142,19 @@ void EqualiserEffect::ModifyMagnitude(
     const float multiplier
 ) const
 {
+    /*
+        We must take great care to not modify the phase of the complex audio
+        value, as that'll result in all sorts of audio distortion (as the phase
+        is, in essence, the time offset of the frequency). Instead, we must
+        convert the complex value to polar form, manipulate the magnitude, and
+        then convert back to Cartesian form.
+    */
+
     // Convert complex value to polar form
     float magnitude = std::abs(number);
     float phase = std::arg(number);
 
-    // Remove bass
+    // Manipulate magnitude
     magnitude *= multiplier;
 
     // Convert back to Cartesian form

@@ -9,6 +9,14 @@
 
 class AudioEffect
 {
+// Make the properties window a friend class as it needs to enumerate
+// over the raw properties hashmap to access the keys (i.e. the property
+// names). Whilst one could instead define a public interface such as
+// GetPropertyKeys(), this would result in a large number of heap allocations
+// (one for a std::vector then one for each key stored as a std::string),
+// which would impact negatively on performance as heap allocations are costly.
+friend class PropertiesWindow;
+
 public:
     struct Packet
     {
@@ -20,9 +28,6 @@ public:
 
     virtual void ApplyEffect(Packet& packet) = 0;
     virtual std::string GetName() const = 0;
-
-    // Need to store pointer as children could have different sizes in memory
-    std::unordered_map<std::string, Property*> properties = {};
 
     // Need to free these pointers too
     virtual ~AudioEffect()
@@ -44,4 +49,15 @@ public:
         T* current_value = (T*) properties.at(name)->GetValue();
         *current_value = value;
     }
+
+    inline bool HasProperties() const
+    {
+        return !properties.empty();
+    }
+
+// Use protected to allow derived classes to access the properties directly,
+// whilst forcing external code to use the interfaces defined above
+protected:
+    // Need to store pointers as children could have different sizes in memory
+    std::unordered_map<std::string, Property*> properties = {};
 };

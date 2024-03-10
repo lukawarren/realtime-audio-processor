@@ -5,7 +5,7 @@
 #include "presets.h"
 #include <wx/numdlg.h>
 
-PlayWindow::PlayWindow(wxWindow* parent, const Playlist& playlist) :
+PlayWindow::PlayWindow(wxWindow* parent, Playlist& playlist) :
     wxFrame(nullptr, wxID_ANY, "Realtime Audio Processor"), playlist(playlist)
 {
 #ifdef WIN32
@@ -306,18 +306,33 @@ void PlayWindow::StartPlayback()
     if (audio_stream.has_value()) audio_stream.reset();
     if (audio_file.has_value()) audio_file.reset();
 
-    // Create audio file...
-    try
+    // Attempt to load audio file
+    bool found_valid_audio_file = false;
+    while (!found_valid_audio_file)
     {
-        audio_file.emplace(playlist.Items()[current_song]);
-    }
-    catch (std::exception&)
-    {
-        wxMessageBox(
-            "Failed to load audio file " + playlist.Items()[current_song] + "." +
-            " One or more file(s) on disk referenced by the playlist has been modified since " +
-            " it was opened.");
-        Destroy();
+        try
+        {
+            audio_file.emplace(playlist.Items()[current_song]);
+            found_valid_audio_file = true;
+        }
+        catch (std::exception&)
+        {
+            wxMessageBox(
+                "Failed to load audio file " + playlist.Items()[current_song] + "." +
+                " One or more file(s) on disk referenced by the playlist has been modified since " +
+                " it was opened.");
+
+            // Remove current item from playlist in memory
+            playlist.Items().erase(playlist.Items().begin() + current_song);
+
+            // If there's nothing left in the playlist, close window
+            if (playlist.Items().size() == 0)
+                Destroy();
+
+            // If we get this far, try and load the next audio file
+            // No need to update current_song index as we've just
+            // removed an element
+        }
     }
 
     // Create corresponding audio stream
