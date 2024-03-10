@@ -49,6 +49,8 @@ std::vector<std::complex<float>> FastFourierTransform::ConvertSamplesToComplexFo
 void FastFourierTransform::DoFFT(std::vector<std::complex<float>>& input, const Mode mode)
 {
     const int N = input.size();
+
+    // Base case
     if (N <= 1)
         return;
 
