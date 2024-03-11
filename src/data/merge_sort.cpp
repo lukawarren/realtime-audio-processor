@@ -54,5 +54,19 @@ std::vector<std::string> Merge(std::vector<std::string>& left, std::vector<std::
 
 bool CompareStrings(const std::string& left, const std::string& right)
 {
-    return std::min(left, right) == left;
+    for (size_t i = 0; i < left.size() && i < right.size(); ++i)
+    {
+        char leftChar = std::tolower(left[i]);
+        char rightChar = std::tolower(right[i]);
+
+        if (leftChar != rightChar)
+        {
+            // First character found in both strings that differs
+            // Compare lower-case versions of characters using ASCII ordering
+            return leftChar < rightChar;
+        }
+    }
+
+    // Strings are identical
+    return false;
 }

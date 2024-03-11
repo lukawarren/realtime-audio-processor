@@ -569,13 +569,16 @@ In order to meet the objectives described in the analysis section, I have decide
 \paragraph{Description} "The user must be able to load a collection of audio files known as a "playlist" and then play the audio files contained within in a logical order"
 
 \paragraph{Test 1.1}
-The user must have the option to create a new playlist from a list of audio files on the system.  To test this, I will therefore place a variety of audio files on disk and verify they are detected by the program.
+The user must have the option to create a new playlist from a list of audio files on the system.  To test this, I will therefore place a variety of audio files on disk and verify they are detected by the program. Non-audio files will not be able to be selected, for obvious reasons. As the only audio file currently supported is the ".wav" format, any file without this extension will not be displayed.
 
 \paragraph{Test 1.2}
-I will then test if playlists created in the program can be successfully saved to disk, then loaded back into the program in a sanitised manner. In other words, playlists consisting solely of files which actually exist on disk should be loaded without error, but playlists with invalid audio files should fail to load and notify the user of the error.
+I will then test if playlists created in the program can be successfully saved to disk, then loaded back into the program in a sanitised manner. In other words, playlists consisting solely of files which actually exist on disk should be loaded without error (such that audio playback starts), but playlists with non-existent audio files should fail to load and notify the user of the error.
 
 \paragraph{Test 1.3}
-After loading a playlist, the audio files contained within must appear "in a logical order", so I will verify that entries in the playlist are organised alphabetically, as is custom in audio programs.
+After loading a playlist and beginning audio playback, the audio files contained within must appear alphabetically in the audio file selection screen, ordered in ascending order by their respective filenames.
+
+\paragraph{Test 1.4}
+Any invalid audio files should be skipped over, and should not crash the program. The user should be notified if this happens.
 
 \pagebreak
 \subsubsection{Testing Objective 2}
@@ -636,7 +639,7 @@ At least one of these people will be someone experienced in audio processing, so
 \paragraph{Description} "The user must be able to configure these "audio effects" individually and also apply pre-made "presets" to quickly reach a desired effect"
 
 \paragraph{Test 5.1} All presets present in the application can be loaded successfully and results in the desired effects being applied correctly
-\paragraph{Test 5.2} All effects can have their various parameters modified, which results in a correct change in the audio playback
+\paragraph{Test 5.2} All effects can have their various parameters modified, which results in a correct change in the audio playback.
 
 \pagebreak
 \subsubsection{Testing Objective 6}

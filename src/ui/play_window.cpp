@@ -319,8 +319,8 @@ void PlayWindow::StartPlayback()
         {
             wxMessageBox(
                 "Failed to load audio file " + playlist.Items()[current_song] + "." +
-                " One or more file(s) on disk referenced by the playlist has been modified since " +
-                " it was opened.");
+                " One or more file(s) on disk referenced by the playlist has been modified since" +
+                " it was opened. A new audio file will be chosen if possible.");
 
             // Remove current item from playlist in memory
             playlist.Items().erase(playlist.Items().begin() + current_song);
@@ -330,8 +330,8 @@ void PlayWindow::StartPlayback()
                 Destroy();
 
             // If we get this far, try and load the next audio file
-            // No need to update current_song index as we've just
-            // removed an element
+            // We've just removed an element, so the index may be invalid
+            current_song = std::min(current_song, playlist.Items().size() - 1);
         }
     }
 
