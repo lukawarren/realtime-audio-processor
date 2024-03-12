@@ -22,6 +22,9 @@ Evidence for each test follows the same basic structure:
 For the benefit of the reader, a summary of the results of all tests is contained below.
 Below that are the tests themselves, expanded in more detail.
 
+% Redefine \pageref to include "Page" before the page number
+\newcommand{\fullpageref}[1]{\hyperref[{#1}]{Page~\pageref{#1}}}
+
 \pagebreak
 \subsection{Testing Summary}
 {
@@ -29,19 +32,41 @@ Below that are the tests themselves, expanded in more detail.
 	\begin{table}[h!]
 		\begin{center}
 			\begin{tabularx}{1.0 \textwidth} {
-					| >{\raggedright\arraybackslash}p{0.15\linewidth} 
-					| >{\raggedright\arraybackslash}p{0.5\linewidth}
-					| >{\raggedright\arraybackslash}X 
-					|>{\raggedright\arraybackslash}p{0.15\linewidth}
+					| >{\raggedright\arraybackslash}p{0.1\linewidth} 
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}p{0.1\linewidth}
+					|>{\raggedright\arraybackslash}p{0.1\linewidth}
 					|
 				}
 				\hline
-				Test Number & Description & Relevant Video Link (if any) & Passed \\
+				Test Number & Description & Relevant Evidence & Passed \\
 				
 				\hline
-				1.1 & The user must have the option to create a new playlist from a list of audio files on the system.  To test this, I will therefore place a variety of audio files on disk and verify they are detected by the program. Non-audio files will not be able to be selected, for obvious reasons. As the only audio file currently supported is the ".wav" format, any file without this extension will not be displayed. & N/A & Yes
-				\\
+				1.1 & "The user must have the option to create a new playlist from a list of audio files on the system.  To test this, I will therefore place a variety of audio files on disk and verify they are detected by the program. Non-audio files will not be able to be selected, for obvious reasons. As the only audio file currently supported is the ".wav" format, any file without this extension will not be displayed." & \fullpageref{sec:evidence1.1}& Yes\\
 				
+				\hline
+				1.2 & "I will then test if playlists created in the program can be successfully saved to disk, then loaded back into the program in a sanitised manner. In other words, playlists consisting solely of files which actually exist on disk should be loaded without error (such that audio playback starts), but playlists with non-existent audio files should fail to load and notify the user of the error." & \fullpageref{sec:evidence1.2} & Yes\\
+				
+				\hline
+				1.3 & "After loading a playlist and beginning audio playback, the audio files contained within must appear alphabetically in the audio file selection screen, ordered in ascending order by their respective filenames." & \fullpageref{sec:evidence1.3} & Yes\\
+				
+				\hline
+				1.4 & "Any invalid audio files should be skipped over, and should not crash the program. The user should be notified if this happens." & \fullpageref{sec:evidence1.4} & Yes\\
+				
+				\hline
+				2.1 & "A correct visualisation of a sine wave is apparent at 500 Hz, with a single peak corresponding to that frequency." & \fullpageref{sec:evidence2.1} & Yes\\
+				
+				\hline
+				2.2 & "A correct visualisation of a sine wave is apparent at 1,000 Hz, with a single peak corresponding to that frequency." & \fullpageref{sec:evidence2.2} & Yes\\
+				
+				\hline
+				2.3 & "Sine waves outside the human audible range, at 10 Hz and 30,000 Hz respectively, produce no visible output, as they are inaudible." & \fullpageref{sec:evidence2.3} & Yes\\
+				
+				\hline
+				2.4 & "A correct visualisation of two sine waves (one at 1,000 Hz and one at 10,000 Hz) is apparent, with two separate peaks corresponding to those frequencies." & \fullpageref{sec:evidence2.4} & Yes\\
+				
+				\hline
+				2.5 & "A correct visualisation of three sine waves (1,000 Hz, 5,000 Hz and 15,000 Hz ) is apparent, with three separate peaks corresponding to those frequencies." & \fullpageref{sec:evidence2.5} & Yes\\
 				
 				\hline
 			\end{tabularx}
@@ -85,6 +110,7 @@ A variety of audio files were placed inside the system's music folder. Some were
 The program should detect all the ".wav files", but not any other files, such that the ".mp3 file" is not detected. All detected files should be displayed within the GUI.
 
 \subsubsection{Observed Result}
+\label{sec:evidence1.1}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/1.1.6.png}
 	\caption{Program GUI output. All WAV files have been detected and displayed, but the mp3 has not been. Files have been detected, even when they are inside subfolders.}
@@ -118,6 +144,7 @@ The test was split into two parts - the first would be attempting to create, sav
 The user should be able to use the GUI to add all files to a playlist, which is then saved successfully to disk. The user should then be able to load this playlist to begin audio playback. This should succeed. However, when the playlist is modified to include a file that no longer exists, the program should raise an error and refuse to load the playlist.
 
 \subsubsection{Observed Result}
+\label{sec:evidence1.2}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1yGeMYYI9ts37JsoA_9agpKTGBL0s8Dms/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1yGeMYYI9ts37JsoA\_9agpKTGBL0s8Dms/view?usp=sharing
 }.  The video shows a user created a valid playlist, then saving it to disk. He then loads the playlist into the program and audio playback successfully starts. He then restarts the program and attempts to load the playlist again, after modifying it by adding an invalid file path. The program refuses to load this invalid playlist.
@@ -160,6 +187,7 @@ Hence the expected order for display is as follows:
 \end{enumerate}
 
 \subsubsection{Observed Result}
+\label{sec:evidence1.3}
 The observed result was as follows:
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/1.3.2.png}
@@ -191,6 +219,7 @@ A new playlist was again created, containing three files. The first and last fil
 The program should initially begin audio playback correctly when it loads the first audio file. However, when the next audio file (which is corrupt) is to be loaded by the program, it should fail, and the program should notify the user of the error. This corrupt file should then be skipped, and playback should resume with the third audio file.
  
 \subsubsection{Observed Result}
+\label{sec:evidence1.4}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1IWSDFYTCctY-Voe49W1-w-7M0zj7ucMX/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1IWSDFYTCctY-Voe49W1-w-7M0zj7ucMX/view?usp=sharing
 }.  The video shows a user loading the testing playlist, in which audio playback starts. They then skip to the end of the song, waiting for it to finish. When it does, the program attempts to load the next audio file (which the reader will recall is invalid). Naturally, the program catches this and raises an error to the user. This corrupt audio file is then skipped, and playback resumes with the next audio file.
@@ -216,6 +245,7 @@ An audio file consisting of a single sine wave at 500 Hz was generated using the
 A single peak should be observed in the audio visualiser, towards the left of the screen, representing 500 Hz.
 
 \subsubsection{Observed Result}
+\label{sec:evidence2.1}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.1.png}
 \end{figure}
@@ -241,6 +271,7 @@ An audio file consisting of a single sine wave at 1,000 Hz was generated using t
 A single peak should be observed in the audio visualiser, to the right of the peak observed in Test 1.1 (as the frequency is higher).
 
 \subsubsection{Observed Result}
+\label{sec:evidence2.2}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.2.png}
 \end{figure}
@@ -266,6 +297,7 @@ An audio file consisting of two sine waves (at 10 Hz and 30,000 Hz respectively)
 The input audio is completely inaudible, so there should be no output in the visualiser.
 
 \subsubsection{Observed Result}
+\label{sec:evidence2.3}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.3.png}
 \end{figure}
@@ -291,6 +323,7 @@ An audio file consisting of two sine waves (at 1,000 Hz and 10,000 Hz respective
 The visualiser should display two peaks, one to the right of the other. Recall that the x-axis is non-linear as it uses the Bark scale, so they will not be a "linear" distance apart.
 
 \subsubsection{Observed Result}
+\label{sec:evidence2.4}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.4.png}
 \end{figure}
@@ -317,6 +350,7 @@ An audio file consisting of three sine waves (at 1,000 Hz and 5,000 Hz and 15,00
 The visualiser should display three peaks in successive order. Recall that the x-axis is non-linear as it uses the Bark scale, so they will not be a "linear" distance apart.
 
 \subsubsection{Observed Result}
+\label{sec:evidence2.5}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.5.png}
 \end{figure}
