@@ -166,3 +166,129 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 
 \subsubsection{Conclusion}
 The observed result and expected result were identical, such that the test passed.
+
+\pagebreak
+\subsection{Test 2.1}
+\subsubsection{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"A correct visualisation of a sine wave is apparent at 500 Hz, with a single peak corresponding to that frequency."
+	\end{minipage}}
+}
+
+\subsubsection{Supplied Test Data}
+An audio file consisting of a single sine wave at 500 Hz was generated using the popular audio editing program Audacity.
+
+\subsubsection{Expected Result}
+A single peak should be observed in the audio visualiser, towards the left of the screen, representing 500 Hz.
+
+\subsubsection{Observed Result}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.1.png}
+\end{figure}
+
+\subsubsection{}
+A correct visualisation was achieved. The test was successful.
+
+\pagebreak
+\subsection{Test 2.2}
+\subsubsection{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"A correct visualisation of a sine wave is apparent at 1,000 Hz, with a single peak corresponding to that frequency."
+	\end{minipage}}
+}
+
+\subsubsection{Supplied Test Data}
+An audio file consisting of a single sine wave at 1,000 Hz was generated using the popular audio editing program Audacity.
+
+\subsubsection{Expected Result}
+A single peak should be observed in the audio visualiser, to the right of the peak observed in Test 1.1 (as the frequency is higher).
+
+\subsubsection{Observed Result}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.2.png}
+\end{figure}
+
+\subsubsection{}
+A correct visualisation was achieved. The test was successful.
+
+\pagebreak
+\subsection{Test 2.3}
+\subsubsection{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"Sine waves outside the human audible range, at 10 Hz and 30,000 Hz respectively, produce no visible output, as they are inaudible."
+	\end{minipage}}
+}
+
+\subsubsection{Supplied Test Data}
+An audio file consisting of two sine waves (at 10 Hz and 30,000 Hz respectively) was generated using the popular audio editing program Audacity.
+
+\subsubsection{Expected Result}
+The input audio is completely inaudible, so there should be no output in the visualiser.
+
+\subsubsection{Observed Result}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.3.png}
+\end{figure}
+
+\subsubsection{}
+A correct visualisation was achieved. The test was successful.
+
+\pagebreak
+\subsection{Test 2.4}
+\subsubsection{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"A correct visualisation of two sine waves (one at 1,000 Hz and one at 10,000 Hz) is apparent, with two separate peaks corresponding to those frequencies."
+	\end{minipage}}
+}
+
+\subsubsection{Supplied Test Data}
+An audio file consisting of two sine waves (at 1,000 Hz and 10,000 Hz respectively) was generated using the popular audio editing program Audacity.
+
+\subsubsection{Expected Result}
+The visualiser should display two peaks, one to the right of the other. Recall that the x-axis is non-linear as it uses the Bark scale, so they will not be a "linear" distance apart.
+
+\subsubsection{Observed Result}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.4.png}
+\end{figure}
+
+\subsubsection{}
+A correct visualisation was achieved. The test was successful.
+
+
+\pagebreak
+\subsection{Test 2.5}
+\subsubsection{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"A correct visualisation of three sine waves (1,000 Hz, 5,000 Hz and 15,000 Hz ) is apparent, with three separate peaks corresponding to those frequencies."
+	\end{minipage}}
+}
+
+\subsubsection{Supplied Test Data}
+An audio file consisting of three sine waves (at 1,000 Hz and 5,000 Hz and 15,000 Hz respectively) was generated using the popular audio editing program Audacity.
+
+\subsubsection{Expected Result}
+The visualiser should display three peaks in successive order. Recall that the x-axis is non-linear as it uses the Bark scale, so they will not be a "linear" distance apart.
+
+\subsubsection{Observed Result}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.5.png}
+\end{figure}
+
+\subsubsection{}
+A correct visualisation was achieved. The test was successful.
