@@ -612,14 +612,17 @@ It should be stressed that human hearing only extends from 20 Hz to 20,000 Hz, a
 \paragraph{Description} "The user must be able to modify the audio's frequency domain (i.e. selectively modify frequencies such as by performing a bass boost)"
 
 \paragraph{Test 3.1}
-The most common use case for this feature will be when adjusting the bass and treble of music. I will therefore play multiple songs in the program with the equaliser effect applied, and verify by ear that the program is able to selectively reduce the range of frequencies chosen.
+The program's equaliser effect is able to selectively reduce the bass of any given audio (corresponding to the low frequencies in frequency space).
 
 \paragraph{Test 3.2}
-As a sanity test, I will also ensure that changes made to the audio's frequency domain are clearly visible in the audio visualisation.\footnote{
+The program's equaliser effect is able to selectively reduce the treble of any given audio (corresponding to the high frequencies in frequency space).
+
+\paragraph{Verifying Results}
+I will verify the results both by ear and using the audio visualiser\footnote{
 	For example, if one chooses to reduce the bass, then the parts
 	of the visualisation corresponding to the lower frequencies must
 	visually appear smaller in relation to the other frequencies.
-}
+}, so as the ensure that the program is able to selectively reduce the range of frequencies chosen.
 
 \pagebreak
 \subsubsection{Testing Objective 4}

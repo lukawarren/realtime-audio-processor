@@ -66,7 +66,7 @@ void RemoveBass(AtomicLinkedList<AudioEffect>* effects)
 
 void RemoveTrebble(AtomicLinkedList<AudioEffect>* effects)
 {
-    RemoveFrequencies(effects, 2500.0f, 20000.0f);
+    RemoveFrequencies(effects, 1000.0f, 20000.0f);
 }
 
 void LowQualitySpeakers(AtomicLinkedList<AudioEffect>* effects)
