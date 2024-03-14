@@ -79,6 +79,35 @@ Below that are the tests themselves, expanded in more detail.
 		\end{center}
 	\end{table}
 }
+\pagebreak
+{
+	\renewcommand{\arraystretch}{1.5}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}p{0.1\linewidth} 
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}p{0.1\linewidth}
+					|>{\raggedright\arraybackslash}p{0.1\linewidth}
+					|
+				}
+				\hline
+				Test Number & Description & Relevant Evidence & Passed \\
+				
+				\hline
+				4.1 & "A select group from the target audience certify that the echo effect sounds physically plausible, and mimics the effect as it is commonly heard in song remixes" & \fullpageref{sec:evidence4.1} & Yes\\
+				
+				\hline
+				4.2 & "A select group from the target audience certify that the noise effect sounds physically plausible, and mimics the effect as it is commonly heard in song remixes" & \fullpageref{sec:evidence4.2} & Yes\\
+				
+				\hline
+				4.3 & "The volume effect can be seen to adjust the volume correctly" & \fullpageref{sec:evidence4.3} & Yes\\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
 
 \pagebreak
 \subsection{Test 1.1}
@@ -256,7 +285,7 @@ A single peak should be observed in the audio visualiser, towards the left of th
 	\includegraphics[width=14cm]{./tests/2.1.png}
 \end{figure}
 
-\subsubsection{}
+\subsubsection{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 \pagebreak
@@ -282,7 +311,7 @@ A single peak should be observed in the audio visualiser, to the right of the pe
 	\includegraphics[width=14cm]{./tests/2.2.png}
 \end{figure}
 
-\subsubsection{}
+\subsubsection{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 \pagebreak
@@ -308,7 +337,7 @@ The input audio is completely inaudible, so there should be no output in the vis
 	\includegraphics[width=14cm]{./tests/2.3.png}
 \end{figure}
 
-\subsubsection{}
+\subsubsection{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 \pagebreak
@@ -334,7 +363,7 @@ The visualiser should display two peaks, one to the right of the other. Recall t
 	\includegraphics[width=14cm]{./tests/2.4.png}
 \end{figure}
 
-\subsubsection{}
+\subsubsection{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 
@@ -361,7 +390,7 @@ The visualiser should display three peaks in successive order. Recall that the x
 	\includegraphics[width=14cm]{./tests/2.5.png}
 \end{figure}
 
-\subsubsection{}
+\subsubsection{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 
@@ -388,7 +417,7 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 	https://drive.google.com/file/d/1L1xcLyDd0HwsidX003OvKTqvFeIy20RA/view?usp=sharing
 }. It shows the two songs being played first without the configured equaliser effect, then with the configured equaliser effect, then without again to highlight the contrast. Both songs have their bass almost completely eliminated, showcasing the effect at work. This is also visually demonstrated by the marked difference in the audio visualisation.
 
-\subsubsection{}
+\subsubsection{Conclusion}
 The correct auditory effect was achieved, rendering the test successful. 
 
 
@@ -415,7 +444,7 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 	https://drive.google.com/file/d/1TrEiFpsmVm\_sFzlnQu5FE8u7NDuP0Aq8/view?usp=sharing
 }. It shows the two songs being played first without the configured equaliser effect, then with the configured equaliser effect, then without again to highlight the contrast. Both songs have their treble almost completely eliminated, showcasing the effect at work. This is also visually demonstrated by the marked difference in the audio visualisation.
 
-\subsubsection{}
+\subsubsection{Conclusion}
 The correct auditory effect was achieved, rendering the test successful. 
 
 
@@ -452,9 +481,9 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 "Your program has added an echo to songs like I thought [it would]. When people add echoes to remixes, this is what it sounds like." 
 
 \paragraph{Subject Specialist Response}
-"Your echo effect sounds physically plausible for audio being played in a large room in which reflections attenuate little (e.g. a large hall or an outdoor venue). I believe it is therefore correct for the vast majority of situations."
+"Your echo effect sounds physically plausible for audio being played in a large room in which reflections attenuate little (e.g. a large hall or an outdoor venue). I believe it is therefore correct for the vast majority of situations. Obviously in situations where the audio is far away higher frequencies would be dampened significantly, but by combining the echo with your "equaliser" effect your software could achieve that too. So overall all types of echoes in the real-world can be effectively simulated with your project."
 
-\subsubsection{}
+\subsubsection{Conclusion}
 An echo was clearly heard, which was certified by the select group as both the expected behaviour and physically plausible. The test passed.
 
 
@@ -493,7 +522,7 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 \paragraph{Subject Specialist Response}
 "The noise effect mimics the type of 'white noise' often picked-up by poor quality microphones (in which all frequencies are more-or-less represented), so I would indeed say your software project has resulted in a physically plausible noise."
 
-\subsubsection{}
+\subsubsection{Conclusion}
 Noise in the audio was clearly heard, which was certified by the select group as both the expected behaviour and physically plausible. The test passed.
 
 
@@ -520,5 +549,5 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 	https://drive.google.com/file/d/1pJIc7vPbLUx2QlaXG3CymtYv7scC\_tCX/view?usp=sharing
 }. It shows the two songs being played with the volume effect being used to change the volume. A change in volume can clearly be heard.
 
-\subsubsection{}
+\subsubsection{Conclusion}
 A change in volume was clearly heard. The test passed.
