@@ -675,7 +675,7 @@ At least one of these people will be someone experienced in audio processing, so
 \paragraph{Description} "The user must be able to configure these "audio effects" individually, yet also apply pre-made "presets" to quickly reach a desired effect"
 
 \paragraph{Test 5.1} The noise effect can have its various parameters modified, which results in a correct change in the audio playback.
-\paragraph{Test 5.2} The echo effect can have its various parameters modified, which results in a correct change in te audio playback.
+\paragraph{Test 5.2} The echo effect can have its various parameters modified, which results in a correct change in the audio playback.
 \paragraph{Test 5.3} The equaliser effect can have its various parameters modified, which results in a correct change in the audio playback.
 \paragraph{Test 5.4} All presets present in the application can be loaded successfully, with the appropriate audio effects having been added and configured correctly, such that the desired effect is reached.
 
@@ -687,19 +687,42 @@ There is no need to test the volume effect here, as configuring it was already c
 \paragraph{Description}  "The system must run in real-time on an average school computer"
 
 \paragraph{}
-I will test the performance of the program by running it on a computer in my school, which represents more-or-less average hardware.
-I will also test it on my school laptop too, which has more modest hardware, to ensure that in all contexts in which a student might run the program, there will be no performance issues.
-In order to appear to run in real-time, the following must be observed:
+I will test the performance of the program by running it on a computer in my school, which represents more-or-less average school hardware.
+I will also test it on my school laptop too, which has more modest hardware, to ensure that in all contexts in which a student might run the program, there will be no performance issues. If possible, I may also attempt to test the software on even less powerful hardware (such as a decade-old laptop) to highlight room for potential growth.
+In order to appear to run in real-time\footnote{
+As per the definition of "real-time" used within this document - see the preface}
+, there must be no noticeable delay in the audio or the visuals, such that the following must be observed:
 \begin{enumerate}
-	\item The audio  playback must not slow down \footnote{If audio processing takes too long, then the audio callback will be called less frequently than the hardware demands, resulting
-		in a very noticeable slowdown. This must not happen.}.
-	\item The visualisation graphics must update in less than 16.6 ms, such that it is displayed at 60 FPS, which is the most common refresh rate on school hardware. This will be measured by
-	the code itself as it's running.
+	\item Audio should be processed in under 3 milliseconds\footnote{
+		This is widely considered the minimum delay that can be perceived by the human brain, though estimates vary from 3ms to as much as 30 -  see https://legacy.presonus.com/learn/technical-articles/Digital-Audio-Latency-Explained and https://www.churchproduction.com/education/latency-and-its-affect-on-performers/
+	}
+	\item The visualisation graphics must update in less than 16.6 ms, such that it is displayed at 60 frames per second, which is the most common refresh rate on school hardware. This will be measured by the code itself as it's running.\footnote{
+		This is considered the "benchmark" for most real-time systems (in the sense of the word employed in the preface - see the top of the document). As long as the program outputs visuals at least as fast as the monitor displays them,  there will be no noticeable "lag" or delay.
+	}
 \end{enumerate}
 
-\paragraph{Test 6.1} The program must run, without any effects applied, in real-time on the specified hardware
-\paragraph{Test 6.2} The program must run in real-time, for every preset applied separately, in real-time on the specified hardware.
-\paragraph{Test 6.3} The program must run in real-time, with every effect applied at once, in real-time on the specified hardware.
+\paragraph{}
+To actually time the code, the following pseudo-code will be temporarily added to the relevant subroutines:
+\begin{minted}{ada}
+function process_audio:
+	start_time := measure_time()
+	-- rest of code here
+	end_time := measure_time()
+	duration := end_time - start_time()
+	time_in_ms := to_milliseconds(duration)
+	print("audio took " + time_in_ms + " ms")
+	
+function process_visuals:
+	start_time := measure_time()
+	-- rest of code here
+	end_time := measure_time()
+	duration := end_time - start_time()
+	time_in_ms := to_milliseconds(duration)
+	print("visuals took " + time_in_ms + " ms")
+\end{minted}
+
+\paragraph{Test 6.1} The program must run, without any effects applied, in real-time on the specified hardware.
+\paragraph{Test 6.2} The program must run in real-time, with every effect applied at once, in real-time on the specified hardware.
 
 \pagebreak
 \subsection{Final overview of project hierarchy}

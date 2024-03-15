@@ -107,19 +107,26 @@ Below that are the tests themselves, expanded in more detail.
 				5.1 & "The noise effect can have its various parameters modified, which results in a correct change in the audio playback." & \fullpageref{sec:evidence5.1} & Yes\\
 
 				\hline
-				5.2 & "The echo effect can have its various parameters modified, which results in a correct change in te audio playback." & \fullpageref{sec:evidence5.2} & Yes\\
+				5.2 & "The echo effect can have its various parameters modified, which results in a correct change in the audio playback." & \fullpageref{sec:evidence5.2} & Yes\\
 
 				\hline
 				5.3 & "The equaliser effect can have its various parameters modified, which results in a correct change in the audio playback." & \fullpageref{sec:evidence5.3} & Yes\\
 
 				\hline
 				5.4 & "All presets present in the application can be loaded successfully, with the appropriate audio effects having been added and configured correctly, such that the desired effect is reached." & \fullpageref{sec:evidence5.4} & Yes\\
+				
+				\hline
+				6.1 & "The program must run, without any effects applied, in real-time on the specified hardware." & \fullpageref{sec:evidence6} & Exceeded\\
+				
+				\hline
+				6.2 & "The program must run in real-time, with every effect applied at once, in real-time on the specified hardware." & \fullpageref{sec:evidence6} & Exceeded\\
 
 				\hline
 			\end{tabularx}
 		\end{center}
 	\end{table}
 }
+
 
 \pagebreak
 \subsection{Test 1.1}
@@ -599,7 +606,7 @@ A change in the volume of the noise was clearly heard. The test passed.
 {
 	\centering
 	\fbox{\begin{minipage}{15cm}
-			" The echo effect can have its various parameters modified, which results in a correct change in te audio playback."
+			" The echo effect can have its various parameters modified, which results in a correct change in the audio playback."
 	\end{minipage}}
 }
 
@@ -681,3 +688,140 @@ Video evidence was recorded for the test, which can be viewed \href{}{here}\foot
 
 \subsubsection*{Conclusion}
 The observed results were in-line with what was expected. The test passed.
+
+
+\pagebreak
+\subsection{Tests 6.1 and 6.2}
+\subsubsection*{Descriptions}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			\paragraph{Test 6.1} The program must run, without any effects applied, in real-time on the specified hardware.
+			\paragraph{Test 6.2} The program must run in real-time, with every effect applied at once, in real-time on the specified hardware.
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+\paragraph{}
+Recall that the hardware chosen was discussed in detail during the design section. In summary, to represent an average school computer I will use one at my school, which is representative of average high-school hardware. I will also use my personal school laptop (which is slightly less powerful). As I wish to identify the boundaries of my program's performance, I have also decided to run the performance tests on a very old laptop of mine from 2012, with a weak CPU from 2013. If it runs on this, it stands to reason that the tests are not only met but \textit{exceeded}, as the speed of this machine is far below what an average school computer of today would possess.  
+
+\paragraph{}
+As the software performs all processing on the CPU, the most important detail is the clock-speed. Recall that the software only uses two threads (one for the GUI, one for the audio), so core-counts higher than two are unlikely to affect performance.
+
+\paragraph{}
+Temporary timing code was added as discussed in the design section. In the \textit{OnPaint} subroutine under \textit{src/ui/audio\_visualiser.cpp}, which draws the visualisation\footnote{
+	Recall that the actual computation / maths behind the visualisation are actually done on the audio-thread, so will be included under the timing of the audio callback ("audio processing").
+} was modified as so:
+
+\begin{minted}{c++}
+#include <chrono>
+#include <iostream>
+	
+void AudioVisualiser::OnPaint(const wxPaintEvent& event)
+{
+	using namespace std::chrono;
+	const steady_clock::time_point begin = std::chrono::steady_clock::now();
+	
+	// rest of code
+	
+	const steady_clock::time_point end = std::chrono::steady_clock::now();
+	const int64_t duration = duration_cast<std::chrono::nanoseconds>(end - begin).count();
+	std::cout << "Audio processing took " << (float)duration / 1000000.0f << " ms" << std::endl;
+}
+\end{minted}
+
+\pagebreak
+\paragraph{}
+The \textit{OnAudioCallback} subroutine under \textit{src/io/audio\_stream} was modified in much the same way:
+\begin{minted}{c++}
+	#include <chrono>
+	#include <iostream>
+	
+	void AudioStream::OnAudioCallback(uint8_t* buffer, int length)
+	{
+		using namespace std::chrono;
+		const steady_clock::time_point begin = std::chrono::steady_clock::now();
+		
+		// rest of code
+		
+		const steady_clock::time_point end = std::chrono::steady_clock::now();
+		const int64_t duration = duration_cast<std::chrono::nanoseconds>(end - begin).count();
+		std::cout << "Visual processing took " << (float)duration / 1000000.0f << " ms" << std::endl;
+	}
+\end{minted}
+
+\subsubsection*{Expected Result}
+All pieces of hardware, as discussed in the design section, must be able to process audio in under 3ms and update the visuals in less than 16.6ms.
+
+\subsubsection*{Observed Result}
+Below is a summary followed the relevant screenshots of the program's output.
+{
+	\renewcommand{\arraystretch}{1.5}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					|
+				}
+				\hline
+				Test & Piece of Hardware & CPU & CPU Frequency  & CPU core-count & Time to Update Audio & Time to Update Visuals \\
+				
+				\hline
+				6.1 & School computer &  &  &  & 0.02ms & 1-3ms \\
+				
+				\hline
+				6.2 & School computer & & & & 0.7-1.1ms & 2-4ms \\
+				
+				\hline
+				6.1 & Personal school laptop & Intel i5-7Y540 & 3.2 GHz & 2 & 0.02ms & 2-5ms \\
+				
+				\hline
+				6.2 & Personal school laptop & Intel i5-7Y540 & 3.2 GHz & 2 & 1.0ms & 2-4ms \\
+				
+				\hline
+				6.1 & Very old laptop & Intel i5-4258U & 2.4 GHz & 2 & 1ms & 10-13ms \\
+				
+				\hline
+				6.2 & Very old laptop & Intel i5-4258U & 2.4 GHz & 2 & 2.1-2.8ms & 11-13ms \\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
+
+\label{sec:evidence6}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/6.1 school computer.png}
+	\caption{Test 6.1 performance capture screenshot for "school computer"}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/6.2 school computer.png}
+	\caption{Test 6.2 performance capture screenshot for "school computer"}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/6.1 laptop.png}
+	\caption{Test 6.1 performance capture screenshot for "personal school laptop"}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/6.2 laptop.png}
+	\caption{Test 6.2 performance capture screenshot for "personal school laptop"}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/6.1 old laptop.png}
+	\caption{Test 6.1 performance capture screenshot for "very old laptop"}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/6.2 old laptop.png}
+	\caption{Test 6.2 performance capture screenshot for "very old laptop"}
+\end{figure}
+
+\subsubsection*{Conclusion}
+All hardware samples were able to meet the "real-time" criteria for both tests 6.1 and 6.2. Even the "very old laptop", with a CPU from 2013, was able to just about stay under the performance targets set. As a result, I can say with confidence that the test was not only met but \textit{exceeded}, as performance was actually better than required. 
