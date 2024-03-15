@@ -32,7 +32,7 @@ Below that are the tests themselves, expanded in more detail.
 	\begin{table}[h!]
 		\begin{center}
 			\begin{tabularx}{1.0 \textwidth} {
-					| >{\raggedright\arraybackslash}p{0.1\linewidth} 
+					| >{\raggedright\arraybackslash}p{0.1\linewidth}
 					| >{\raggedright\arraybackslash}X
 					| >{\raggedright\arraybackslash}p{0.1\linewidth}
 					|>{\raggedright\arraybackslash}p{0.1\linewidth}
@@ -40,40 +40,40 @@ Below that are the tests themselves, expanded in more detail.
 				}
 				\hline
 				Test Number & Description & Relevant Evidence & Passed \\
-				
+
 				\hline
 				1.1 & "The user must have the option to create a new playlist from a list of audio files on the system.  To test this, I will therefore place a variety of audio files on disk and verify they are detected by the program. Non-audio files will not be able to be selected, for obvious reasons. As the only audio file currently supported is the ".wav" format, any file without this extension will not be displayed." & \fullpageref{sec:evidence1.1}& Yes\\
-				
+
 				\hline
 				1.2 & "I will then test if playlists created in the program can be successfully saved to disk, then loaded back into the program in a sanitised manner. In other words, playlists consisting solely of files which actually exist on disk should be loaded without error (such that audio playback starts), but playlists with non-existent audio files should fail to load and notify the user of the error." & \fullpageref{sec:evidence1.2} & Yes\\
-				
+
 				\hline
 				1.3 & "After loading a playlist and beginning audio playback, the audio files contained within must appear alphabetically in the audio file selection screen, ordered in ascending order by their respective filenames." & \fullpageref{sec:evidence1.3} & Yes\\
-				
+
 				\hline
 				1.4 & "Any invalid audio files should be skipped over, and should not crash the program. The user should be notified if this happens." & \fullpageref{sec:evidence1.4} & Yes\\
-				
+
 				\hline
 				2.1 & "A correct visualisation of a sine wave is apparent at 500 Hz, with a single peak corresponding to that frequency." & \fullpageref{sec:evidence2.1} & Yes\\
-				
+
 				\hline
 				2.2 & "A correct visualisation of a sine wave is apparent at 1,000 Hz, with a single peak corresponding to that frequency." & \fullpageref{sec:evidence2.2} & Yes\\
-				
+
 				\hline
 				2.3 & "Sine waves outside the human audible range, at 10 Hz and 30,000 Hz respectively, produce no visible output, as they are inaudible." & \fullpageref{sec:evidence2.3} & Yes\\
-				
+
 				\hline
 				2.4 & "A correct visualisation of two sine waves (one at 1,000 Hz and one at 10,000 Hz) is apparent, with two separate peaks corresponding to those frequencies." & \fullpageref{sec:evidence2.4} & Yes\\
-				
+
 				\hline
 				2.5 & "A correct visualisation of three sine waves (1,000 Hz, 5,000 Hz and 15,000 Hz ) is apparent, with three separate peaks corresponding to those frequencies." & \fullpageref{sec:evidence2.5} & Yes\\
-				
+
 				\hline
 				3.1 & "The program's equaliser effect is able to selectively reduce the bass of any given audio (corresponding to the low frequencies in frequency space)." & \fullpageref{sec:evidence3.1} & Yes\\
-				
+
 				\hline
 				3.2 & "The program's equaliser effect is able to selectively reduce the treble of any given audio (corresponding to the high frequencies in frequency space)." & \fullpageref{sec:evidence3.2} & Yes\\
-				
+
 				\hline
 			\end{tabularx}
 		\end{center}
@@ -85,7 +85,7 @@ Below that are the tests themselves, expanded in more detail.
 	\begin{table}[h!]
 		\begin{center}
 			\begin{tabularx}{1.0 \textwidth} {
-					| >{\raggedright\arraybackslash}p{0.1\linewidth} 
+					| >{\raggedright\arraybackslash}p{0.1\linewidth}
 					| >{\raggedright\arraybackslash}X
 					| >{\raggedright\arraybackslash}p{0.1\linewidth}
 					|>{\raggedright\arraybackslash}p{0.1\linewidth}
@@ -93,28 +93,28 @@ Below that are the tests themselves, expanded in more detail.
 				}
 				\hline
 				Test Number & Description & Relevant Evidence & Passed \\
-				
+
 				\hline
 				4.1 & "A select group from the target audience certify that the echo effect sounds physically plausible, and mimics the effect as it is commonly heard in song remixes" & \fullpageref{sec:evidence4.1} & Yes\\
-				
+
 				\hline
 				4.2 & "A select group from the target audience certify that the noise effect sounds physically plausible, and mimics the effect as it is commonly heard in song remixes" & \fullpageref{sec:evidence4.2} & Yes\\
-				
+
 				\hline
 				4.3 & "The volume effect can be seen to adjust the volume correctly" & \fullpageref{sec:evidence4.3} & Yes\\
-				
+
 				\hline
 				5.1 & "The noise effect can have its various parameters modified, which results in a correct change in the audio playback." & \fullpageref{sec:evidence5.1} & Yes\\
-				
+
 				\hline
 				5.2 & "The echo effect can have its various parameters modified, which results in a correct change in te audio playback." & \fullpageref{sec:evidence5.2} & Yes\\
-				
+
 				\hline
 				5.3 & "The equaliser effect can have its various parameters modified, which results in a correct change in the audio playback." & \fullpageref{sec:evidence5.3} & Yes\\
-				
+
 				\hline
 				5.4 & "All presets present in the application can be loaded successfully, with the appropriate audio effects having been added and configured correctly, such that the desired effect is reached." & \fullpageref{sec:evidence5.4} & Yes\\
-				
+
 				\hline
 			\end{tabularx}
 		\end{center}
@@ -123,7 +123,7 @@ Below that are the tests themselves, expanded in more detail.
 
 \pagebreak
 \subsection{Test 1.1}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -132,7 +132,7 @@ Below that are the tests themselves, expanded in more detail.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 \paragraph{}
 A variety of audio files were placed inside the system's music folder. Some were hidden inside subfolders. In order to test the behaviour of erroneous data as described above, the music folder also contained an mp3 file, which is not supported currently.
 
@@ -153,23 +153,23 @@ A variety of audio files were placed inside the system's music folder. Some were
 	\caption{Terminal output that summarises filesystem structure}
 \end{figure}
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The program should detect all the ".wav files", but not any other files, such that the ".mp3 file" is not detected. All detected files should be displayed within the GUI.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence1.1}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/1.1.6.png}
 	\caption{Program GUI output. All WAV files have been detected and displayed, but the mp3 has not been. Files have been detected, even when they are inside subfolders.}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 This test passed, as all ".wav" audio files were detected, whilst other files were ignored, and the GUI displayed this appropriately.
 
 
 \pagebreak
 \subsection{Test 1.2}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -178,7 +178,7 @@ This test passed, as all ".wav" audio files were detected, whilst other files we
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 \paragraph{}
 The test was split into two parts - the first would be attempting to create, save, then load a playlist in which all audio files existed. For the first part of this test, the same selection of files was used as in test 1.1. For the second part of the test, the playlist was to be modified after its creation by appending the following non-existent file to the end of it:
 \textit{/this/audio/files/does/not/exist.wav}
@@ -187,21 +187,21 @@ The test was split into two parts - the first would be attempting to create, sav
 	\caption{Files from test 1.1, which should be turned into a playlist then saved and loaded back}
 \end{figure}
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The user should be able to use the GUI to add all files to a playlist, which is then saved successfully to disk. The user should then be able to load this playlist to begin audio playback. This should succeed. However, when the playlist is modified to include a file that no longer exists, the program should raise an error and refuse to load the playlist.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence1.2}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1yGeMYYI9ts37JsoA_9agpKTGBL0s8Dms/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1yGeMYYI9ts37JsoA\_9agpKTGBL0s8Dms/view?usp=sharing
 }.  The video shows a user created a valid playlist, then saving it to disk. He then loads the playlist into the program and audio playback successfully starts. He then restarts the program and attempts to load the playlist again, after modifying it by adding an invalid file path. The program refuses to load this invalid playlist.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 The program successfully created, saved, then loaded the valid playlist but refused to load the invalid playlist, such that the test passed.
 
 \pagebreak
 \subsection{Test 1.3}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -210,13 +210,13 @@ The program successfully created, saved, then loaded the valid playlist but refu
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 A new playlist was again created. It was deemed suitable as it contained audio files starting with upper case letters, lower case letters, and even numbers, hence allowing for all reasonable combinations of alpha-numeric values to be covered.
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/1.3.1.png}
 \end{figure}
 
-\subsubsection{Expectation}
+\subsubsection*{Expected Result}
 \paragraph{}
 When selecting a new audio file from the playlist (by going to \textit{File, Select Song}), the GUI should organise them alphabetically by their filenames. Numbers should come before letters, and the numbers should be ordered too (e.g, 1, 2, 3...). Lower case versions of the same letter should come before upper case versions (as they appear first in ASCII ordering).
 \paragraph{}
@@ -233,20 +233,20 @@ Hence the expected order for display is as follows:
 	\item zyxwvu.wav
 \end{enumerate}
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence1.3}
 The observed result was as follows:
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/1.3.2.png}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 The observed result and expected result were identical, such that the test passed.
 
 
 \pagebreak
 \subsection{Test 1.4}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -255,28 +255,28 @@ The observed result and expected result were identical, such that the test passe
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 A new playlist was again created, containing three files. The first and last files were valid audio files, but the middle one was corrupt. The playlist contained these three files:
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/1.4.1.png}
 \end{figure}
 
-\subsubsection{Expectation}
+\subsubsection*{Expected Result}
 \paragraph{}
 The program should initially begin audio playback correctly when it loads the first audio file. However, when the next audio file (which is corrupt) is to be loaded by the program, it should fail, and the program should notify the user of the error. This corrupt file should then be skipped, and playback should resume with the third audio file.
- 
-\subsubsection{Observed Result}
+
+\subsubsection*{Observed Result}
 \label{sec:evidence1.4}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1IWSDFYTCctY-Voe49W1-w-7M0zj7ucMX/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1IWSDFYTCctY-Voe49W1-w-7M0zj7ucMX/view?usp=sharing
 }.  The video shows a user loading the testing playlist, in which audio playback starts. They then skip to the end of the song, waiting for it to finish. When it does, the program attempts to load the next audio file (which the reader will recall is invalid). Naturally, the program catches this and raises an error to the user. This corrupt audio file is then skipped, and playback resumes with the next audio file.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 The observed result and expected result were identical, such that the test passed.
 
 \pagebreak
 \subsection{Test 2.1}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -285,24 +285,24 @@ The observed result and expected result were identical, such that the test passe
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file consisting of a single sine wave at 500 Hz was generated using the popular audio editing program Audacity.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 A single peak should be observed in the audio visualiser, towards the left of the screen, representing 500 Hz.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence2.1}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.1.png}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 \pagebreak
 \subsection{Test 2.2}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -311,24 +311,24 @@ A correct visualisation was achieved. The test was successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file consisting of a single sine wave at 1,000 Hz was generated using the popular audio editing program Audacity.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 A single peak should be observed in the audio visualiser, to the right of the peak observed in Test 1.1 (as the frequency is higher).
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence2.2}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.2.png}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 \pagebreak
 \subsection{Test 2.3}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -337,24 +337,24 @@ A correct visualisation was achieved. The test was successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file consisting of two sine waves (at 10 Hz and 30,000 Hz respectively) was generated using the popular audio editing program Audacity.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The input audio is completely inaudible, so there should be no output in the visualiser.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence2.3}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.3.png}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 \pagebreak
 \subsection{Test 2.4}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -363,25 +363,25 @@ A correct visualisation was achieved. The test was successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file consisting of two sine waves (at 1,000 Hz and 10,000 Hz respectively) was generated using the popular audio editing program Audacity.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The visualiser should display two peaks, one to the right of the other. Recall that the x-axis is non-linear as it uses the Bark scale, so they will not be a "linear" distance apart.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence2.4}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.4.png}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 
 \pagebreak
 \subsection{Test 2.5}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -390,25 +390,25 @@ A correct visualisation was achieved. The test was successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file consisting of three sine waves (at 1,000 Hz and 5,000 Hz and 15,000 Hz respectively) was generated using the popular audio editing program Audacity.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The visualiser should display three peaks in successive order. Recall that the x-axis is non-linear as it uses the Bark scale, so they will not be a "linear" distance apart.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence2.5}
 \begin{figure}[H]
 	\includegraphics[width=14cm]{./tests/2.5.png}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A correct visualisation was achieved. The test was successful.
 
 
 \pagebreak
 \subsection{Test 3.1}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -417,25 +417,25 @@ A correct visualisation was achieved. The test was successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 Two songs are to be chosen as audio files, representative of the type of music often remixed (recall that the aim of the software is to assist in the creation of said remixes), both of which include ample bass. The "reduce bass" effects preset is to be applied within the software, which applies the "equaliser effect" with the correct parameters.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 To the human ear, the bass of the music (that is, the lower frequencies) should sound significantly reduced. This will be verified by observing the audio visualisation - the frequencies to the left should appear smaller in relation to the others.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence3.1}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1L1xcLyDd0HwsidX003OvKTqvFeIy20RA/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1L1xcLyDd0HwsidX003OvKTqvFeIy20RA/view?usp=sharing
 }. It shows the two songs being played first without the configured equaliser effect, then with the configured equaliser effect, then without again to highlight the contrast. Both songs have their bass almost completely eliminated, showcasing the effect at work. This is also visually demonstrated by the marked difference in the audio visualisation.
 
-\subsubsection{Conclusion}
-The correct auditory effect was achieved, rendering the test successful. 
+\subsubsection*{Conclusion}
+The correct auditory effect was achieved, rendering the test successful.
 
 
 \pagebreak
 \subsection{Test 3.2}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -444,25 +444,25 @@ The correct auditory effect was achieved, rendering the test successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 Two songs are to be chosen as audio files, representative of the type of music often remixed (recall that the aim of the software is to assist in the creation of said remixes), both of which include ample treble. The "reduce treble" effects preset is to be applied within the software, which applies the "equaliser effect" with the correct parameters.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 To the human ear, the treble of the music (that is, the higher frequencies) should sound significantly reduced. This will be verified by observing the audio visualisation - the frequencies in the middle should appear smaller in relation to the others.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence3.2}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1TrEiFpsmVm_sFzlnQu5FE8u7NDuP0Aq8/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1TrEiFpsmVm\_sFzlnQu5FE8u7NDuP0Aq8/view?usp=sharing
 }. It shows the two songs being played first without the configured equaliser effect, then with the configured equaliser effect, then without again to highlight the contrast. Both songs have their treble almost completely eliminated, showcasing the effect at work. This is also visually demonstrated by the marked difference in the audio visualisation.
 
-\subsubsection{Conclusion}
-The correct auditory effect was achieved, rendering the test successful. 
+\subsubsection*{Conclusion}
+The correct auditory effect was achieved, rendering the test successful.
 
 
 \pagebreak
 \subsection{Test 4.1}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -471,13 +471,13 @@ The correct auditory effect was achieved, rendering the test successful.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 Two songs are to be chosen as audio files, representative of the type of music often remixed (recall that the aim of the software is to assist in the creation of said remixes). The audio effect will then be applied.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 There should be a noticeable echo to the audio. The "select group" will verify that the effect sounds correct (see description).
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence4.1}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1gruw9Kz-T_HaHWCElk-2qzacudPEORu2/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1gruw9Kz-T\_HaHWCElk-2qzacudPEORu2/view?usp=sharing
@@ -490,18 +490,18 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 "Yes that's exactly what I thought I would hear. The effect is moderate but I understand it can be configured."
 
 \paragraph{Student 3 Response}
-"Your program has added an echo to songs like I thought [it would]. When people add echoes to remixes, this is what it sounds like." 
+"Your program has added an echo to songs like I thought [it would]. When people add echoes to remixes, this is what it sounds like."
 
 \paragraph{Subject Specialist Response}
 "Your echo effect sounds physically plausible for audio being played in a large room in which reflections attenuate little (e.g. a large hall or an outdoor venue). I believe it is therefore correct for the vast majority of situations. Obviously in situations where the audio is far away higher frequencies would be dampened significantly, but by combining the echo with your "equaliser" effect your software could achieve that too. So overall all types of echoes in the real-world can be effectively simulated with your project."
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 An echo was clearly heard, which was certified by the select group as both the expected behaviour and physically plausible. The test passed.
 
 
 \pagebreak
 \subsection{Test 4.2}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -510,13 +510,13 @@ An echo was clearly heard, which was certified by the select group as both the e
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 Identical to test 4.1.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 There should be a noticeable noise within the audio. The "select group" will verify that the effect sounds correct (see description).
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence4.2}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/10Mj83b7_3bSNBfDXyYa7gKsn7GpRTCkY/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/10Mj83b7\_3bSNBfDXyYa7gKsn7GpRTCkY/view?usp=sharing
@@ -534,13 +534,13 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 \paragraph{Subject Specialist Response}
 "The noise effect mimics the type of 'white noise' often picked-up by poor quality microphones (in which all frequencies are more-or-less represented), so I would indeed say your software project has resulted in a physically plausible noise."
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 Noise in the audio was clearly heard, which was certified by the select group as both the expected behaviour and physically plausible. The test passed.
 
 
 \pagebreak
 \subsection{Test 4.3}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -549,25 +549,25 @@ Noise in the audio was clearly heard, which was certified by the select group as
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 Identical to test 4.1. The volume effect is to be applied in an effort to reduce the volume.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The audio should sound quieter.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence4.3}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1pJIc7vPbLUx2QlaXG3CymtYv7scC_tCX/view?usp=sharing}{here}\footnote{
 	https://drive.google.com/file/d/1pJIc7vPbLUx2QlaXG3CymtYv7scC\_tCX/view?usp=sharing
 }. It shows the two songs being played with the volume effect being used to change the volume. A change in volume can clearly be heard.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A change in volume was clearly heard. The test passed.
 
 
 \pagebreak
 \subsection{Test 5.1}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -576,25 +576,25 @@ A change in volume was clearly heard. The test passed.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file will be played and the intensity of the noise altered.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The noise should vary in volume.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence5.1}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1Y1XaqZrhmlMwfaPEDRW-oboNUYbVYuxs/view?usp=drive_link}{here}\footnote{
 	https://drive.google.com/file/d/1Y1XaqZrhmlMwfaPEDRW-oboNUYbVYuxs/view?usp=drive\_link
 }.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 A change in the volume of the noise was clearly heard. The test passed.
 
 
 \pagebreak
 \subsection{Test 5.2}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -603,25 +603,25 @@ A change in the volume of the noise was clearly heard. The test passed.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file will be played and the echo's duration (how delayed the echo is) and fall-off (how quickly successive echoes reduce in volume) will be altered.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The duration and fall-off of the echo should clearly be heard to change.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence5.2}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1XVe7SpYpZMCmoV4CvooNK1E8rbBCmQCn/view?usp=drive_link}{here}\footnote{
 	https://drive.google.com/file/d/1XVe7SpYpZMCmoV4CvooNK1E8rbBCmQCn/view?usp=drive\_link
 }.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 The observed results were in-line with what was expected. The test passed.
 
 
 \pagebreak
 \subsection{Test 5.3}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -630,25 +630,25 @@ The observed results were in-line with what was expected. The test passed.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file will be played and the lower and upper frequency of the equaliser effect will be adjusted, in addition to the intensity of the effect.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 The range of frequencies targeted by the equaliser effect should vary, and the degree to which it is applied should clearly change.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence5.3}
 Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1KebAYMMi3lstsluiX7-tS3c5MKMSElBV/view?usp=drive_link}{here}\footnote{
 	https://drive.google.com/file/d/1KebAYMMi3lstsluiX7-tS3c5MKMSElBV/view?usp=drive\_link
 }.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 The observed results were in-line with what was expected. The test passed.
 
 
 \pagebreak
 \subsection{Test 5.4}
-\subsubsection{Description}
+\subsubsection*{Description}
 \paragraph{}
 {
 	\centering
@@ -657,10 +657,10 @@ The observed results were in-line with what was expected. The test passed.
 	\end{minipage}}
 }
 
-\subsubsection{Supplied Test Data}
+\subsubsection*{Supplied Test Data}
 An audio file will be played. Successive presets will be applied.
 
-\subsubsection{Expected Result}
+\subsubsection*{Expected Result}
 Each preset should result in the desired effect applied. Please consult the design section for more in-depth descriptions of what each preset aims to achieve (and why). However, broadly speaking:
 \begin{itemize}
 	\item Spacious room - the audio sounds like it's in a spacious room (e.g. a large school sports hall)
@@ -673,11 +673,11 @@ Each preset should result in the desired effect applied. Please consult the desi
 \end{itemize}
 Each preset should have set-up one or more audio effects configured correctly. Effects will be considered "configured correctly" if the desired artistic effect is achieved.
 
-\subsubsection{Observed Result}
+\subsubsection*{Observed Result}
 \label{sec:evidence5.4}
 Video evidence was recorded for the test, which can be viewed \href{}{here}\footnote{
-	
+
 }.
 
-\subsubsection{Conclusion}
+\subsubsection*{Conclusion}
 The observed results were in-line with what was expected. The test passed.
