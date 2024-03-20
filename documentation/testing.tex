@@ -28,7 +28,7 @@ Below that are the tests themselves, expanded in more detail.
 \pagebreak
 \subsection{Testing Summary}
 {
-	\renewcommand{\arraystretch}{1.5}
+	\renewcommand{\arraystretch}{1.7}
 	\begin{table}[h!]
 		\begin{center}
 			\begin{tabularx}{1.0 \textwidth} {
@@ -81,7 +81,7 @@ Below that are the tests themselves, expanded in more detail.
 }
 \pagebreak
 {
-	\renewcommand{\arraystretch}{1.5}
+	\renewcommand{\arraystretch}{1.7}
 	\begin{table}[h!]
 		\begin{center}
 			\begin{tabularx}{1.0 \textwidth} {
@@ -98,10 +98,19 @@ Below that are the tests themselves, expanded in more detail.
 				2.5 & "A correct visualisation of three sine waves (1,000 Hz, 5,000 Hz and 15,000 Hz ) is apparent, with three separate peaks corresponding to those frequencies." & \fullpageref{sec:evidence2.5} & Yes\\
 				
 				\hline
+				2.6 & "Audio samples are correctly converted to complex form" & \fullpageref{sec:evidence2.6} & Yes\\
+				
+				\hline
+				2.7 & "When assessing loudness, a correct conversion from the Hertz to the Bark Scale occurs" & \fullpageref{sec:evidence2.7} & Yes\\
+				
+				\hline
 				3.1 & "The program's equaliser effect is able to selectively reduce the bass of any given audio (corresponding to the low frequencies in frequency space)." & \fullpageref{sec:evidence3.1} & Yes\\
 				
 				\hline
 				3.2 & "The program's equaliser effect is able to selectively reduce the treble of any given audio (corresponding to the high frequencies in frequency space)." & \fullpageref{sec:evidence3.2} & Yes\\
+				
+				\hline
+				3.3 & "The program's equaliser effect is able to correctly reduce the magnitude of complex audio samples in frequency space without affecting their phase." & \fullpageref{sec:evidence3.3} & Yes\\
 
 				\hline
 				4.1 & "A select group from the target audience certify that the echo effect sounds physically plausible, and mimics the effect as it is commonly heard in song remixes" & \fullpageref{sec:evidence4.1} & Yes\\
@@ -129,13 +138,44 @@ Below that are the tests themselves, expanded in more detail.
 				
 				\hline
 				6.2 & "The program must run in real-time, with every effect applied at once, in real-time on the specified hardware." & \fullpageref{sec:evidence6} & Exceeded\\
-
+				
 				\hline
 			\end{tabularx}
 		\end{center}
 	\end{table}
 }
-
+\pagebreak
+{
+	\renewcommand{\arraystretch}{1.7}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}p{0.1\linewidth}
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}p{0.1\linewidth}
+					|>{\raggedright\arraybackslash}p{0.1\linewidth}
+					|
+				}
+				\hline
+				Test Number & Description & Relevant Evidence & Passed \\
+				
+				\hline
+				7.1 & "The program must be able to play  back audio at an increased speed" & \fullpageref{sec:evidence7.1} & Yes\\
+				
+				\hline
+				7.2 & "The program must be able to play back audio at a reduced speed" & \fullpageref{sec:evidence7.1} & Yes\\
+				
+				\hline
+				7.3 & "Speeding up audio playback does not significantly increase the computational overhead (to fulfil objective 6)" & \fullpageref{sec:evidence7.3} & Exceeded\\
+				
+				\hline
+				7.4 & "Slowing down audio playback does not significantly increase the computational overhead (to fulfil objective 6)" & \fullpageref{sec:evidence7.3} & Exceeded\\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
 
 \pagebreak
 \subsection{Test 1.1}
@@ -291,6 +331,110 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 The observed result and expected result were identical, such that the test passed.
 
 \pagebreak
+\subsection{Test 1.5}
+\subsubsection*{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"The playlist's shuffle subroutine is able to correctly randomise the order of audio files."
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+The shuffle subroutine code was not include in section 3 as its implementation was relatively trivial and it was not critical for the success of the project. However, the code for it is in the appendix under the \textit{Shuffle} subroutine of \textit{src/io/playlist.cpp}. A unit test was created to test the Playlist's shuffle subroutine as follows:
+\inputminted[linenos]{c++}{../unit_tests/shuffle.cpp}
+
+\subsubsection*{Expected Result}
+Each time the playlist is shuffled, its order should change.
+
+\subsubsection*{Observed Result}
+\label{sec:evidence1.5}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/1.5.1.png}
+\end{figure}
+
+\subsubsection*{Conclusion}
+A correct "shuffle" was achieved. The test was successful.
+
+\pagebreak
+\subsection{Test 1.6}
+\subsubsection*{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"Audio playback (without any effects applied, on valid files) works correctly."
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+A valid audio file is to be added to a playlist and said playlist is to be opened within the program.
+
+\subsubsection*{Expected Result}
+The audio file should be clearly heard, and it should sound "correct" (free of distortions).
+
+\subsubsection*{Observed Result}
+\label{sec:evidence1.6}
+Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/17naUVvs00exoi9Y6PS5pDk6i4F2yO5aG/view?usp=sharing}{here}\footnote{
+	https://drive.google.com/file/d/17naUVvs00exoi9Y6PS5pDk6i4F2yO5aG/view?usp=sharing
+}. It shows the desired audio file \textbf{first being played with an external program} (to show the viewer what it \textit{should} sound like), \textbf{then being played within the program}. Both sound identical.
+
+\subsubsection*{Conclusion}
+Audio files, unmodified, are able to be played back verbatim. The test passed.
+
+
+\pagebreak
+\subsection{Test 1.7}
+\subsubsection*{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"The program is able to correctly determine the key properties of audio files (frequency and number of channels)."
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+Three valid audio files were selected, and for each the following unit test ran: 
+\inputminted[linenos]{c++}{../unit_tests/properties.cpp}
+
+The three audio files, when inspected with external audio software, had the following properties:
+\begin{enumerate}
+	\item \textit{unit-test-audio-1.wav} - frequency of 48,000 Hz, with 2 channels
+	\item \textit{unit-test-audio-2.wav} - frequency of 16,000 Hz, with 1 channel
+	\item \textit{unit-test-audio-3.wav} - frequency of 96,000 Hz, with 2 channels
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=8cm]{./tests/1.7.1.png}
+	\caption{File 1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=8cm]{./tests/1.7.2.png}
+	\caption{File 2}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=8cm]{./tests/1.7.3.png}
+	\caption{File 3}
+\end{figure}
+
+\subsubsection*{Expected Result}
+The unit test should report the same audio properties as described above.
+
+\subsubsection*{Observed Result}
+\label{sec:evidence1.7}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/1.7.4.png}
+\end{figure}
+
+\subsubsection*{Conclusion}
+Properties of audio files were successfully detected. The test passed.
+
+\pagebreak
 \subsection{Test 2.1}
 \subsubsection*{Description}
 \paragraph{}
@@ -423,6 +567,65 @@ A correct visualisation was achieved. The test was successful.
 
 
 \pagebreak
+\subsection{Test 2.6}
+\subsubsection*{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"Audio samples are correctly converted to complex form."
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+Audio data must correctly be converted into a series of complex numbers for use with the Fast Fourier Transform. To verify this process was working correctly, I will feed audio data into the \textit{ConvertSamplesToComplexForm} subroutine under \textit{src/effects/fft.cpp} then verify that the data has been converted correctly.
+
+\subsubsection*{Expected Result}
+Audio data has no complex component, so the output from the subroutine should be a list of complex numbers whose real parts are identical to the input, but whose complex parts are all zero.
+
+\subsubsection*{Observed Result}
+\label{sec:evidence2.6}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.6.1.png}
+\end{figure}
+
+\subsubsection*{Conclusion}
+The subroutine processed data in the correct way. The test was successful.
+
+
+\subsection{Test 2.7}
+\subsubsection*{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"When assessing loudness, a correct conversion from the Hertz to the Bark Scale occurs."
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+To verify the conversion from Hertz to the Bark scale is correct, I will feed various values into the \textit{HertzToBarkScale} subroutine under \textit{src/effects/fft.cpp} then verify that the correct result is returned. To do this, I am using the following unit test:
+\inputminted[linenos,firstline=3,lastline=25]{c++}{../unit_tests/scale.cpp}
+
+\subsubsection*{Expected Result}
+\begin{enumerate}
+	\item 0 Hz should return 0
+	\item 10 Hz should return 0.099
+	\item 20 Hz should return 0.198
+	\item 100 Hz should return 0.987
+	\item 10,000 Hz should return 25.727
+\end{enumerate}
+
+\subsubsection*{Observed Result}
+\label{sec:evidence2.7}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/2.7.1.png}
+\end{figure}
+
+\subsubsection*{Conclusion}
+The subroutine processed data in the correct way. The test was successful.
+
+\pagebreak
 \subsection{Test 3.1}
 \subsubsection*{Description}
 \paragraph{}
@@ -475,6 +678,33 @@ Video evidence was recorded for the test, which can be viewed \href{https://driv
 \subsubsection*{Conclusion}
 The correct auditory effect was achieved, rendering the test successful.
 
+
+\pagebreak
+\subsection{Test 3.3}
+\subsubsection*{Description}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"The program's equaliser effect is able to correctly reduce the magnitude of complex audio samples in frequency space without affecting their phase."
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+Recall that the FFT processing results in an array of complex numbers, where the real and imaginary part respectively can be visualised in the complex plane such that the phase is the argument of the complex number, and the magnitude is the amplitude / volume of the frequency. Hence to reduce the amplitude of certain frequencies, ,the equaliser must be able to manipulate these complex numbers in the complex plane by changing the magnitude, but not the argument (phase). This test will verify that the \textit{ModifyMagnitude} subroutine in \textit{src/effects/equaliser\_effect.cpp} works as intended by using the following unit test:
+\inputminted[linenos,firstline=3,lastline=23]{c++}{../unit_tests/phase.cpp}
+
+\subsubsection*{Expected Result}
+Each complex number, after the subroutine has been called, should have the same argument but with its magnitude halved.
+
+\subsubsection*{Observed Result}
+\label{sec:evidence3.3}
+\begin{figure}[H]
+	\includegraphics[width=14cm]{./tests/3.3.1.png}
+\end{figure}
+
+\subsubsection*{Conclusion}
+The subroutine processed data in the correct fashion, such that the test passed.
 
 \pagebreak
 \subsection{Test 4.1}
@@ -808,29 +1038,173 @@ Below is a summary followed the relevant screenshots of the program's output.
 
 \label{sec:evidence6}
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=14cm]{./tests/6.1 school computer.png}
 	\caption{Test 6.1 performance capture screenshot for "school computer"}
 \end{figure}
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=14cm]{./tests/6.2 school computer.png}
 	\caption{Test 6.2 performance capture screenshot for "school computer"}
 \end{figure}
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=14cm]{./tests/6.1 laptop.png}
 	\caption{Test 6.1 performance capture screenshot for "personal school laptop"}
 \end{figure}
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=14cm]{./tests/6.2 laptop.png}
 	\caption{Test 6.2 performance capture screenshot for "personal school laptop"}
 \end{figure}
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=14cm]{./tests/6.1 old laptop.png}
 	\caption{Test 6.1 performance capture screenshot for "very old laptop"}
 \end{figure}
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=14cm]{./tests/6.2 old laptop.png}
 	\caption{Test 6.2 performance capture screenshot for "very old laptop"}
 \end{figure}
 
 \subsubsection*{Conclusion}
 All hardware samples were able to meet the "real-time" criteria for both tests 6.1 and 6.2. Even the "very old laptop", with a CPU from 2013, was able to just about stay under the performance targets set. As a result, I can say with confidence that the test was not only met but \textit{exceeded}, as performance was actually better than required (i.e. the program had only to perform adequately on average school hardware, but instead had acceptable performance on even weaker hardware).
+
+\pagebreak
+\subsection{Tests 7.1 and 7.2}
+\subsubsection*{Descriptions}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"The program must be able to play  back audio at an increased speed"
+	\end{minipage}}
+}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"The program must be able to play back audio at a reduced speed"
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+An audio file will be played and the playback speed will be modified. In the interests of saving time, both speeding up and slowing audio will be tested at once.
+
+\subsubsection*{Expected Result}
+When the playback speed is set to below 1x, the audio should slow down to the appropriate level (e.g. 0.5x should make the audio run twice as slowly). Likewise, speeding up the audio should have the opposite effect.
+
+\subsubsection*{Observed Result}
+\label{sec:evidence7.1}
+Video evidence was recorded for the test, which can be viewed \href{https://drive.google.com/file/d/1ieWOnFBUiLd3SjLL2DNQdhwB6GRQJ8IO/view?usp=drive_link}{here}\footnote{
+	https://drive.google.com/file/d/1ieWOnFBUiLd3SjLL2DNQdhwB6GRQJ8IO/view?usp=drive\_link
+}.
+
+\subsubsection*{Conclusion}
+The observed results were in-line with what was expected. The test passed.
+
+
+\pagebreak
+\subsection{Tests 7.2 and 7.3}
+\subsubsection*{Descriptions}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"Speeding up audio playback does not significantly increase the computational overhead (to fulfil objective 6)"
+	\end{minipage}}
+}
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			"Slowing down audio playback does not significantly increase the computational overhead (to fulfil objective 6)"
+	\end{minipage}}
+}
+
+\subsubsection*{Supplied Test Data}
+As with the tests for objective 6, the performance characteristics of this part of the software will be measured. Please refer to tests 6.1 and 6.2 for an explanation of how the code is to be timed (except this time with the \textit{ResampleBuffer} subroutine under \textit{src/io/audio\_stream.cpp}), as well as the hardware used.
+
+\subsubsection*{Expected Result}
+In tests 6.1 and 6.2, where performance with more general audio processing was measured, it was found that the slowest piece of hardware, running the most demanding audio processing workload, took at most 2.8ms to process audio.  Given that audio processing has a performance budget of just 3ms (i.e. can take, at most, 3ms)\footnote{
+For clarity, see the relevant discussions in the design section for testing objective 6
+}, in order to not significantly increase computational overhead, the slowing down or speeding up of audio must therefore not exceed 0.2ms of this budget.
+
+\subsubsection*{Observed Result}
+\label{sec:evidence7.3}
+Below are the timings observed, followed by relevant evidence:
+{
+	\renewcommand{\arraystretch}{1.5}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					|
+				}
+				\hline
+				Test & Piece of Hardware & CPU & CPU Frequency & Time to Adjust Audio Speed & Speed Modifier \\
+				
+				\hline
+				7.1 & School computer & AMD Ryzen 3 2200G & 3.5 GHz & 0.031ms & 2x \\
+				
+				\hline
+				7.2 & School computer & AMD Ryzen 3 2200G & 3.5 GHz & 0.024ms & 0.5x \\
+				
+				\hline
+				7.1 & Personal school laptop & Intel i5-7Y540 & 3.2 GHz  & 0.037ms & 2x \\
+				
+				\hline
+				7.2 & Personal school laptop & Intel i5-7Y540 & 3.2 GHz & 0.028ms & 0.5x \\
+				
+				\hline
+				7.1 & Very old laptop & Intel i5-4258U & 2.4 GHz & 0.12ms & 2x \\
+				
+				\hline
+				7.2 & Very old laptop & Intel i5-4258U & 2.4 GHz & 0.1ms & 0.5x \\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{./tests/7.1 school laptop.png}
+	\caption{Test 7.1 performance capture screenshot for "personal school laptop"}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{./tests/7.2 school laptop.png}
+	\caption{Test 7.2 performance capture screenshot for "personal school laptop"}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{./tests/7.1 school computer.png}
+	\caption{Test 7.1 performance capture screenshot for "school computer"}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{./tests/7.2 school computer.png}
+	\caption{Test 7.2 performance capture screenshot for "school computer"}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{./tests/7.1 very old laptop.png}
+	\caption{Test 7.1 performance capture screenshot for "very old laptop"}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{./tests/7.2 very old laptop.png}
+	\caption{Test 7.2 performance capture screenshot for "very old laptop"}
+\end{figure}
+
+
+\subsubsection*{Conclusion}
+The performance characteristics were better than what was required by over an order of magnitude, such that the parameters of the tests were exceeded. The tests therefore more than passed.

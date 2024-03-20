@@ -1,6 +1,6 @@
 \section{Development and Implementation}
 
-Whilst the full source code is available in the appendix, the following section contains the most important parts of the code-base, highlighting the techniques used and technical solutions employed.
+Whilst the full source code is available in the appendix, the following section contains the most important parts of the code-base, highlighting the critical techniques used and technical solutions employed.
 
 \subsection{Summary of techniques}
 For handy reference, below is a table summarising the various techniques used in the codebase. \textbf{These are expanded upon in more detail below}.
@@ -55,7 +55,7 @@ For handy reference, below is a table summarising the various techniques used in
 				Various files & Employing defensive programming patterns when reading and writing files to and from disk, as well as when modifying audio effects & Used with audio files , audio effects and playlists \\
 				
 				\hline
-				src/io/audio\_stream.cpp, amongst others & Key program logic & Manages the audio playback loop, including processing and inter-thread communication. \\
+				src/io/audio\_stream.cpp, amongst others & Key program logic & Manages the audio playback loop, including processing, playback-speed modification and inter-thread communication. \\
 				
 				\hline
 			\end{tabularx}

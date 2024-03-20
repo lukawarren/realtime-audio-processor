@@ -12,3 +12,5 @@ documentation/*.gz
 documentation/*.toc
 documentation/*.out
 documentation/_minted-document/
+unit_tests/*.o
+unit_tests/*.wav
