@@ -1,0 +1,188 @@
+\section{Evaluation}
+\paragraph{}
+Now that I have finished developing my software project, it is time to evaluate if I have achieved my intended overall goal. Naturally the goal of the project was realised by distilling the various requirements into discrete objectives and attempting to accomplish each respectively, but two key questions must be stressed:
+\begin{enumerate}
+	\item How well were these objectives met?
+	\item Did the completion of these objectives result in properly addressing the initial problem?
+\end{enumerate}
+
+\paragraph{}
+Furthermore, whilst the initial aim of the project may have been met, to what extent could the software be improved? Consider, for example, that whilst a user may be able to create many remixes in realtime using this software, highlighting that the goal was broadly met, there is a possibility that more nuanced or bizarre effects, present sometimes in other remixes, are not supported currently within the software.
+
+\paragraph{}
+Given the somewhat subjective nature of all these questions, I have decided the best way to reach a thorough conclusion is to interview the same target audience that I first interviewed in the analysis section. As it was their opinions and decisions that ultimately guided the project, they are well positioned to critique the final product by contrasting it with their vision they had in their own minds.
+
+\pagebreak
+\subsection{Evaluating the Completion of Objectives}
+\paragraph{}
+Before I can evaluate how well the completion of the objectives resulted in the initial requirement being fulfilled,  I must naturally first evaluate if the objectives themselves were completed in the first place.
+
+\paragraph{}
+Recall that in the design section (section 2), I deliberately grouped tests by objective, in such a manner that the required functionality of each objective was intended to be tested by the tests contained next to it. For example, tests 1.1 - 1.7, upon competition, were designed to assure that objective 1 had passed. 
+
+\paragraph{}
+\textbf{After careful debugging and iteration, the program has by now reached a state where all tests pass.} Hence all that remains is to evaluate, for each objective, if the suite of tests associated with it can be reasonably said to assure the objective is met.
+
+\subsubsection{Evaluating Objective 1}
+\paragraph{Description} "The user must be able to load a collection of audio files known as a “playlist” and then play the audio
+files contained within, organised alphabetically, as is the custom in audio-listening applications."
+
+{
+	\renewcommand{\arraystretch}{1.7}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					|
+				}
+				\hline
+				Aspect of Objective & Tests  & All Tests Passed? \\
+				
+				\hline
+				"be able to load... playlist[s]" & 1.1, 1.2 & Yes\\
+				
+				\hline
+				"play the audio files within" & 1.4, 1.6 & Yes\\
+				
+				\hline
+				"organised alphabetically" & 1.3 & Yes\\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
+
+Recall also that tests 1.1, 1.2 and 1.4 were tested not just with correct, "non-corrupt" audio files but also a variety of invalid data, including non-audio files, non-existent files and corrupt audio files. Hence I can also be sure that the objective is met in the most robust sense possible, in that playlists can still be continued to be loaded, for example, even after the user has tried to load an invalid one.
+
+\paragraph{}
+Hence as each part of the objective has been thoroughly tested, and each of these tests has passed, I can say with confidence that objective 1 has been met.
+
+\pagebreak
+\subsubsection{Evaluating Objective 2}
+\paragraph{Description} "The user must be able to visualise the current audio being played in the frequency domain (i.e. visualise
+the frequencies)"
+
+\paragraph{}
+Through tests 2.1 - 2.7, which all passed, it was ascertained that various frequencies could be visualised correctly, both in isolation and in combination with each other. For example, not only can a sine wave of 1000 Hz or 10,000 Hz be visualised, but an audio file consisting of both can also be visualised. This was tested with increasing numbers of sine waves, such that the conclusion reached was that the visualisation of audio with the frequency domain was correct regardless of the complexity of the audio. Furthermore, other tests, such as tests 3.1 and 3.2 (which altered audio in the frequency domain) resulted in the correct change to the visualisation, further reinforcing that the frequency domain was being displayed correctly.
+
+\paragraph{}
+As it has therefore been proven that a variety and combination of frequencies can be visualised, and that the frequency domain of a song can be seen to visually change in the correct way when modified, I have therefore arrived at the conclusion that objective 2 has been met. In no way was it ever apparent that the frequency domain visualisation produced incorrect or unexpected results, and indeed even when playing real-world music the visualisation looked entirely plausible\footnote{
+	The visualisation of music itself was not directly tested due to the challenge of identifying what a "correct" visualisation would look like - humans cannot, unfortunately, visualise audio in the frequency domain in their heads. This is why simple sine waves were used instead, which thankfully can be envisioned. However, in other unrelated tests where proper music was played, the visualisations displayed looked very plausible, with peaks seen corresponding to stand-out frequencies, and vocals and bass frequencies clearly shown. This is not a test unto itself but rather a "sanity check" that the results of "sine wave tests" can indeed be extrapolated to more general audio.
+}.
+
+\pagebreak
+\subsubsection{Evaluating Objective 3}
+\paragraph{Description} "The user must be able to modify the audio’s frequency domain (i.e. selectively modify frequencies such
+as by reducing the bass)"
+
+\paragraph{}
+Three tests were conducted to test objective 3. Tests 3.1 and 3.2, which both passed, tested if specific frequencies (the bass and treble respectively) could have their amplitudes reduced\footnote{
+	These frequency ranges were specifically picked as they are easy to verify be ear, and also represent extremely common modifications made in song remixes.
+}. Test 5.3 tested a range of frequencies more generally, and its attached evidence showed that any given frequency range could have its amplitude either increased or decreased, each time resulting in the correct auditory change. In addition, this was verified by means of the audio visualisation, as in each instance the frequencies visualised adapted to the way the audio had been modified in the expected way.
+
+\paragraph{}
+Thus, as all tests passed, it can be understood with confidence that the audio's frequency domain can be modified correctly. One has only listen, for example, to the evidence of tests 3.1 or 3.2 to understand this. Hence I am of the belief that objective 3 was firmly met.
+
+\pagebreak
+\subsubsection{Evaluating Objective 4}
+\paragraph{Description} "The user must be able to apply additional “audio effects” to further enhance the music: echo, volume
+adjustment and noise"
+
+{
+	\renewcommand{\arraystretch}{1.7}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					|
+				}
+				\hline
+				Audio Effect & Test & Target Audience deemed effect correct? & Subject specialist deemed effect correct? & Test passed? \\
+				
+				\hline
+				Echo & 4.1 & Yes & Yes & Yes \\
+				
+				\hline
+				Volume Adjustment & 4.2 & Yes & Yes & Yes \\
+				
+				\hline
+				Noise & 4.3 & Yes & Yes & Yes \\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
+
+All audio effects mentioned within the objective were verified by a select group of listeners, including a subject specialist. In each case, it was deemed that the audio effect produced the intended result. Hence, as all tests passed, it can deemed that the objective passed.
+
+\pagebreak
+\subsubsection{Evaluating Objective 5}
+\paragraph{Description} "The user must be able to configure these “audio effects” individually, yet also apply pre-made “presets”
+to quickly reach a desired effect"
+
+{
+	\renewcommand{\arraystretch}{1.7}
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabularx}{1.0 \textwidth} {
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					| >{\raggedright\arraybackslash}X
+					|
+				}
+				\hline
+				Aspect of Objective & Tests  & All Tests Passed? \\
+				
+				\hline
+				Configure audio effects individually & 5.1, 5.2, 5.3 & Yes\\
+				
+				\hline
+				Apply pre-made "presets" to quickly reach a desired effect & 5.4 & Yes\\
+				
+				\hline
+			\end{tabularx}
+		\end{center}
+	\end{table}
+}
+
+Through the passing of tests it was understood that each audio effect could be configured in the appropriate manner, such that the correct auditory change was heard. It was also shown under test 5.4 that a variety of presents were able to be applied. Many different "desired effects" could be reached, ranging from "far away room" to "remove bass". All these "desired effects" were reported to be achieved by those interviewed, including the subject specialist.
+
+\paragraph{}
+Thus by all accounts the objective was met.
+
+\pagebreak
+\subsubsection{Evaluating Objective 6}
+\paragraph{Description} "The system must run in real-time on an average school computer"
+
+\paragraph{}
+Great effort was taken to ensure the performance characteristics of the code aligned with the definition of "real-time" chosen in the design section (section 2). After measuring performance in tests 6.1 and 6.2, it finally transpired that performance was actually better than expected, in that  even on hardware much weaker than an average school computer, all computation could be performed in less time than was allotted before the program could no longer be considered real-time. In other words, testing showed that performance was better than required.  Tests 7.3 and 7.4, whilst more related to the altering of playback speed, nevertheless also showed that speeding up or slowing down music had a negligible performance cost.
+
+\paragraph{}
+Recall that the definition of real-time employed in this project (and in computer graphics, audio processing, etc.) refers to there being an imperceivable delay. Research showed that for audio this delay had to be under 3ms, and for visuals the delay had to be ideally under 16.6ms\footnote{See "Testing Objective 6" under section 2}. As all relevant tests passed with times under these, both these performance targets were met.
+
+\paragraph{}
+Hence the overall objective was met.
+
+\pagebreak
+\subsubsection{Evaluating Objective 7}
+\paragraph{Description} "The user must be able to alter the speed at which audio is played"
+
+\paragraph{}
+All tests for objective 7 passed. Hence it was shown that audio could both be sped up and slowed down at will, such that objective 7 was met.
+
+\pagebreak
+\subsection{Interview with Original Target Audience}
+
+\pagebreak
+\subsection{Evaluating the Completion of the Initial Requirement}
+
+\pagebreak
+\subsection{Discussing Potential Improvements}
