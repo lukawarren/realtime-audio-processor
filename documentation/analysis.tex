@@ -75,6 +75,48 @@ However, a Fourier Transform is essentially just a process to convert a signal i
 \paragraph{}
 It therefore appears that the issue of manipulating frequencies in the coursework should be technically possible, providing performance is maximised by using a Cooley-Turkey FFT.
 
+\paragraph{}
+With regards to whether or not such an approach is feasible to do in real-time (i.e. if such an approach is sufficiently performant), many audio visualiser programs perform Fourier Transform algorithms when visualising audio\footnote{
+	iTunes, for example, has a "visual effects" feature that reacts to the different frequencies in a song using an FFT, and the popular program "Plane9" manages to perform FFTs in real-time too.
+},  and so I can be reasonably certain that it should be possible.
+
+\pagebreak
+\subsection{Treating Volume as an Additional Audio Effect}
+\paragraph{}
+As per the questionnaire results from above, in addition to the equaliser (frequency modification) audio effect, there exists two others which were highlighted as crucial to creating remixes:
+\begin{itemize}
+	\item Echo
+	\item Noise
+\end{itemize}
+
+\paragraph{}
+Abstracting away processed audio into a series of consecutively applied "effects" has a further benefit: instead of needing a separate volume control with an additional GUI, volume can also be thought of as an audio effect.
+
+\paragraph{}
+Volume control is crucial for two reasons. Firstly, the user may naturally wish to adjust the volume of normal audio playback. However, there is a second key use: using the equaliser effect to, for example, increase the intensity of the bass may alter the perceived "loudness" of audio, and hence the user may wish to correct this by reducing the volume afterwards. I therefore believe it will be a crucial addition to the software.
+
+\paragraph{}
+Treating volume as an additional audio effect in subsequent stages will not only reduce the complexity of the software by already "plugging in" to existing interfaces, but will also serve to allow users to deal with the unintuitive changes in perceived loudness that occur when one alters audio in its frequency domain.
+
+\paragraph{}
+Hence there are four total audio effects: "echo", "volume", "equaliser" and "noise".
+
+\pagebreak
+\subsection{Exploring the Feasibility of Other Realtime Effects}
+\paragraph{}
+It has already been ascertained above that there exists an algorithm for manipulating audio in its frequency domain, such that the "equaliser effect" has been proven feasible. However, it still remains to decide if the other audio effects will be able to implemented in a sufficiently performant manner. 
+
+\paragraph{Volume} As virtually every existing audio programs supports volume adjustment, it seems extraordinarily unlikely that it will impose such a performance burden as to render the project undoable.
+
+\paragraph{Noise} Many different algorithms exist for generating audio noise. These range from simple pseudo-random number generators to more sophisticated and computationally expensive, physically based approaches. There therefore appears to be a balance to be had between realism and performance. However at the very least, the generation of simple pseudo-random numbers to generate noise should not impose any significant performance burden, as many realtime systems use such numbers extremely often without any discernible overhead\footnote{
+	For example, many video games have an element of chance - consider the spread of bullets when one is shooting a virtual gun, for example. Additionally, in computer graphics, many algorithms exist for the extremely fast generation of pseudo-random numbers for the purposes of path tracing, for example. The issue of "performant randomness" appears, therefore, to have already been solved.  Sources: \href{https://www.reedbeta.com/blog/quick-and-easy-gpu-random-numbers-in-d3d11/}{https://www.reedbeta.com/blog/quick-and-easy-gpu-random-numbers-in-d3d11/} and \href{https://raytracey.blogspot.com/2015/10/gpu-path-tracing-tutorial-1-drawing.html}{https://raytracey.blogspot.com/2015/10/gpu-path-tracing-tutorial-1-drawing.html}.
+}.
+
+\paragraph{Echo} Echo could potentially pose a considerable challenge when dealing with real-time audio. In essence, when sound waves are reflected off surfaces, they travel back to the listener's ear, and as such are heard a small time later. Thus there is a need to "remember" previous audio samples so that they can be played back later. The primary concern is therefore with memory - how much RAM will have to be allocated to storing a buffer of previous audio samples? Consider an "extreme case" of echo, in which there exists a full 10 seconds of delay between a sound and its echo. With a sample rate of 48,000 Hz (the upper limit of what is typically seen), that would require \(48000 \times 10 = 480000 \text{ floating point values} = 1920000 \text{ bytes} = 1.8 \text{ MB}\) of memory. Therefore there should be no real risk of excessive memory consumption for the ehco effect, providing the "echo duration" is limited to reasonable values.
+
+\paragraph{}
+Thus overall, no effects should prevent the program from being "real-time" as per the definition in the preface of this document.
+
 \pagebreak
 \subsection{Programming Language  and Performance Technical Analysis}
 Before embarking on a project design, an appropriate programming language must be chosen. By considering the project requirements it is apparent that two main groups of languages will likely prove insufficient.

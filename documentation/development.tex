@@ -105,13 +105,13 @@ As in C++ one must free explicit heap allocations manually,  recursion had to be
 	\item This process repeats recursively until all children have deallocated their own children, and then finally themselves.
 	\item Finally the root node deallocates itself.
 \end{enumerate}
-The full code is listed below.
+The full code is listed below, \textbf{making use of recursion and a tree data structure}.
 \pagebreak
 \inputminted[linenos]{c++}{../include/data/tree.h}
 
 \pagebreak
 \subsubsection{File Browser - \textit{src/ui/file\_browser.cpp}}
-The file browser uses the tree data structure to store its files, and uses recursion to a greater extent. Below are the relevant parts of the code, followed by a description.
+The file browser \textbf{uses the tree data structure} to store its files, and \textbf{uses recursion to a greater extent}. Below are the relevant parts of the code, followed by a description.
 
 \inputminted[linenos, firstline=47, lastline=108]{c++}{../src/ui/file_browser.cpp}
 
@@ -121,12 +121,12 @@ The file browser uses the tree data structure to store its files, and uses recur
 
 \pagebreak
 \subsection{Merge Sort - \textit{src/data/merge\_sort.cpp}}
-For ordering playlists alphabetically, a sorting  algorithm was needed. I decided to use a merge sort due to its low time complexity of \(O(N \log{N})\).
+For ordering playlists alphabetically, a sorting  algorithm was needed. I decided to use a merge sort due to its low time complexity of \(O(N \log{N})\). My implementation of merge sort \textbf{also uses recursion}.
 \inputminted[linenos]{c++}{../src/data/merge_sort.cpp}
 
 \pagebreak
 \subsection{Fourier Processing - \textit{src/effects/fft.cpp}}
-This implements the pseudo-code produced in section 2.5, and hence uses recursion and the relevant Fourier maths, as well as linearising frequencies using the Bark scale. The relevant code is contained below.
+This implements the pseudo-code produced in section 2.5, and hence \textbf{uses recursion and the relevant Fourier maths}, as well as linearising frequencies using the Bark scale. The relevant code is contained below.
 
 \subsubsection{FFT Algorithm}
 The Cooley-Tukey Fast Fourier Transform and corresponding Inverse Fast Fourier Transform are performed in the following function, using the pseudo-code written in Section 2. As such, it is recursive and manipulates each audio sample in the complex plane by manipulating its polar representation:

@@ -8,6 +8,14 @@
 \date{2023}
 \author{Luka Warren}
 
+% Footer with name on it %
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[R]{\raggedleft Luka Warren\hfill}
+\fancyfoot[C]{\makebox[\textwidth][c]{\thepage}}
+\renewcommand{\headrulewidth}{0pt} % Remove header rule
+
 % Set default text size for all code snippets
 \setminted{fontsize=\footnotesize}
 
