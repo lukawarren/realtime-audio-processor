@@ -1,7 +1,7 @@
 \section{Analysis}
 
 \subsection{Background}
-There exists online many popular "remixes"  where someone has taken an existing song and distorted it, usually by adjusting its speed, bass and pitch, to achieve a desired effect. Often these versions of the song are preferred to the originals when used to accompany short-form content on video-sharing sites such as TikTok. For example,  the song "Money Trees" by Kendrick Lamar has 120 million views on YouTube  in its original form, but also a sizeable 1.6 million views on one "TikTok remix" alone, and indeed on TikTok itself it is rare to hear the original version.
+There exists online many popular "remixes"  where someone has taken an existing song and distorted it, usually by adjusting its speed, bass and pitch, to achieve a desired effect. Often these versions of the song are preferred to the originals when used to accompany short-form content on video-sharing sites such as TikTok. For example,  the song "Money Trees" by Kendrick Lamar has 120 million views on YouTube  in its original form, but also a sizeable 1.6 million views on one "TikTok remix" alone, and indeed on TikTok itself it is rare to hear the original version. This pattern is also observed on other short-form video content sites, such as Instagram Reels and YouTube Shorts.
 
 \paragraph{}
 As such it can be seen that there exists a large audience of people who enjoy listening to altered versions of popular songs. However, the most popular music listening programs, including Spotify and YouTube music, provide no mechanism for manually altering songs by one's self. Instead, "remixes" must be created in external audio editing programs. Thus if a user wants to create their own "remixes", a unique issue is presented:
@@ -9,13 +9,13 @@ As such it can be seen that there exists a large audience of people who enjoy li
 	\item Suppose, for example, that a user wants to listen to a selection of songs, but sped-up and with a bass-boost applied, as is typical for song "remixes" on TikTok. Many songs do not have any accompanying "remixes" to satisfy this user's need, so they wish to do things themselves.
 	\item As there exists no mainstream solution to edit music in real-time, the user would have to import their music files into an audio editing program and apply any desired effects to each file. This will take considerable time.
 	\item However, what if the user then wishes to change the intensity or nature of the effects applied?
-	\item Unfortunately now, they would have to repeat the entire audio-editing process again, waiting considerable time before the results of their experimentation could be heard.
+	\item Unfortunately now, they would have to repeat the entire audio-editing process again, waiting considerable time before the results of their experimentation could be heard (as one's entire music collection would thus have to be "remixed" again)
 	\item The barrier for entry for creating and experimenting with different audio effects for large catalogues of music is thus considerable. One cannot quickly decide to turn up the bass or add an echo, for example, without opening an external program and interrupting playback.
 	\item Easy and user-friendly experimentation is hence prevented, limiting the number of people willing to try editing audio, and hence the number of remixes that exist.
 \end{itemize}
 
 \paragraph{}
-It is therefore the aim of this coursework to create a system to allow users to "remix" songs in real-time as they listen to them. In other words, the goal is to create a program that can not only play a user's music, but also allow them to edit it live, removing the need for external program and allowing them to tweaks audio effects instantly, without delay. Such a system would allow for comprehensible, user-friendly experimentation, removing the above barrier to entry and providing great convenience.
+It is therefore the aim of this coursework to create a system to allow users to "remix" songs in real-time as they listen to them. In other words, the goal is to create a program that can not only play a user's music, but also allow them to edit it live, removing the need for external program and allowing them to tweaks audio effects instantly, without delay. Such a system would allow for comprehensible, user-friendly experimentation, removing the above barrier to entry and providing greater convenience.
 
 \paragraph{}
 However, a system can only be comprehensible and user-friendly if the exact needs of the users themselves are known, and so first a representative sub-section of the user-base must be interviewed.
@@ -23,7 +23,7 @@ However, a system can only be comprehensible and user-friendly if the exact need
 \pagebreak
 \subsection{Collection of Data}
 \paragraph{}
-A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". The full interview form can be seen in the appendix. Below are the responses collected from my peers, which I believe represents the target demographic for this software, as those who listen to song remixes, particularly on TikTok, are typically my age.
+A number of interviews were conducted with peers that self-reported to enjoy listening to song "remixes". The full interview form can be seen in the appendix. Below are the responses collected from my peers, which I believe represents the target demographic for this software, as those who listen to song remixes, particularly on TikTok, are typically of my age.
 
 \paragraph{}
 These responses have been "tidied up" by formatting them within the rest of the document for the benefit of the reader. However, the "raw screenshots" can be viewed in the appendix under "Questionnaire Responses" if such formatting proves confusing.
@@ -38,7 +38,7 @@ Through the interviews it was understood that the ability to modify certain freq
 	\item Applying a low-pass or high-pass filter to broadly modify the frequencies represented
 	\item Modifying the incoming audio in its frequency domain using a Fourier Transform, then converting it back to the time domain using an Inverse Fourier Transform
 \end{itemize}
-Whilst applying a low or high pass filter is a very inexpensive operation, it does not provide exact control over the frequencies modified. Hence in order to best be able to manipulate frequencies, a Fourier Transform must be used.  This is not a computationally trivial task and so every effort must be made to ensure that the program created can still run fast enough to be real-time on typical high school hardware, so as not to increase the barrier of entry, as this would go against the intention of the project.
+Whilst applying a low or high pass filter is a very inexpensive operation, it does not provide exact control over the frequencies modified. Hence in order to best be able to manipulate frequencies, a Fourier Transform must be used\footnote{This is because if one wishes to modify an exact range of frequencies, audio must be processed in the frequency domain. Only by carrying out a Fourier Transform can this be done.}.  This is not a computationally trivial task and so every effort must be made to ensure that the program created can still run fast enough to be real-time on typical high school hardware, so as not to increase the barrier of entry, as this would go against the intention of the project. An analysis of the specifics of Fourier Transforms is discussed in considerable detail later on in the document.
 
 \subsubsection{Playback Speed}
 The system must also be able to alter the playback speed, as this feature was highly requested. However, again this must not conflict with the real-time requirements of the system on modest high school hardware. In other words, the adjusting of playback speed should not demand a significant computational overhead.
@@ -132,7 +132,7 @@ After excluding the two groups of languages above, it can be seen that any langu
 
 \pagebreak
 \subsection{Data Flow Diagram}
-After considering the requirements of the project, I believe the following should serve as a good model of how data should be treated.
+After considering the requirements of the project, I believe the following should serve as a good model of how data should be treated. Users are able to create playlists (collections of audio files), which are then saved to disk. The program can then load a particular playlist, and continuously fetch audio samples from it. These audio samples can then be processed (to apply various audio effects), and the audio's frequency domain can then be visualised. The resultant processed audio will be output to the user's speakers (or another external sound device), and the visualisation can be displayed on the user's screen.
 
 \begin{figure}[h]
 	\includegraphics[width=13cm]{./DFD.png}
@@ -141,7 +141,7 @@ After considering the requirements of the project, I believe the following shoul
 
 \pagebreak
 \subsection{Analysis of Similar Software Products}
-Every consideration must be given to the existence of other software products which may implement, either partially or fully, the features of the program yet to be implemented.
+Every consideration must be given to the existence of other software products which may implement, either partially or fully, the features of the program yet to be implemented, in order to highlight the niche in which this project falls.
 
 \paragraph{}
 There exists two broad categories of software which provides features similar to this project:

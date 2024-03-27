@@ -57,13 +57,13 @@ It may be tempting to load and unload all audio data in a hierarchal  fashion as
 \begin{enumerate}
 	\item An attempt is made in the code to load a playlist.
 	\item To do this, the playlist will be read from disk and all the audio file paths contained within will be loaded into memory.
-	\item Each audio file path will be verified to check it is valid exists on the system.
+	\item Each audio file path will be verified to check it is valid and exists on the system.
 	\item If the playlist is valid, each audio file will then be loaded using the paths provided.
 	\item Thus the loading of a playlist will involve loading all audio files referenced within.
 	\item At the end of the program, when the playlist is no longer needed, all the playlist's audio files will be freed from memory, followed by the playlist itself.
 \end{enumerate}
 
-However, this is not a practical approach due to memory usage constraints. If a user attempted to load a playlist consisting of 200 songs, each 5 MB each, this would consume roughly 1000 MB of memory for the entire duration of the program, even though only 1 audio file can be played at once (and hence only one needs to be in memory at any one time). This conflicts with objective 6 ("the system must run in real-time on an average school computer") as many computers may not have large amounts of free memory, particularly if other programs are running, which may lead to an out-of-memory crash.
+However, this is not a practical approach due to memory usage constraints. If a user attempted to load a playlist consisting of 200 songs, each 5 MB each, this would consume 1000 MB of memory for the entire duration of the program, even though only 1 audio file can be played at once (and hence only one needs to be in memory at any one time). This conflicts with objective 6 ("the system must run in real-time on an average school computer") as many computers may not have large amounts of free memory, particularly if other programs are running, which may lead to an out-of-memory crash (or worse still, the operating system may begin to page memory, potentially causing small delays in the program which will interrupt audio playback).
 
 \paragraph{}
 Instead, I have decided to "stream" audio files as they are played, so that only the audio file currently needed is resident in memory. This can be modelled as followed:
@@ -98,6 +98,8 @@ The code that plays audio on the system will run on a separate thread (see multi
 	\item Now that all work is done for the current section of audio, the processed audio will be copied to the callback's audio buffer and the audio thread will suspend itself.
 	\item When the next section of audio is due, the callback will be re-invoked.
 \end{enumerate}
+
+This can be seen in the flowchart below.
 
 \subsubsection { Audio Playback Flowchart }
 \begin{figure}[H]
@@ -192,7 +194,7 @@ Immediately it is obvious that all audio effects will share many common features
 Given these requirements it is wise to use an object-orientated inheritance approach where effect subclass inherits from a common parent, which provides common functionality (such as the storage and exposing of configuration options), as well as providing a common interface that other parts of the code can use. In order to abstract away the details of interacting with an audio effect, two new classes will also be needed.
 
 \subparagraph{Packet} A packet represents a chunk of audio awaiting processing by the effect. However, some effects require knowledge of both the previous audio samples and future audio samples\footnote{
-	This is because performing Fourier transforms on isolated "chunks" of audio and then
+	This is because performing Fourier Transforms on isolated "chunks" of audio and then
 	playing them back after modification will result in a periodic "clicking" sound at the boundary between chunks due to sudden changes in sound amplitude. This is because
 	of the limited resolution of a Discrete Fourier Transform. To solve this, we must take
 	into account both the sound packet that comes after, and the one that comes before.
@@ -213,7 +215,7 @@ I will use a hash-map as my data structure for this purpose. Hash-maps can be in
 Some properties will be floating point values, whilst others will be integer values. If this project is continued further, I may wish to also add boolean values as well. To accommodate this, I will use polymorphism by creating a \textit{Property} base class, then \textit{FloatingPointProperty} and \textit{IntegerProperty}  children, which will share a common interface.
 
 \subsubsection{UML Class Diagram}
-After considering all the requirements of the multiple classes required, I have constructed a class diagram. However, a slight modification has been made to the typical UML structure: \textit{properties} of audio effects appear in the lower box in each class, in order to indicate that they are not attributes {\it per se}, but rather are elements in their parent's properties hashmap.
+After considering all the requirements of the multiple classes required, I have constructed a class diagram. However, a slight modification has been made to the typical UML structure: \textit{properties} of audio effects appear in the lower box in each class, in order to indicate that they are not attributes {\it per se}, but rather are elements in their parent's properties hashmap. This is so GUI code can iterate through all the properties by merely accessing the keys of the hashmap. If the various audio effect properties were strict member variables instead, there would be no way to polymorphically list all properties, for example.
 
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{./effects class diagram new.png}
