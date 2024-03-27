@@ -104,7 +104,7 @@ Hence there are four total audio effects: "echo", "volume", "equaliser" and "noi
 \pagebreak
 \subsection{Exploring the Feasibility of Other Realtime Effects}
 \paragraph{}
-It has already been ascertained above that there exists an algorithm for manipulating audio in its frequency domain, such that the "equaliser effect" has been proven feasible. However, it still remains to decide if the other audio effects will be able to implemented in a sufficiently performant manner. 
+It has already been ascertained above that there exists an algorithm for manipulating audio in its frequency domain, such that the "equaliser effect" has been proven feasible. However, it still remains to decide if the other audio effects will be able to be implemented in a sufficiently performant manner. 
 
 \paragraph{Volume} As virtually every existing audio programs supports volume adjustment, it seems extraordinarily unlikely that it will impose such a performance burden as to render the project undoable.
 
@@ -128,7 +128,7 @@ Languages such as Python and Ruby, whilst intuitive and easy to use, may not pro
 Languages such as C\# and Java are both Just-In-Time  (JIT) compiled and garbage collected.  This is unacceptable for a real-time audio processing application as both JIT compilation and garbage collection typically introduce frequent micro-stutters, which may result in occasional blips in the program's audio, ruining the output.
 
 \paragraph{}
-After excluding the two groups of languages above, it can be seen that any language chosen must be compiled ahead-of-time to native machine code to maximise performance and avoid JIT stutter, whilst also providing direct control over memory to avoid the garbage-collection issues described above. Ideally, it should also be a modern language capable of OOP. After reviewing this requirements I have decided to use C++, as I am extremely familiar with the language and believe it suits all these requirements.
+After excluding the two groups of languages above, it can be seen that any language chosen must be compiled ahead-of-time to native machine code to maximise performance and avoid JIT stutter, whilst also providing direct control over memory to avoid the garbage-collection issues described above. Ideally, it should also be a modern language capable of OOP. After reviewing these requirements I have decided to use C++, as I am extremely familiar with the language and believe it suits all these requirements.
 
 \pagebreak
 \subsection{Data Flow Diagram}
