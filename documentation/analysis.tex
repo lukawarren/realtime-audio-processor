@@ -81,6 +81,75 @@ With regards to whether or not such an approach is feasible to do in real-time (
 },  and so I can be reasonably certain that it should be possible.
 
 \pagebreak
+\subsection{Interview with Subject Specialist / Domain Expert with Regards to Fourier Transforms}
+\paragraph{}
+As the success of my project largely depends on getting this feature right, I would do well to interview a domain expert to ensure I have come to a correct conclusion. I will therefore interview my maths teacher Mr Godwin, who has experience in Digital Signal Processing (particularly as it relates to audio) from his university degree in Maths.
+
+\paragraph{}
+Below is a written record of the conversation which took place between me and the subject specialist, Mr Godwin. In short, it reaffirms my position that frequency manipulation is best achieved using an FFT, and that the "Cooley-Tukey" algorithm should provide sufficient performance characteristics.
+
+\paragraph{}
+{
+	\centering
+	\fbox{\begin{minipage}{15cm}
+			\paragraph{Luka} Hi Sir. I know you're already familiar with what I'm trying to do with bass boosting and other [frequency-space] effects.
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} Yes, you did mention it in Maths before. You want to be apply to apply different effects to music?
+			
+			\vspace{12pt}
+			
+			\paragraph{Luka} Well, I'm looking at applying a Fourier Transform  to my incoming audio data as I process it. Then once I have it in frequency space, I can just do stuff like raising the frequencies of lower amplitudes if I want a bass-boost, for example. That's what seems to be the most common effect.
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} So you want to bass-boost music with maths then?
+			
+			\vspace{12pt}
+			
+			\paragraph{Luka} Yes well really I want to be able to modify any range of frequencies.
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} Oh okay so you can't use a low-pass filter or something then.
+			
+			\vspace{12pt}
+			
+			\paragraph{Luka} Yeah exactly. So is using an FFT the most sensible approach to take in your opinion?
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} It'd certainly achieve what you want it to - if you want exact control, like you do, then yes I'd say it's required. I mean that's pretty much what a Fourier Transform would be perfect for.
+			
+			\vspace{12pt}
+			
+			\paragraph{Luka} My only other issue is what algorithm to use [for the FFT]. I'm thinking there must be a reason no one else has ever done this and I'm worried it's because of performance.
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} Well normally I'd be worried too because audio has so many samples that you'd be sitting there ages for any results. But if you're processing audio "as it comes" in small little batches then you should be fine. Obviously don't process the entire song at once, but other than that it should be doable.
+			
+			\vspace{12pt}
+			
+			\paragraph{Luka} What about what algorithm to use? I was looking at the Cooley-Tukey one.
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} That's one of the most common for FFTs, yes. It basically just keeps halving the data repeatedly until it's trivial to deal with, so it tends to be pretty fast. You can probably find loads about it too since it isn't once of those obscure ones.
+			
+			\vspace{12pt}
+			
+			\paragraph{Luka} Okay, thanks. So in other words, using an FFT is perfect for the project I'm doing and the algorithm I've chosen should be fast enough to do it live? Like using Cooley-Tukey and processing audio in small batches.
+			
+			\vspace{12pt}
+			
+			\paragraph{Subject Specialist} Yes that's what I'd say.
+			
+	\end{minipage}}
+}
+
+\pagebreak
 \subsection{Treating Volume as an Additional Audio Effect}
 \paragraph{}
 As per the questionnaire results from above, in addition to the equaliser (frequency modification) audio effect, there exists two others which were highlighted as crucial to creating remixes:
