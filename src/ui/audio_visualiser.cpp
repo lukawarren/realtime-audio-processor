@@ -72,8 +72,10 @@ void AudioVisualiser::OnPaint(const wxPaintEvent& event)
     wxAutoBufferedPaintDC context(this);
 
     // Background
-    context.SetBrush(*wxBLACK_BRUSH);
-    context.SetPen({ wxColour(0, 0, 0, 0), 0 });
+    const wxColour background_colour(250, 250, 250, 255); // for libadwaita on gtk4 :)
+    const wxBrush background_brush(background_colour, wxBRUSHSTYLE_SOLID);
+    context.SetBrush(background_brush);
+    context.SetPen({ background_colour, 0 });
     context.DrawRectangle(0, 0, width, height);
 
     // Avoid drawing before FFT data has been set by audio thread
@@ -112,9 +114,9 @@ void AudioVisualiser::OnPaint(const wxPaintEvent& event)
     for (wxCoord i = 0; i < width / bar_width; ++i)
     {
         // Work out colour
-        float hue = (float)i / (float)(width / bar_width);
-        float sat = 1.0f;
-        float val = 1.0f;
+        float hue = 1.0f;
+        float sat = 0.0f;
+        float val = (float)i / (float)(width / bar_width);
         wxColour colour = ConvertHSVToRGB(hue, sat, val);
 
         context.SetBrush(colour);
