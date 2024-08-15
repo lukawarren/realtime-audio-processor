@@ -1,6 +1,13 @@
-.\vcpkg.exe install --triplet x64-windows wxwidgets sdl2
-.\vcpkg.exe integrate install
-mkdir build
-cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake
-cmake --build .
+# AQA A-Level CS Prelim
+![RAP visualising a song](screenshots/RAP.png)
+Uses a series of FFTs to visualise music in realtime and apply a variety of effects. Works on Windows, Mac OS and Linux.
+
+## Documentation
+The documentation is written in LaTex. You can get a pre-built version [here](https://github.com/lukawarren/realtime-audio-processor/releases/tag/1.0.0).
+
+## Requirements
+* wxWidgets
+* SDL2
+
+## Building
+`mkdir build && cd build && cmake .. && cmake --build .`
